@@ -13,7 +13,7 @@ function initPlayer(playerId) {
     const testLevel = Game.world.getLevel('testLevel');
     const player = new Being(testLevel);
     player.playerId = playerId;
-    testLevel.addBeing(player, 6, 5);
+    testLevel.addBeing(player, 10, 6);
     return player;
 }
 

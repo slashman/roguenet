@@ -1,4 +1,12 @@
 const TILES = {
+	FLOOR: {
+		solid: false,
+		opaque: false
+	},
+	WALL: {
+		solid: true,
+		opaque: true
+	},
 	GRASS: {
 		solid: false,
 		opaque: false

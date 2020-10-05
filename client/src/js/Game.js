@@ -18,7 +18,7 @@ var Game = {
 		World.init(this, Client).then(() => {
 			this.player.updateFOV();
 			Display.refresh();
-			Display.textBox.setText("Move around using the arrow keys, press comma to get items, [I] to access the inventory, then [U] or Enter to use items and [D] to drop them.");
+			Display.textBox.setText("Welcome to the Virtual Roguelike Space! Move around using the arrow keys, type short messages and players near will hear you. Press [?] for help.");
 		});
 	}
 }
