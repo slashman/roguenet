@@ -10,7 +10,12 @@ module.exports = {
 			this.level = new Level(this.game);
 			this.level.loadData(worldState.levels['testLevel']);
 			this.levels['testLevel'] = this.level;
-			this.player.setBeing(this.level.getPlayer(worldState.playerId));
+			const playerId = this.player.playerId;
+			const playerBeing = this.level.getPlayer(playerId);
+			if (!playerBeing) {
+				throw new Error("Player character not loaded into level");
+			}
+			this.player.setBeing(playerBeing);
 		});
 	}
 }

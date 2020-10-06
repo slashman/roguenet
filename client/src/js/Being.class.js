@@ -2,7 +2,8 @@ function Being(level, beingData){
 	this.level = level;
 	this.x = beingData.x;
     this.y = beingData.y;
-    this.playerId = beingData.playerId;
+	this.playerId = beingData.playerId;
+	this.playerName = beingData.playerName;
     this.tile = new ut.Tile('@', 255, 255, 255);
 }
 

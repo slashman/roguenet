@@ -150,5 +150,10 @@ module.exports = {
 	},
 	tryUse: function(item, dx, dy){
 		item.def.type.useFunction(this.game, item, dx, dy);
+	},
+	tryTalk: function() {
+		if (true || this.game.world.level.inChatArea(this.being.x, this.being.y)) {
+			return true;
+		}
 	}
 }

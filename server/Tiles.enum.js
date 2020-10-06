@@ -3,6 +3,10 @@ const TILES = {
 		solid: false,
 		opaque: false
 	},
+	CONVERSATION_AREA: {
+		solid: false,
+		opaque: false
+	},
 	WALL: {
 		solid: true,
 		opaque: true

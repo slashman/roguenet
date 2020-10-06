@@ -5,12 +5,41 @@ module.exports = {
 		this.client = client;
 		ut.initInput(this.onKeyDown.bind(this));
 		this.mode = 'MOVEMENT';
+		document.addEventListener('keydown', e => {
+			if (this.mode === 'TALK'){
+				if (e.key.length == 1) {
+					this.activeInputBox.addCharacter(e.key);
+				}
+			}
+		});
 	},
 	movedir: { x: 0, y: 0 },
 	onKeyDown: function(k){
 		if (!this.inputEnabled)
 			return;
-		if (this.mode === 'MOVEMENT'){
+		if (this.mode === 'TALK'){
+			if (k === ut.KEY_ESCAPE){
+				this.mode = 'MOVEMENT';
+				this.game.display.message("Movement Mode Activated");
+				this.activeInputBox.cancelMessage();
+				this.activeInputBox = null;
+				return;
+			}
+			if (k === ut.KEY_ENTER){
+				this.activeInputBox.submit();
+			}
+			if (k === ut.KEY_BACKSPACE){
+				this.activeInputBox.removeCharacter();
+			}
+		} else if (this.mode === 'MOVEMENT'){
+			if (k === ut.KEY_ENTER){
+				if (this.game.player.tryTalk()) {
+					this.game.display.message("Talk Mode Activated. ESC to Exit, Enter to Send.");
+					this.activeInputBox = this.game.display.chatBox;
+					this.mode = 'TALK';
+				}
+				return;
+			}
 			if (k === ut.KEY_COMMA){
 				this.game.player.tryPickup();
 				return;

@@ -9,11 +9,17 @@ var lastActions = {};
 const Game = require('./Game');
 const Being = require('./Being.class');
 
+const names = ['Rodney', 'Rondolfo', 'Biskucho', 'Kornelio', 'Anormal', 'Kawawa', 'Wakaka', 'Romponolo'];
+let currentName = 0;
+
 function initPlayer(playerId) {
     const testLevel = Game.world.getLevel('testLevel');
     const player = new Being(testLevel);
     player.playerId = playerId;
-    testLevel.addBeing(player, 10, 6);
+    currentName++;
+    if (currentName == names.length) currentName = 0;
+    player.playerName = names[currentName];
+    testLevel.addBeing(player, 37, 10);
     return player;
 }
 
@@ -28,26 +34,44 @@ io.on('connection', function(socket){
     }
     const player = players[socket.id];
 
-    io.emit('playerMoved', {
+    const playerObject = {
         playerId: player.playerId,
         x: player.x,
-        y: player.y
-    });
+        y: player.y,
+        playerName: player.playerName
+    };
+
+    socket.emit('playerLoggedIn', playerObject);
+
+    socket.broadcast.emit('playerJoined', playerObject);
 
 	socket.on('getWorldState', function(){
 		socket.emit('worldState', {
-            levels: Game.world.levels,
-            playerId: players[socket.id].playerId
+            levels: Game.world.levels
         });
-	});
+    });
+    
+    socket.on('sendMessage', function(message){
+        const messageText = message.message;
+        const player = players[socket.id];
+        if (!player) {
+            console.log('socket '+socket.id+" has no player");
+            return;
+        }
+        //TODO: Check if player is in chat area
+        io.emit('messageSent', {
+            playerId: player.playerId,
+            messageText
+        });
+    });
 
 	socket.on('moveTo', function(dir){
-		console.log('socket '+socket.id+" wants to move x:"+dir.dx+" y:"+dir.dy);
+        const player = players[socket.id];
+		console.log('Player '+player.name+" wants to move x:"+dir.dx+" y:"+dir.dy);
 		var lastPlayerAction = lastActions[socket.id];
 		if (lastPlayerAction && new Date().getTime() - lastPlayerAction < 30){
 			return;
         }
-        const player = players[socket.id];
         if (!player) {
             console.log('socket '+socket.id+" has no player");
             return;

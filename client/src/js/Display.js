@@ -1,4 +1,6 @@
 var TextBox = require('./ui/TextBox.class');
+var ChatBox = require('./ui/ChatBox.class');
+var InputBox = require('./ui/InputBox.class');
 var Box = require('./ui/Box.class');
 
 module.exports = {
@@ -8,9 +10,23 @@ module.exports = {
 		this.game = game;
 		this.term = new ut.Viewport(document.getElementById("game"), 80, 25);
 		this.eng = new ut.Engine(this.term, this.getDisplayedTile.bind(this), 80, 25);
-		this.textBox = new TextBox(this.term, 2, 80, {x:0, y:0}, this);
+		this.textBox = new TextBox(this.term, 1, 30, {x:25, y:0}, this);
+		this.chatBoxes = [
+			new ChatBox(this.term, 7, 25, {x:0, y:0}, this),
+			new ChatBox(this.term, 7, 25, {x:0, y:7}, this),
+			new ChatBox(this.term, 7, 25, {x:0, y:15}, this),
+			new ChatBox(this.term, 7, 25, {x:54, y:0}, this),
+			new ChatBox(this.term, 7, 25, {x:54, y:7}, this),
+			new ChatBox(this.term, 7, 25, {x:54, y:15}, this)
+		];
+		this.chatboxesMap = {};
+		this.chatBox = this.chatBoxes[0];
+		this.chatBox = new InputBox(this.chatBoxes[0].textBox, message => {
+			this.game.talkManager.sendMessage(message);
+		});
 		this.inventoryBox = new Box(this.term, 15, 40, {x:19, y:4});
 		this.centered = config && config.centered;
+		this.centered = true;
 	},
 	getDisplayedTile: function(x,y){
 		var level = this.game.world.level;
@@ -40,12 +56,14 @@ module.exports = {
 		}
 	},
 	refresh: function(){
+		if (!this.game.player.being) return;
 		if (this.centered) {
 			this.eng.update(this.game.player.being.x, this.game.player.being.y);
 		} else {
 			this.eng.update(40, 12);
 		}
 		this.textBox.draw();
+		this.chatBoxes.forEach(c => c.draw());
 		this.term.render();
 	},
 	showInventory: function(){
@@ -74,5 +92,20 @@ module.exports = {
 		this.textBox.addText(str);
 		this.textBox.draw();
 		this.term.render();
+	},
+	getOrAssignChatbox: function (player) {
+		let chatbox = this.chatboxesMap[player.playerId];
+		if (!chatbox) {
+			for (let i = 1; i < this.chatBoxes.length; i++) {
+				if (!this.chatBoxes[i].playerId) {
+					this.chatBoxes[i].playerId = player.playerId;
+					this.chatboxesMap[player.playerId] = this.chatBoxes[i];
+					this.chatBoxes[i].setPlayer(player);
+					this.chatBoxes[i].draw();
+					return this.chatBoxes[i];
+				}
+			}
+		}
+		return chatbox;
 	}
 }

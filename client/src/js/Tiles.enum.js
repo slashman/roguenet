@@ -6,6 +6,12 @@ module.exports = {
 		solid: false,
 		opaque: false
 	},
+	CONVERSATION_AREA: {
+		tile: new ut.Tile('=', 128, 128, 0),
+		darkTile: new ut.Tile('=', 128, 128, 128),
+		solid: false,
+		opaque: false
+	},
 	WALL: {
 		tile: new ut.Tile('#', 255, 0, 0),
 		darkTile: new ut.Tile('#', 128, 128, 128),
