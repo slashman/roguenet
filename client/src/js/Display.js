@@ -83,9 +83,9 @@ module.exports = {
 	},
 	refresh: function(){
 		if (this.mode == 'TITLE') {
-			this.term.putString(":: Roguenet ::", 5, 5, 255, 0, 0);
-			this.term.putString("User:", 5, 7, 255, 0, 0);
-			this.term.putString("Password:", 5, 8, 255, 0, 0);
+			this.term.putString(":: Roguenet ::", 5, 5, 255, 85, 85);
+			this.term.putString("User:", 5, 7, 170, 170, 170);
+			this.term.putString("Password:", 5, 8, 170, 170, 170);
 			this.usernameBox.draw();
 			this.passwordBox.draw();
 		} else if (this.mode == 'GAME') {

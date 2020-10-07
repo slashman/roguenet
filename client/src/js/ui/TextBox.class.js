@@ -29,7 +29,7 @@ function TextBox (term, height, width, position, display) {
 
 TextBox.prototype.draw = function(){
 	 for (var i = 0; i < this.lines.length; i++) {
-		this.term.putString((this.lines[i] + this.spaces).substring(0, this.width), this.position.x, this.position.y + i, 255, 255, 255);
+		this.term.putString((this.lines[i] + this.spaces).substring(0, this.width), this.position.x, this.position.y + i, 170, 170, 170);
      }
 };
 

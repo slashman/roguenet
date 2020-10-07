@@ -1,20 +1,20 @@
 //TODO: Construct these definitions from server data
 module.exports = {
 	FLOOR: {
-		tile: new ut.Tile('.', 128, 0, 0),
-		darkTile: new ut.Tile('.', 128, 128, 128),
+		tile: new ut.Tile('.', 170, 0, 0),
+		darkTile: new ut.Tile('.', 170, 170, 170),
 		solid: false,
 		opaque: false
 	},
 	CONVERSATION_AREA: {
-		tile: new ut.Tile('=', 128, 128, 0),
-		darkTile: new ut.Tile('=', 128, 128, 128),
+		tile: new ut.Tile('=', 255, 255, 85),
+		darkTile: new ut.Tile('=', 170, 170, 170),
 		solid: false,
 		opaque: false
 	},
 	WALL: {
-		tile: new ut.Tile('#', 255, 0, 0),
-		darkTile: new ut.Tile('#', 128, 128, 128),
+		tile: new ut.Tile('#', 170, 85, 0),
+		darkTile: new ut.Tile('#', 170, 170, 170),
 		solid: true,
 		opaque: true
 	},

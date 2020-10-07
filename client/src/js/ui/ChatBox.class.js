@@ -16,7 +16,7 @@ ChatBox.prototype.setPlayer = function(p){
 ChatBox.prototype.draw = function(){
     if (!this.player) return;
     this.term.put(this.player.tile, this.position.x, this.position.y);
-    this.term.putString("- " + this.player.playerName, this.position.x + 2, this.position.y, 255, 255, 255);
+    this.term.putString("- " + this.player.playerName, this.position.x + 2, this.position.y, 170, 170, 170);
     this.textBox.draw();
     this.term.render();
 };
