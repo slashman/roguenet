@@ -124,21 +124,26 @@ function initHooks (socket) {
 		console.log('Player '+player.name+" wants to move x:"+dir.dx+" y:"+dir.dy);
 		var lastPlayerAction = lastActions[socket.id];
 		if (lastPlayerAction && new Date().getTime() - lastPlayerAction < 30){
+            socket.emit('actionFailed');
 			return;
         }
         if (!player) {
             console.log('socket '+socket.id+" has no player");
+            socket.emit('actionFailed');
             return;
         }
         const testLevel = Game.world.getLevel('testLevel'); //TODO: Get level from player
 		if(testLevel.moveTo(player, dir.dx, dir.dy)){
-            // Always emit playerMoved else the client gets stuck
+            io.emit('playerMoved', {
+                playerId: player.playerId,
+                x: player.x,
+                y: player.y
+            });
+        } else {
+            socket.emit('actionFailed');
         }
-        io.emit('playerMoved', {
-            playerId: player.playerId,
-            x: player.x,
-            y: player.y
-        });
+
+        
 		lastActions[socket.id] = new Date().getTime();
 
 	});

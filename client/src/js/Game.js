@@ -30,10 +30,9 @@ var Game = {
 			if (result.success) {
 				return World.init(this, Client)
 				.then(() => {
-					this.player.updateFOV();
 					Display.mode = 'GAME';
 					Input.mode = 'MOVEMENT';
-					Display.refresh();
+					this.player.updateFOV();
 					Display.textBox.setText("Welcome back " + this.player.being.playerName +". Press [?] for help.");
 				});
 			} else {

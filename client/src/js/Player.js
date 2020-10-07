@@ -30,7 +30,6 @@ module.exports = {
 	},
 	endTurn: function(){
 		this.updateFOV();
-		this.game.display.refresh();
 		this.game.input.inputEnabled = true;
 	},*/
 	remember: function(x, y){
@@ -56,7 +55,6 @@ module.exports = {
 	},
 	endTurn: function(){
 		this.updateFOV();
-		this.game.display.refresh();
 		this.game.input.inputEnabled = true;
 	},
 	canSee: function(dx, dy){
@@ -82,6 +80,7 @@ module.exports = {
 		var step = Math.PI * 2.0 / 1080;
 		for (var a = 0; a < Math.PI * 2; a += step)
 			this.shootRay(a);
+		this.game.display.refresh();
 	},
 	shootRay: function (a) {
 		var step = 0.3333;

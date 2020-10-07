@@ -27,8 +27,6 @@ Level.prototype = {
 			this.beingsList[i].act();
 		}
 		this.player.updateFOV();
-		this.game.display.refresh();
-		
 	},
 	addBeing: function(being, x, y){
 		this.beingsList.push(being);

@@ -37,7 +37,15 @@ module.exports = {
                 return;
             }
             player.teleportTo(data.x, data.y);
-            this.game.player.endTurn();
+            this.game.player.updateFOV();
+            if (player == this.game.player.being) {
+                this.game.input.inputEnabled = true;
+            }
+        });
+
+        socket.on('actionFailed', data => {
+            debug('actionFailed', data);
+            this.game.input.inputEnabled = true;
         });
 
         socket.on('messageSent', data => {
@@ -65,6 +73,7 @@ module.exports = {
     },
 
     moveTo: function(dx, dy) {
+        debug('moveTo', {dx, dy});
         this.socket.emit('moveTo', {dx, dy});
     },
 
