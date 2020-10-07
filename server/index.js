@@ -9,16 +9,35 @@ var lastActions = {};
 const Game = require('./Game');
 const Being = require('./Being.class');
 
-const names = ['Rodney', 'Rondolfo', 'Biskucho', 'Kornelio', 'Anormal', 'Kawawa', 'Wakaka', 'Romponolo'];
-let currentName = 0;
+const testUsers = [
+    {
+        user: 'rodney',
+        password: 'pwd',
+        playerName: 'Rodney'
+    },
+    {
+        user: 'rodinia',
+        password: 'pwd',
+        playerName: 'Rodinia'
+    },
+    {
+        user: 'slashie',
+        password: 'pwd',
+        playerName: 'Slashie'
+    },
+    {
+        user: 'gaby',
+        password: 'pwd',
+        playerName: 'Gaby'
+    }
+];
 
-function initPlayer(playerId) {
+function initPlayer(playerObj, socketId) {
     const testLevel = Game.world.getLevel('testLevel');
     const player = new Being(testLevel);
-    player.playerId = playerId;
-    currentName++;
-    if (currentName == names.length) currentName = 0;
-    player.playerName = names[currentName];
+    player.playerId = socketId;
+    player.playerName = playerObj.playerName;
+    player.username = playerObj.user;
     testLevel.addBeing(player, 37, 10);
     return player;
 }
@@ -27,11 +46,37 @@ Game.start();
 
 io.on('connection', function(socket){
     console.log('Someone connected to us');
-    if (players[socket.id]) {
-        // Welcome back
-    } else {
-        players[socket.id] = initPlayer(socket.id);
-    }
+    // Stand by for login
+
+    socket.on('login', function(credentials){
+        const username = credentials.username;
+        const password = credentials.password;
+        const user = testUsers.find(p => p.user == username && p.password == password);
+        if (!user) {
+            socket.emit('loginResult', { success: false });
+            return;
+        }
+        let player = players[socket.id];
+        if (!player) {
+            player = Game.world.getLevel('testLevel').getPlayerByUsername(user.user);
+        }
+        if (!player) {
+            player = initPlayer(user, socket.id);
+        }
+        players[socket.id] = player;
+        //TODO: Maybe if the player has another active socket, kill it?
+        initHooks(socket);
+        const playerObject = {
+            playerId: player.playerId,
+            x: player.x,
+            y: player.y,
+            playerName: player.playerName
+        };
+        socket.emit('loginResult', { success: true, playerObject });
+    });
+});
+
+function initHooks (socket) {
     const player = players[socket.id];
 
     const playerObject = {
@@ -40,8 +85,6 @@ io.on('connection', function(socket){
         y: player.y,
         playerName: player.playerName
     };
-
-    socket.emit('playerLoggedIn', playerObject);
 
     socket.broadcast.emit('playerJoined', playerObject);
 
@@ -88,28 +131,7 @@ io.on('connection', function(socket){
 		lastActions[socket.id] = new Date().getTime();
 
 	});
-
-});
-
-var canConquer = function (lastAction, map, where, color){
-	if(!lastAction){
-		return true;
-	}
-	if(where.y > 0 && map[where.x][where.y - 1] === color) { //same color up
-		console.log('same color up');
-		return true;
-	} else if (where.y < model.height-1 && map[where.x][where.y + 1] === color){ //same color down
-		console.log('same color down');
-		return true;
-	} else if (where.x > 0 && map[where.x - 1][where.y] === color ){ //same color left
-		console.log('same color left');
-		return true;
-	} else if (where.x < model.width - 1 && map[where.x + 1][where.y] === color ){ //same color right
-		console.log('same color right');
-		return true;
-	} 
-	return false;
-};
+}
 
 server.listen(3001, function(){
   console.log('listening on *:3001	');

@@ -4,9 +4,9 @@ module.exports = {
 		this.game = game;
 		this.client = client;
 		ut.initInput(this.onKeyDown.bind(this));
-		this.mode = 'MOVEMENT';
+		this.mode = 'TITLE';
 		document.addEventListener('keydown', e => {
-			if (this.mode === 'TALK'){
+			if (this.mode === 'TALK' || this.mode === 'TITLE'){
 				if (e.key.length == 1) {
 					this.activeInputBox.addCharacter(e.key);
 				}
@@ -17,7 +17,14 @@ module.exports = {
 	onKeyDown: function(k){
 		if (!this.inputEnabled)
 			return;
-		if (this.mode === 'TALK'){
+		if (this.mode === 'TITLE'){
+			if (k === ut.KEY_ENTER){
+				this.activeInputBox.submit();
+			}
+			if (k === ut.KEY_BACKSPACE){
+				this.activeInputBox.removeCharacter();
+			}
+		} else if (this.mode === 'TALK'){
 			if (k === ut.KEY_ESCAPE){
 				this.mode = 'MOVEMENT';
 				this.game.display.message("Movement Mode Activated");

@@ -67,6 +67,9 @@ Level.prototype = {
 			this.beings[being.x] = [];
 		this.beings[being.x][being.y] = being;
 		return true;
+	},
+	getPlayerByUsername: function (username) {
+		return this.beingsList.find(being => being.username == username);
 	}
 }
 

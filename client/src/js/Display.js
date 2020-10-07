@@ -21,12 +21,38 @@ module.exports = {
 		];
 		this.chatboxesMap = {};
 		this.chatBox = this.chatBoxes[0];
-		this.chatBox = new InputBox(this.chatBoxes[0].textBox, message => {
+		this.chatBox = new InputBox(this.game.input, this.chatBoxes[0].textBox, message => {
 			this.game.talkManager.sendMessage(message);
 		});
+		this.chatBox.clearOnSent = true;
+
+		this.usernameBox = new InputBox(
+			this.game.input,
+			new TextBox(this.term, 1, 30, {x:20, y:7}, this),
+			username => {
+				this.savedUsername = username;
+				this.passwordBox.activate();
+			}
+		);
+
+		this.passwordBox = new InputBox(
+			this.game.input, 
+			new TextBox(this.term, 1, 30, {x:20, y:8}, this),
+			password => {
+				this.game.login(this.savedUsername, password);
+			}
+		);
+
 		this.inventoryBox = new Box(this.term, 15, 40, {x:19, y:4});
 		this.centered = config && config.centered;
 		this.centered = true;
+		this.usernameBox.activate();
+		this.mode = 'TITLE';
+	},
+	loginFailed: function () {
+		this.term.putString("Login Failed", 5, 15, 255, 0, 0);
+		this.usernameBox.activate();
+		this.refresh();
 	},
 	getDisplayedTile: function(x,y){
 		var level = this.game.world.level;
@@ -56,14 +82,21 @@ module.exports = {
 		}
 	},
 	refresh: function(){
-		if (!this.game.player.being) return;
-		if (this.centered) {
-			this.eng.update(this.game.player.being.x, this.game.player.being.y);
-		} else {
-			this.eng.update(40, 12);
+		if (this.mode == 'TITLE') {
+			this.term.putString(":: Roguenet ::", 5, 5, 255, 0, 0);
+			this.term.putString("User:", 5, 7, 255, 0, 0);
+			this.term.putString("Password:", 5, 8, 255, 0, 0);
+			this.usernameBox.draw();
+			this.passwordBox.draw();
+		} else if (this.mode == 'GAME') {
+			if (this.centered) {
+				this.eng.update(this.game.player.being.x, this.game.player.being.y);
+			} else {
+				this.eng.update(40, 12);
+			}
+			this.textBox.draw();
+			this.chatBoxes.forEach(c => c.draw());
 		}
-		this.textBox.draw();
-		this.chatBoxes.forEach(c => c.draw());
 		this.term.render();
 	},
 	showInventory: function(){

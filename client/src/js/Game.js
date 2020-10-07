@@ -22,13 +22,23 @@ var Game = {
 		Player.init(this);
 		Talk.init(this);
 		Input.init(this, Client);
-		Display.textBox.setText("Welcome to RogueNet - Connecting to Server");
-		Client.login()
-		.then(() => World.init(this, Client))
-		.then(() => {
-			this.player.updateFOV();
-			Display.refresh();
-			Display.textBox.setText("Welcome back " + this.player.being.playerName +". Press [?] for help.");
+		Display.refresh();
+	},
+	login: function (username, password) { 
+		Client.login(username, password)
+		.then(result => {
+			if (result.success) {
+				return World.init(this, Client)
+				.then(() => {
+					this.player.updateFOV();
+					Display.mode = 'GAME';
+					Input.mode = 'MOVEMENT';
+					Display.refresh();
+					Display.textBox.setText("Welcome back " + this.player.being.playerName +". Press [?] for help.");
+				});
+			} else {
+				Display.loginFailed();
+			}
 		});
 	}
 }

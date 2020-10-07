@@ -1,18 +1,27 @@
 const Being = require('./Being.class');
+const config = require('./config');
 
 module.exports = {
     init: function (game) {
         this.game = game;
-        var socket = io('http://localhost:3001');
+        var socket = io(config.serverAddress);
         this.socket = socket;
+
+        socket.on('loginResult', (data) => {
+            debug('loginResult', data);
+            if (data.success) {
+                this.game.player.playerId = data.playerObject.playerId;
+                this._initHooks(socket);
+            }
+            this.loginResolve(data);
+        });
+    },
+    _initHooks: function (socket) {
+        if (this.initialized) return;
+        this.initialized = true;
+
         socket.on('worldState', (response) => {
             this.worldStateResolve(response);
-        });
-
-        socket.on('playerLoggedIn', (data) => {
-            debug('playerLoggedIn', data);
-            this.game.player.playerId = data.playerId;
-            this.loginResolve(data);
         });
 
         socket.on('playerJoined', data => {
@@ -41,10 +50,10 @@ module.exports = {
         });
     },
 
-    login: function () {
-        this.socket.emit('login');
+    login: function (username, password) {
+        this.socket.emit('login', { username, password });
         return new Promise(resolve => { 
-            this.loginResolve = resolve; 
+            this.loginResolve = resolve;
         });
     },
 
@@ -61,5 +70,9 @@ module.exports = {
 
     sendMessage: function (message) {
         this.socket.emit('sendMessage', {message});
+    },
+
+    tryLogin: function(password) {
+        return this.login(this.savedUsername, password);
     }
 }
