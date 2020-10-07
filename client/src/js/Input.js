@@ -5,10 +5,29 @@ module.exports = {
 		this.client = client;
 		ut.initInput(this.onKeyDown.bind(this));
 		this.mode = 'TITLE';
-		document.addEventListener('keydown', e => {
+		document.addEventListener('keydown', e => { 
+			// Used for a better delay before repeating, works better for "typed" keys (instead of held down)
 			if (this.mode === 'TALK' || this.mode === 'TITLE'){
 				if (e.key.length == 1) {
 					this.activeInputBox.addCharacter(e.key);
+				} else if (e.key === "Enter"){
+					this.activeInputBox.submit();
+				}
+			}
+			if (this.mode === 'MOVEMENT'){
+				if (e.key === "Enter"){
+					if (this.game.player.tryTalk()) {
+						this.game.display.message("Talk Mode Activated. ESC to Exit, Enter to Send.");
+						this.game.display.chatBox.activate();
+						this.mode = 'TALK';
+					}
+				}
+			} else if (this.mode === 'TALK') {
+				if (e.key === "Escape"){
+					this.mode = 'MOVEMENT';
+					this.game.display.message("Movement Mode Activated");
+					this.activeInputBox.cancelMessage();
+					this.activeInputBox = null;
 				}
 			}
 		});
@@ -18,35 +37,14 @@ module.exports = {
 		if (!this.inputEnabled)
 			return;
 		if (this.mode === 'TITLE'){
-			if (k === ut.KEY_ENTER){
-				this.activeInputBox.submit();
-			}
 			if (k === ut.KEY_BACKSPACE){
 				this.activeInputBox.removeCharacter();
 			}
 		} else if (this.mode === 'TALK'){
-			if (k === ut.KEY_ESCAPE){
-				this.mode = 'MOVEMENT';
-				this.game.display.message("Movement Mode Activated");
-				this.activeInputBox.cancelMessage();
-				this.activeInputBox = null;
-				return;
-			}
-			if (k === ut.KEY_ENTER){
-				this.activeInputBox.submit();
-			}
 			if (k === ut.KEY_BACKSPACE){
 				this.activeInputBox.removeCharacter();
 			}
 		} else if (this.mode === 'MOVEMENT'){
-			if (k === ut.KEY_ENTER){
-				if (this.game.player.tryTalk()) {
-					this.game.display.message("Talk Mode Activated. ESC to Exit, Enter to Send.");
-					this.activeInputBox = this.game.display.chatBox;
-					this.mode = 'TALK';
-				}
-				return;
-			}
 			if (k === ut.KEY_COMMA){
 				this.game.player.tryPickup();
 				return;

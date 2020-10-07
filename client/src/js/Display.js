@@ -30,6 +30,7 @@ module.exports = {
 			this.game.input,
 			new TextBox(this.term, 1, 30, {x:20, y:7}, this),
 			username => {
+				this.usernameBox.active = false;
 				this.savedUsername = username;
 				this.passwordBox.activate();
 			}
@@ -39,6 +40,7 @@ module.exports = {
 			this.game.input, 
 			new TextBox(this.term, 1, 30, {x:20, y:8}, this),
 			password => {
+				this.passwordBox.active = false;
 				this.game.login(this.savedUsername, password);
 			}
 		);

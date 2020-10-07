@@ -3,6 +3,7 @@ function InputBox (input, textBox, onSubmit) {
     this.charBuffer = "";
     this.onSubmit = onSubmit;
     this.textBox = textBox;
+    this.required = true;
 }
 
 InputBox.prototype = {
@@ -12,8 +13,10 @@ InputBox.prototype = {
 		this.textBox.term.render();
     },
     submit: function (){
+        if (this.required && this.charBuffer.trim() == "") {
+            return;
+        }
         this.onSubmit(this.charBuffer);
-        this.active = false;
         if (this.clearOnSent) {
             this.charBuffer = "";
         }
@@ -21,7 +24,6 @@ InputBox.prototype = {
     },
     cancelMessage: function (){
         this.charBuffer = "";
-        this.active = false;
         this._updateShownText();
     },
     removeCharacter: function () {
@@ -36,6 +38,10 @@ InputBox.prototype = {
         this.textBox.draw();
     },
     activate: function () {
+        if (this.input.activeInputBox && this.input.activeInputBox.active) {
+            this.input.activeInputBox.active = false;
+            this.input.activeInputBox._updateShownText();
+        }
         this.input.activeInputBox = this;
         this.active = true;
         this._updateShownText();
