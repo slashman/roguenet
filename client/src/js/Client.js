@@ -10,7 +10,7 @@ module.exports = {
         socket.on('loginResult', (data) => {
             debug('loginResult', data);
             if (data.success) {
-                this.game.player.playerId = data.playerObject.playerId;
+                this.game.player.playerId = data.player.playerId;
                 this._initHooks(socket);
             }
             this.loginResolve(data);

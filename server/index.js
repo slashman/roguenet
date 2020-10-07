@@ -9,26 +9,49 @@ var lastActions = {};
 const Game = require('./Game');
 const Being = require('./Being.class');
 
+const COLORS = [
+    [0, 0, 0],
+    [0, 0, 170],
+    [0, 170, 0],
+    [0, 170, 170],
+    [170, 0, 0],
+    [170, 0, 170],
+    [170, 85, 0],
+    [170, 170, 170],
+    [85, 85, 85],
+    [85, 85, 255],
+    [85, 255, 85],
+    [85, 255, 255],
+    [255, 85, 85],
+    [255, 85, 255],
+    [255, 255, 85],
+    [255, 255, 255]
+];
+
 const testUsers = [
     {
         user: 'rodney',
         password: 'pwd',
-        playerName: 'Rodney'
+        playerName: 'Rodney',
+        color: COLORS[2]
     },
     {
         user: 'rodinia',
         password: 'pwd',
-        playerName: 'Rodinia'
+        playerName: 'Rodinia',
+        color: COLORS[4]
     },
     {
         user: 'slashie',
         password: 'pwd',
-        playerName: 'Slashie'
+        playerName: 'Slashie',
+        color: COLORS[6]
     },
     {
         user: 'gaby',
         password: 'pwd',
-        playerName: 'Gaby'
+        playerName: 'Gaby',
+        color: COLORS[5]
     }
 ];
 
@@ -38,6 +61,7 @@ function initPlayer(playerObj, socketId) {
     player.playerId = socketId;
     player.playerName = playerObj.playerName;
     player.username = playerObj.user;
+    player.color = playerObj.color;
     testLevel.addBeing(player, 37, 10);
     return player;
 }
@@ -66,27 +90,14 @@ io.on('connection', function(socket){
         players[socket.id] = player;
         //TODO: Maybe if the player has another active socket, kill it?
         initHooks(socket);
-        const playerObject = {
-            playerId: player.playerId,
-            x: player.x,
-            y: player.y,
-            playerName: player.playerName
-        };
-        socket.emit('loginResult', { success: true, playerObject });
+        socket.emit('loginResult', { success: true, player });
     });
 });
 
 function initHooks (socket) {
     const player = players[socket.id];
 
-    const playerObject = {
-        playerId: player.playerId,
-        x: player.x,
-        y: player.y,
-        playerName: player.playerName
-    };
-
-    socket.broadcast.emit('playerJoined', playerObject);
+    socket.broadcast.emit('playerJoined', player);
 
 	socket.on('getWorldState', function(){
 		socket.emit('worldState', {

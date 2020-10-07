@@ -4,7 +4,7 @@ function Being(level, beingData){
     this.y = beingData.y;
 	this.playerId = beingData.playerId;
 	this.playerName = beingData.playerName;
-    this.tile = new ut.Tile('@', 255, 255, 255);
+    this.tile = new ut.Tile('@', beingData.color[0], beingData.color[1], beingData.color[2]);
 }
 
 Being.prototype = {
