@@ -10,7 +10,7 @@ module.exports = {
 		this.game = game;
 		this.term = new ut.Viewport(document.getElementById("game"), 80, 25);
 		this.eng = new ut.Engine(this.term, this.getDisplayedTile.bind(this), 80, 25);
-		this.textBox = new TextBox(this.term, 1, 30, {x:25, y:0}, this);
+		this.textBox = new TextBox(this.term, 1, 29, {x:25, y:0}, this);
 		this.chatBoxes = [
 			new ChatBox(this.term, 7, 25, {x:0, y:0}, this),
 			new ChatBox(this.term, 7, 25, {x:0, y:7}, this),
