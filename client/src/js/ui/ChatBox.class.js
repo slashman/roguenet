@@ -7,6 +7,10 @@ function ChatBox (term, height, width, position, display) {
 	this.height = height;
 	this.width = width;
     this.position = position;
+    this.spaces = "";
+    for (let i = 0; i < width; i++){
+		this.spaces += " ";
+	}
 }
 
 ChatBox.prototype.setPlayer = function(p){
@@ -15,6 +19,7 @@ ChatBox.prototype.setPlayer = function(p){
 
 ChatBox.prototype.draw = function(){
     if (!this.player) return;
+    this.term.putString(this.spaces, this.position.x, this.position.y, 170, 170, 170);
     this.term.put(this.player.tile, this.position.x, this.position.y);
     this.term.putString("- " + this.player.playerName, this.position.x + 2, this.position.y, 170, 170, 170);
     this.textBox.draw();
