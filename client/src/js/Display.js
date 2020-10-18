@@ -44,6 +44,7 @@ module.exports = {
 				this.game.login(this.savedUsername, password);
 			}
 		);
+		this.passwordBox.masked = true;
 
 		this.inventoryBox = new Box(this.term, 15, 40, {x:19, y:4});
 		this.centered = config && config.centered;

@@ -8,7 +8,8 @@ function InputBox (input, textBox, onSubmit) {
 
 InputBox.prototype = {
     _updateShownText: function() {
-        this.textBox.setText(this.charBuffer + (this.active ? "_" : ""));
+        let showText = this.masked ? this.maskBuffer() : this.charBuffer;
+        this.textBox.setText(showText + (this.active ? "_" : ""));
 		this.textBox.draw();
 		this.textBox.term.render();
     },
@@ -45,6 +46,13 @@ InputBox.prototype = {
         this.input.activeInputBox = this;
         this.active = true;
         this._updateShownText();
+    },
+    maskBuffer: function () {
+        let ret = "";
+        for (let i = 0; i < this.charBuffer.length; i++) {
+            ret += "*";
+        }
+        return ret;
     }
 }
 
