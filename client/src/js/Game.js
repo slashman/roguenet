@@ -33,7 +33,7 @@ var Game = {
 					Display.mode = 'GAME';
 					Input.mode = 'MOVEMENT';
 					this.player.updateFOV();
-					Display.textBox.setText("Welcome back " + this.player.being.playerName +". Press [?] for help.");
+					Display.textBox.setText("Welcome back " + this.player.being.playerName +". Press Enter to Talk.");
 				});
 			} else {
 				Display.loginFailed();

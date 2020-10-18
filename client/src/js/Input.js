@@ -25,7 +25,7 @@ module.exports = {
 			} else if (this.mode === 'TALK') {
 				if (e.key === "Escape"){
 					this.mode = 'MOVEMENT';
-					this.game.display.message("Movement Mode Activated");
+					this.game.display.message("Movement Mode Activated. Press Enter to Talk.");
 					this.activeInputBox.cancelMessage();
 					this.activeInputBox = null;
 				}
