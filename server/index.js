@@ -5,6 +5,7 @@ var io = require('socket.io')(server);
 
 var players = {};
 var lastActions = {};
+const chatRequests = {};
 
 const Game = require('./Game');
 const Being = require('./Being.class');
@@ -119,9 +120,13 @@ function initHooks (socket) {
         });
     });
 
+    socket.on('leaveChat', function(){
+        // TODO: Notify all chat members about it. Client side exit conversation mode if no participants left.
+    });
+
 	socket.on('moveTo', function(dir){
         const player = players[socket.id];
-		console.log('Player '+player.name+" wants to move x:"+dir.dx+" y:"+dir.dy);
+		console.log('Player '+player.playerName+" wants to move x:"+dir.dx+" y:"+dir.dy);
 		var lastPlayerAction = lastActions[socket.id];
 		if (lastPlayerAction && new Date().getTime() - lastPlayerAction < 30){
             socket.emit('actionFailed');
@@ -146,7 +151,68 @@ function initHooks (socket) {
         
 		lastActions[socket.id] = new Date().getTime();
 
-	});
+    });
+
+    socket.on('acceptChatRequest', function(){
+        const player = players[socket.id];
+        const chatRequest = chatRequests[socket.id];
+        socket.broadcast.to(chatRequest.fromPlayer.playerId).emit('chatRequestAccepted', {
+            playerName: player.playerName
+        });
+        socket.emit('chatRequestAccepted', {
+            playerName: chatRequest.fromPlayer.playerName
+        });
+        delete chatRequests[socket.id];
+    });
+
+    socket.on('rejectChatRequest', function(){
+        const player = players[socket.id];
+        console.log('rejectChatRequest with '+chatRequests[socket.id].fromPlayer.playerId);
+        socket.broadcast.to(chatRequests[socket.id].fromPlayer.playerId).emit('chatRequestRejected', {
+            playerName: player.playerName
+        });
+        delete chatRequests[socket.id];
+    });
+
+    socket.on('nudgeChat', function(dir){
+        const player = players[socket.id];
+		console.log('Player '+player.playerName+" wants to chat x:"+dir.dx+" y:"+dir.dy);
+		var lastPlayerAction = lastActions[socket.id];
+		if (lastPlayerAction && new Date().getTime() - lastPlayerAction < 30){
+            socket.emit('actionFailed');
+			return;
+        }
+        if (!player) {
+            console.log('socket '+socket.id+" has no player");
+            socket.emit('actionFailed');
+            return;
+        }
+        const testLevel = Game.world.getLevel('testLevel'); //TODO: Get level from player
+        const target = testLevel.getBeing(player.x + dir.dx, player.y + dir.dy);
+        if (!target) {
+            console.log('target moved?');
+            socket.emit('actionFailed');
+            return;
+        }
+        if (target.currentChat) {
+            //TODO: The player is on a chat already, check if can join
+        } else {
+            // Ask the player if he wants to chat
+            //TODO: Ignore request if already ignored within some time
+            socket.emit('chatRequested', {
+                playerName: target.playerName
+            });
+            chatRequests[target.playerId] = {
+                fromPlayer: player,
+                toPlayer: target
+            };
+            console.log('emitting chatRequest to '+ target.playerId + ' socket');
+            socket.broadcast.to(target.playerId).emit('chatRequest', {
+                playerName: player.playerName
+            });
+        }
+		lastActions[socket.id] = new Date().getTime();
+    });
 }
 
 server.listen(3001, function(){

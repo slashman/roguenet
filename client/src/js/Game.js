@@ -31,9 +31,9 @@ var Game = {
 				return World.init(this, Client)
 				.then(() => {
 					Display.mode = 'GAME';
-					Input.mode = 'MOVEMENT';
+					Input.setMode('MOVEMENT');
 					this.player.updateFOV();
-					Display.textBox.setText("Welcome back " + this.player.being.playerName +". Press Enter to Talk.");
+					Display.textBox.setText("Welcome back " + this.player.being.playerName +".");
 				});
 			} else {
 				Display.loginFailed();

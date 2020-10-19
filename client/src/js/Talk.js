@@ -11,5 +11,11 @@ module.exports = {
             return; // Edge case
         }
         chatBox.setText(message);
+    },
+    startChat: function () {
+        this.isTalkActive = true;
+    },
+    endChat: function () {
+        this.isTalkActive = false;
     }
 }

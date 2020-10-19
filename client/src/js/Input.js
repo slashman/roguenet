@@ -4,7 +4,7 @@ module.exports = {
 		this.game = game;
 		this.client = client;
 		ut.initInput(this.onKeyDown.bind(this));
-		this.mode = 'TITLE';
+		this.setMode('TITLE');
 		document.addEventListener('keydown', e => { 
 			// Used for a better delay before repeating, works better for "typed" keys (instead of held down)
 			if (this.mode === 'TALK' || this.mode === 'TITLE'){
@@ -15,17 +15,29 @@ module.exports = {
 				}
 			}
 			if (this.mode === 'MOVEMENT'){
-				if (e.key === "Enter"){
-					if (this.game.player.tryTalk()) {
-						this.game.display.message("Talk Mode Activated. ESC to Exit, Enter to Send.");
-						this.game.display.chatBox.activate();
-						this.mode = 'TALK';
+				if (this.chatPrompt) { // TODO: Move to a separate Input Mode
+					if (e.key === "y" || e.key === "Y"){
+						this.game.client.acceptChatRequest();
+					} else if (e.key === "n" || e.key === "N"){
+						this.game.client.rejectChatRequest();
 					}
+					return;
+				}
+				if (e.key === "Escape") {
+					this.game.talkManager.endChat();
+					this.game.display.message("Conversation Ended.");
+					this.game.client.leaveChat();
+					this.updateCommands();
+				}
+				if (this.game.talkManager.isTalkActive && e.key === "Enter") {
+					this.game.display.chatBox.activate();
+					this.game.input.setMode('TALK');
+					this.game.display.message("You start talking.");
 				}
 			} else if (this.mode === 'TALK') {
 				if (e.key === "Escape"){
-					this.mode = 'MOVEMENT';
-					this.game.display.message("Movement Mode Activated. Press Enter to Talk.");
+					this.setMode('MOVEMENT');
+					this.game.display.message("Movement Mode Activated.");
 					this.activeInputBox.cancelMessage();
 					this.activeInputBox = null;
 				}
@@ -45,6 +57,9 @@ module.exports = {
 				this.activeInputBox.removeCharacter();
 			}
 		} else if (this.mode === 'MOVEMENT'){
+			if (this.chatPrompt) {
+				return;		
+			}
 			if (k === ut.KEY_COMMA){
 				this.game.player.tryPickup();
 				return;
@@ -54,7 +69,7 @@ module.exports = {
 					this.game.display.message("You don't have any items");
 					return;
 				}
-				this.mode = 'INVENTORY';
+				this.setMode('INVENTORY');
 				this.selectedItemIndex = 0;
 				this.selectedItem = this.game.player.items[0];
 				this.game.display.showInventory();
@@ -94,12 +109,11 @@ module.exports = {
 				return;
 			}
 			this.inputEnabled = false;
-			//this.game.player.tryMove(this.movedir);
-			this.client.moveTo(this.movedir.x, this.movedir.y);
+			this.game.player.tryMove(this.movedir);
 		} else if (this.mode === 'INVENTORY'){
 			if (k === ut.KEY_ESCAPE){
 				this.game.display.hideInventory();
-				this.mode = 'MOVEMENT';
+				this.setMode('MOVEMENT');
 			} else if (k === ut.KEY_UP || k === ut.KEY_K){
 				if (this.selectedItemIndex > 0){
 					this.selectedItemIndex --;
@@ -115,22 +129,22 @@ module.exports = {
 			} else if (k === ut.KEY_D){
 				this.game.player.tryDrop(this.selectedItem);
 				this.game.display.hideInventory();
-				this.mode = 'MOVEMENT';
+				this.setMode('MOVEMENT');
 			} else if (k === ut.KEY_ENTER || k === ut.KEY_U){
 				if (this.selectedItem.def.targetted || this.selectedItem.def.type.targetted){
 					this.game.display.message("Select a direction.");
 					this.game.display.hideInventory();
-					this.mode = 'SELECT_DIRECTION';
+					this.setMode('SELECT_DIRECTION');
 					this.directionAction = 'USE_ITEM';
 				} else {
 					this.game.player.tryUse(this.selectedItem);
 					this.game.display.hideInventory();
-					this.mode = 'MOVEMENT';
+					this.setMode('MOVEMENT');
 				}
 			}
 		} else if (this.mode === 'SELECT_DIRECTION'){
 			if (k === ut.KEY_ESCAPE){
-				this.mode = 'INVENTORY';
+				this.setMode('INVENTORY');
 				this.game.display.showInventory();
 				this.game.display.message("Cancelled.");
 				return;
@@ -143,7 +157,28 @@ module.exports = {
 			else if (k === ut.KEY_DOWN || k === ut.KEY_J) this.movedir.y = 1;
 			else return;
 			this.game.player.tryUse(this.selectedItem, this.movedir.x, this.movedir.y);
-			this.mode = 'MOVEMENT';
+			this.setMode('MOVEMENT');
+		}
+	},
+	setMode (mode) {
+		this.mode = mode;
+		this.updateCommands();
+	},
+	updateCommands () {
+		switch (this.mode) {
+			case 'MOVEMENT':
+				let availableCommands = "";
+				if (this.game.talkManager.isTalkActive) {
+					availableCommands += "[ESC] - Leave Chat | [Enter] Switch to Talking";
+				} else {
+					availableCommands += "Bump people to talk";
+				}
+				this.game.display.setCommands(availableCommands);
+			break;
+			case 'TALK':
+				this.game.display.setCommands("[ESC] - Switch to Movement | [Enter] Send Message");
+			break;
 		}
 	}
+
 }

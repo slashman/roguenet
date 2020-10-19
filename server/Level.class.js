@@ -51,6 +51,11 @@ Level.prototype = {
 			return false;
 		return this.items[x][y];
 	},
+	getBeing: function(x, y){
+		if (!this.beings[x])
+			return false;
+		return this.beings[x][y];
+	},
 	removeItem: function(x, y){
 		if (!this.items[x])
 			this.items[x] = [];

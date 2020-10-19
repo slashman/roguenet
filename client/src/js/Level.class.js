@@ -66,6 +66,11 @@ Level.prototype = {
 			this.items[x] = [];
 		this.items[x][y] = item;
 	},
+	getBeing: function(x, y){
+		if (!this.beings[x])
+			return false;
+		return this.beings[x][y];
+	},
 	getItem: function(x, y){
 		if (!this.items[x])
 			return false;

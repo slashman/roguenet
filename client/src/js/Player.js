@@ -13,25 +13,21 @@ module.exports = {
 	setBeing: function(being) {
 		this.being = being;	
 	},
-	/*tryMove: function(dir){
-		if (!this.game.world.level.canWalkTo(this.x+dir.x, this.y+dir.y)){
+	tryMove: function(dir){
+		const level = this.game.world.level;
+		if (!this.game.talkManager.isTalkActive) {
+			const being = level.getBeing(this.being.x + dir.x, this.being.y + dir.y);
+			if (being) {
+				this.game.client.nudgeChat(dir.x, dir.y);
+				return;
+			}
+		}
+		if (!level.canWalkTo(this.being.x + dir.x, this.being.y + dir.y)){
 			this.game.input.inputEnabled = true;
 			return;
 		}
-		this.x += dir.x;
-		this.y += dir.y;
-		this.land();
+		this.game.client.moveTo(dir.x, dir.y);
 	},
-	land: function(){
-		if (this.game.world.level.exits[this.x] && this.game.world.level.exits[this.x][this.y]){
-			this.game.world.loadLevel(this.game.world.level.exits[this.x][this.y]);
-		}
-		this.endTurn();
-	},
-	endTurn: function(){
-		this.updateFOV();
-		this.game.input.inputEnabled = true;
-	},*/
 	remember: function(x, y){
 		var memory = this.memory[this.game.world.level.id];
 		if (!memory){
