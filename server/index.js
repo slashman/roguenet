@@ -6,6 +6,8 @@ var io = require('socket.io')(server);
 var players = {};
 var lastActions = {};
 const chatRequests = {};
+const chats = {};
+let currentChat = 0;
 
 const Game = require('./Game');
 const Being = require('./Being.class');
@@ -113,8 +115,12 @@ function initHooks (socket) {
             console.log('socket '+socket.id+" has no player");
             return;
         }
-        //TODO: Check if player is in chat area
-        io.emit('messageSent', {
+        if (!player.currentChat) {
+            console.log('player has no chat');
+            return;
+        }
+        console.log('sending message to group ' + player.currentChat);
+        io.to(player.currentChat).emit('messageSent', {
             playerId: player.playerId,
             messageText
         });
@@ -163,6 +169,16 @@ function initHooks (socket) {
             playerName: chatRequest.fromPlayer.playerName
         });
         delete chatRequests[socket.id];
+        const chatGroupName = 'hangout_' + (++currentChat);
+        chats[chatGroupName] = {
+            members: []
+        };
+        chatRequest.fromPlayer.currentChat = chatGroupName;
+        player.currentChat = chatGroupName;
+        socket.join(chatGroupName);
+        io.sockets.connected[chatRequest.fromPlayer.playerId].join(chatGroupName);
+        chats[chatGroupName].members.push(chatRequest.fromPlayer);
+        chats[chatGroupName].members.push(player);
     });
 
     socket.on('rejectChatRequest', function(){
