@@ -12,10 +12,14 @@ module.exports = {
         }
         chatBox.setText(message);
     },
+    disablePlayer: function (playerId) {
+        this.game.display.unassignChatbox(playerId);
+    },
     startChat: function () {
         this.isTalkActive = true;
     },
     endChat: function () {
         this.isTalkActive = false;
+        this.game.display.unassignChatboxes();
     }
 }

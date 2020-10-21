@@ -141,8 +141,7 @@ module.exports = {
 		let chatbox = this.chatboxesMap[player.playerId];
 		if (!chatbox) {
 			for (let i = 1; i < this.chatBoxes.length; i++) {
-				if (!this.chatBoxes[i].playerId) {
-					this.chatBoxes[i].playerId = player.playerId;
+				if (!this.chatBoxes[i].player) {
 					this.chatboxesMap[player.playerId] = this.chatBoxes[i];
 					this.chatBoxes[i].setPlayer(player);
 					this.chatBoxes[i].draw();
@@ -151,5 +150,22 @@ module.exports = {
 			}
 		}
 		return chatbox;
+	},
+	unassignChatbox: function (playerId) {
+		let chatbox = this.chatboxesMap[playerId];
+		if (chatbox) {
+			delete this.chatboxesMap[playerId];
+			chatbox.reset();
+			chatbox.draw();
+		}
+	},
+
+	unassignChatboxes: function () {
+		for (let i = 1; i < this.chatBoxes.length; i++) {
+			if (this.chatBoxes[i].player) {
+				this.unassignChatbox(this.chatBoxes[i].player.playerId);
+			}
+		}
 	}
+
 }

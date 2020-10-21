@@ -17,11 +17,17 @@ ChatBox.prototype.setPlayer = function(p){
     this.player = p;
 };
 
+ChatBox.prototype.reset = function(){
+    delete this.player;
+    this.textBox.clear();
+};
+
 ChatBox.prototype.draw = function(){
-    if (!this.player) return;
     this.term.putString(this.spaces, this.position.x, this.position.y, 170, 170, 170);
-    this.term.put(this.player.tile, this.position.x, this.position.y);
-    this.term.putString("- " + this.player.playerName, this.position.x + 2, this.position.y, 170, 170, 170);
+    if (this.player) {
+        this.term.put(this.player.tile, this.position.x, this.position.y);
+        this.term.putString("- " + this.player.playerName, this.position.x + 2, this.position.y, 170, 170, 170);
+    }
     this.textBox.draw();
     this.term.render();
 };

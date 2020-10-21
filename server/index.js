@@ -137,12 +137,11 @@ function initHooks (socket) {
         if (!chat) {
             return;
         }
-        const conversationOver = leaveChat(player, socket);
-        socket.to(chatId).emit('playerLeft', {
-            playerId: player.playerId,
-            playerName: player.playerName,
-            conversationOver
-        });
+        leaveChat(player, socket);
+        if (chat.members.length == 1) {
+            leaveChat(chat.members[0]);
+            delete chats[chatId];
+        }
     });
 
 	socket.on('moveTo', function(dir){
@@ -200,22 +199,22 @@ function initHooks (socket) {
         chats[chatGroupName].members.push(player);
     }
 
-    function leaveChat(player, socket, skipChatDeleteCheck) {
+    function leaveChat(player, socket) {
         const chatId = player.currentChat;
         const chat = chats[chatId];
-        socket.leave(chatId);
-        delete player.currentChat;
-        let conversationOver = false;
-        if (!skipChatDeleteCheck && chat.members.length == 2) {
-            const otherMember = chat.members.find(m => m.playerId != player.playerId);
-            const otherSocket = io.sockets.connected[otherMember.playerId]
-            leaveChat(otherMember, otherSocket, true)
-            delete chats[chatId];
-            conversationOver = true;
-        } else {
-            chat.members.splice(chat.members.findIndex(p => p.playerId == player.playerId), 1);
+        if (!socket) {
+            socket = io.sockets.connected[player.playerId];
         }
-        return conversationOver;
+        io.in(chatId).emit('playerLeft', {
+            playerId: player.playerId,
+            playerName: player.playerName,
+            conversationOver: chat.members.length == 1
+        });
+        if (socket) {
+            socket.leave(chatId);
+        }
+        delete player.currentChat;
+        chat.members.splice(chat.members.findIndex(p => p.playerId == player.playerId), 1);
     }
 
     socket.on('rejectChatRequest', function(){
