@@ -179,6 +179,14 @@ module.exports = {
 				this.game.display.setCommands("[ESC] - Switch to Movement | [Enter] Send Message");
 			break;
 		}
+	},
+	conversationOver () {
+		if (this.mode == 'TALK') {
+			this.setMode('MOVEMENT');
+            this.activeInputBox.cancelMessage();
+            this.activeInputBox = null;
+			this.updateCommands();
+		}
 	}
 
 }

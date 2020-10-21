@@ -127,7 +127,30 @@ function initHooks (socket) {
     });
 
     socket.on('leaveChat', function(){
-        // TODO: Notify all chat members about it. Client side exit conversation mode if no participants left.
+        const player = players[socket.id];
+        if (!player.currentChat) {
+            return;
+        }
+        const chat = chats[player.currentChat];
+        if (!chat) {
+            return;
+        }
+        socket.leave(player.currentChat);
+        const chatId = player.currentChat;
+        delete player.currentChat;
+        let conversationOver = false;
+        if (chat.members.length == 2) {
+            chat.members.forEach(m => delete m.currentChat);
+            delete chats[chatId];
+            conversationOver = true;
+        } else {
+            chat.splice(chat.members.findIndex(p => p.playerId == player.playerId), 1);
+        }
+        socket.to(chatId).emit('playerLeft', {
+            playerId: player.playerId,
+            playerName: player.playerName,
+            conversationOver
+        });
     });
 
 	socket.on('moveTo', function(dir){

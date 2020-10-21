@@ -81,6 +81,14 @@ module.exports = {
             }
             this.game.talkManager.displayMessage(player, data.messageText);
         });
+
+        socket.on('playerLeft', data => {
+            this.game.display.message(data.playerName + " lefts the conversation.");
+            if (data.conversationOver) {
+                this.game.talkManager.endChat();
+                this.game.input.conversationOver();
+            }
+        });
     },
 
     login: function (username, password) {
