@@ -54,17 +54,29 @@ module.exports = {
         });
 
         socket.on('chatRequestRejected', data => {
-            this.game.display.message(data.playerName + " cannot talk now.");
+            if (data.reason == "tooManyPlayers") {
+                this.game.display.message(data.playerName + " is talking with too many people now.");
+            } else {
+                this.game.display.message(data.playerName + " cannot talk now.");
+            }
             this.game.input.inputEnabled = true;
         });
 
         socket.on('chatRequestAccepted', data => {
-            this.game.display.message("You are now talking with " + data.playerName + ".");
+            if (data.otherPlayers) {
+                this.game.display.message("You are now talking with " + data.playerName + " and " + data.otherPlayers.length + " more people.");
+            } else {
+                this.game.display.message("You are now talking with " + data.playerName + ".");
+            }
             this.game.display.chatBox.activate();
             this.game.talkManager.startChat();
             this.game.input.setMode('TALK');
             this.game.input.inputEnabled = true;
             this.game.input.chatPrompt = false;
+        });
+
+        socket.on('playerJoinedChat', data => {
+            this.game.display.message(data.playerName + " joins the conversation.");
         });
 
         socket.on('chatRequest', data => {

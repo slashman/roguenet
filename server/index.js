@@ -11,6 +11,7 @@ let currentChat = 0;
 
 const Game = require('./Game');
 const Being = require('./Being.class');
+const { join } = require('path');
 
 const COLORS = [
     [0, 0, 0],
@@ -131,21 +132,12 @@ function initHooks (socket) {
         if (!player.currentChat) {
             return;
         }
-        const chat = chats[player.currentChat];
+        const chatId = player.currentChat;
+        const chat = chats[chatId];
         if (!chat) {
             return;
         }
-        socket.leave(player.currentChat);
-        const chatId = player.currentChat;
-        delete player.currentChat;
-        let conversationOver = false;
-        if (chat.members.length == 2) {
-            chat.members.forEach(m => delete m.currentChat);
-            delete chats[chatId];
-            conversationOver = true;
-        } else {
-            chat.splice(chat.members.findIndex(p => p.playerId == player.playerId), 1);
-        }
+        const conversationOver = leaveChat(player, socket);
         socket.to(chatId).emit('playerLeft', {
             playerId: player.playerId,
             playerName: player.playerName,
@@ -193,16 +185,38 @@ function initHooks (socket) {
         });
         delete chatRequests[socket.id];
         const chatGroupName = 'hangout_' + (++currentChat);
-        chats[chatGroupName] = {
-            members: []
-        };
-        chatRequest.fromPlayer.currentChat = chatGroupName;
+        joinChat(player, socket, chatGroupName);
+        joinChat(chatRequest.fromPlayer, io.sockets.connected[chatRequest.fromPlayer.playerId], chatGroupName);
+    });
+
+    function joinChat(player, socket, chatGroupName) {
+        if (!chats[chatGroupName]) {
+            chats[chatGroupName] = {
+                members: []
+            };
+        }
         player.currentChat = chatGroupName;
         socket.join(chatGroupName);
-        io.sockets.connected[chatRequest.fromPlayer.playerId].join(chatGroupName);
-        chats[chatGroupName].members.push(chatRequest.fromPlayer);
         chats[chatGroupName].members.push(player);
-    });
+    }
+
+    function leaveChat(player, socket, skipChatDeleteCheck) {
+        const chatId = player.currentChat;
+        const chat = chats[chatId];
+        socket.leave(chatId);
+        delete player.currentChat;
+        let conversationOver = false;
+        if (!skipChatDeleteCheck && chat.members.length == 2) {
+            const otherMember = chat.members.find(m => m.playerId != player.playerId);
+            const otherSocket = io.sockets.connected[otherMember.playerId]
+            leaveChat(otherMember, otherSocket, true)
+            delete chats[chatId];
+            conversationOver = true;
+        } else {
+            chat.members.splice(chat.members.findIndex(p => p.playerId == player.playerId), 1);
+        }
+        return conversationOver;
+    }
 
     socket.on('rejectChatRequest', function(){
         const player = players[socket.id];
@@ -226,6 +240,10 @@ function initHooks (socket) {
             socket.emit('actionFailed');
             return;
         }
+        if (player.currentChat) {
+            // TODO: Are we on a chat already? if so, request the player to join the chat?
+            return;
+        }
         const testLevel = Game.world.getLevel('testLevel'); //TODO: Get level from player
         const target = testLevel.getBeing(player.x + dir.dx, player.y + dir.dy);
         if (!target) {
@@ -234,7 +252,24 @@ function initHooks (socket) {
             return;
         }
         if (target.currentChat) {
-            //TODO: The player is on a chat already, check if can join
+            // The player is on a chat already, check if can join
+            const chat = chats[target.currentChat];
+            if (chat.members.length < 6) {
+                socket.emit('chatRequestAccepted', {
+                    playerName: target.playerName,
+                    otherPlayers: chat.members.filter(m => m.playerId == target.playerId).map(m => m.playerName)
+                });
+                socket.to(player.currentChat).emit('playerJoinedChat', {
+                    playerId: player.playerId,
+                    playerName: player.playerName
+                });
+                joinChat(player, socket, target.currentChat);
+            } else {
+                socket.emit('chatRequestRejected', {
+                    playerName: player.playerName,
+                    reason: "tooManyPlayers"
+                });
+            }
         } else {
             // Ask the player if he wants to chat
             //TODO: Ignore request if already ignored within some time
