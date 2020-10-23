@@ -23,6 +23,9 @@ ChatBox.prototype.reset = function(){
 };
 
 ChatBox.prototype.draw = function(){
+    if (!this.player) {
+        return;
+    }
     this.term.putString(this.spaces, this.position.x, this.position.y, 170, 170, 170);
     if (this.player) {
         this.term.put(this.player.tile, this.position.x, this.position.y);
