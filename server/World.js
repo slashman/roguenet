@@ -1,18 +1,19 @@
 var Level = require('./Level.class');
 const LevelGenerator = require('./LevelGenerator');
+const LevelLoader = require('./LevelLoader');
 
 module.exports = {
 	levels: {},
-	init: function(game){
-        this.game = game;
+	init: async function(game){
+		this.game = game;
+		const level = new Level("testLevel");
+		//LevelGenerator.generateTestLevel(level);
+		return LevelLoader.loadLevel(level).then(() => {
+			this.levels.testLevel = level;
+		});
 	},
 	getLevel: function(levelId){
 		this.level = this.levels[levelId];
-		if (!this.levels[levelId]){
-			this.level = new Level(levelId);
-			LevelGenerator.generateTestLevel(this.level);
-			this.levels[levelId] = this.level;
-        }
         return this.levels[levelId];
 	}
 }

@@ -70,8 +70,6 @@ function initPlayer(playerObj, socketId) {
     return player;
 }
 
-Game.start();
-
 io.on('connection', function(socket){
     console.log('Someone connected to us');
     // Stand by for login
@@ -288,6 +286,8 @@ function initHooks (socket) {
     });
 }
 
-server.listen(3001, function(){
-  console.log('listening on *:3001	');
+Game.start().then(() => {
+    server.listen(3001, function(){
+        console.log('listening on *:3001');
+      });
 });

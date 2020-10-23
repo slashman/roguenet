@@ -1,8 +1,8 @@
 //TODO: Construct these definitions from server data
 module.exports = {
 	FLOOR: {
-		tile: new ut.Tile('.', 170, 0, 0),
-		darkTile: new ut.Tile('.', 170, 170, 170),
+		tile: new ut.Tile('.', 203, 203, 203),
+		darkTile: new ut.Tile('.', 60, 60, 60),
 		solid: false,
 		opaque: false
 	},
@@ -13,8 +13,8 @@ module.exports = {
 		opaque: false
 	},
 	WALL: {
-		tile: new ut.Tile('#', 170, 85, 0),
-		darkTile: new ut.Tile('#', 170, 170, 170),
+		tile: new ut.Tile('#', 203, 203, 203),
+		darkTile: new ut.Tile('#', 60, 60, 60),
 		solid: true,
 		opaque: true
 	},
@@ -37,14 +37,74 @@ module.exports = {
 		opaque: false
 	},
 	BUSH: {
-		tile: new ut.Tile('&', 0, 128, 0),
-		darkTile: new ut.Tile('&', 128, 128, 128),
+		tile: new ut.Tile('*', 0, 128, 0),
+		darkTile: new ut.Tile('*', 128, 128, 128),
 		solid: true,
 		opaque: true
 	},
 	WATER: {
-		tile: new ut.Tile('~', 0, 0, 255),
-		darkTile: new ut.Tile('~', 128, 128, 128),
+		tile: new ut.Tile('=', 0, 0, 255),
+		darkTile: new ut.Tile('=', 128, 128, 128),
+		solid: true,
+		opaque: false
+	},
+	CARPET: {
+		tile: new ut.Tile('=', 178, 0, 0),
+		darkTile: new ut.Tile('=', 128, 128, 128),
+		solid: false,
+		opaque: false
+	},
+	SIGN: {
+		tile: new ut.Tile('@', 51, 153, 255),
+		darkTile: new ut.Tile('@', 128, 128, 128),
+		solid: true,
+		opaque: false
+	},
+	SIGN_LEFT_WING: {
+		tile: new ut.Tile('╙', 51, 153, 255),
+		darkTile: new ut.Tile('╙', 128, 128, 128),
+		solid: true,
+		opaque: false
+	},
+	SIGN_RIGHT_WING: {
+		tile: new ut.Tile('╜', 51, 153, 255),
+		darkTile: new ut.Tile('╜', 128, 128, 128),
+		solid: true,
+		opaque: false
+	},
+	ALTAR_LEFT: {
+		tile: new ut.Tile('╔', 128, 0, 255),
+		darkTile: new ut.Tile('╔', 128, 128, 128),
+		solid: true,
+		opaque: false
+	},
+	ALTAR_MIDDLE: {
+		tile: new ut.Tile('═', 128, 0, 255),
+		darkTile: new ut.Tile('═', 128, 128, 128),
+		solid: true,
+		opaque: false
+	},
+	ALTAR_RIGHT: {
+		tile: new ut.Tile('╗', 128, 0, 255),
+		darkTile: new ut.Tile('╗', 128, 128, 128),
+		solid: true,
+		opaque: false
+	},
+	WOOD_BARRIER: {
+		tile: new ut.Tile('╥', 102, 51, 0),
+		darkTile: new ut.Tile('╥', 128, 128, 128),
+		solid: true,
+		opaque: false
+	},
+	DIRT: {
+		tile: new ut.Tile(',', 77, 61, 38),
+		darkTile: new ut.Tile(',', 128, 128, 128),
+		solid: false,
+		opaque: false
+	},
+	WINDOW: {
+		tile: new ut.Tile('+', 251, 0, 255),
+		darkTile: new ut.Tile('+', 128, 128, 128),
 		solid: true,
 		opaque: false
 	}

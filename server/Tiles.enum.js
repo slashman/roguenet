@@ -30,6 +30,46 @@ const TILES = {
 	WATER: {
 		solid: true,
 		opaque: false
+	},
+	CARPET: {
+		solid: false,
+		opaque: false
+	},
+	SIGN: {
+		solid: true,
+		opaque: false
+	},
+	SIGN_LEFT_WING: {
+		solid: true,
+		opaque: false
+	},
+	SIGN_RIGHT_WING: {
+		solid: true,
+		opaque: false
+	},
+	ALTAR_LEFT: {
+		solid: true,
+		opaque: false
+	},
+	ALTAR_MIDDLE: {
+		solid: true,
+		opaque: false
+	},
+	ALTAR_RIGHT: {
+		solid: true,
+		opaque: false
+	},
+	WOOD_BARRIER: {
+		solid: true,
+		opaque: false
+	},
+	DIRT: {
+		solid: false,
+		opaque: false
+	},
+	WINDOW: {
+		solid: true,
+		opaque: false
 	}
 }
 

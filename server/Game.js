@@ -1,9 +1,9 @@
 var World = require('./World');
 
 var Game = {
-	start: function(){
+	start: async function(){
 		this.world = World;
-		World.init(this);
+		return World.init(this);
 	}
 }
 
