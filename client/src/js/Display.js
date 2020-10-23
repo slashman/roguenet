@@ -15,10 +15,10 @@ module.exports = {
 		this.chatBoxes = [
 			new ChatBox(this.term, 7, 25, {x:0, y:0}, this),
 			new ChatBox(this.term, 7, 25, {x:0, y:7}, this),
-			new ChatBox(this.term, 7, 25, {x:0, y:15}, this),
+			new ChatBox(this.term, 7, 25, {x:0, y:14}, this),
 			new ChatBox(this.term, 7, 25, {x:54, y:0}, this),
 			new ChatBox(this.term, 7, 25, {x:54, y:7}, this),
-			new ChatBox(this.term, 7, 25, {x:54, y:15}, this)
+			new ChatBox(this.term, 7, 25, {x:54, y:14}, this)
 		];
 		this.chatboxesMap = {};
 		this.chatBox = this.chatBoxes[0];
