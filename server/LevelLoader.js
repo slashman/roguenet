@@ -16,6 +16,7 @@ TILE_MAP['Í8000FF'] = Tiles.ALTAR_MIDDLE; // ═
 TILE_MAP['»8000FF'] = Tiles.ALTAR_RIGHT; // ╗
 TILE_MAP['Ò663300'] = Tiles.WOOD_BARRIER; //╥
 TILE_MAP['+FB00FF'] = Tiles.WINDOW;
+TILE_MAP['#B20000'] = Tiles.PORTICULIS;
 
 module.exports = {
 	loadLevel: async function(level){

@@ -76,6 +76,12 @@ const TILES = {
 		color: [251, 0, 255],
 		solid: true,
 		opaque: false
+	},
+	PORTICULIS: {
+		character: '#',
+		color: [178, 0, 255],
+		solid: true,
+		opaque: false
 	}
 }
 
