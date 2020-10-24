@@ -10,6 +10,9 @@ module.exports = {
 		this.game = game;
 		this.term = new ut.Viewport(document.getElementById("game"), 80, 25);
 		this.eng = new ut.Engine(this.term, this.getDisplayedTile.bind(this), 80, 25);
+
+		this.darkTiles = {};
+		
 		this.textBox = new TextBox(this.term, 1, 29, {x:25, y:0}, this);
 		this.commandsBox = new TextBox(this.term, 1, 29, {x:25, y: 23}, this);
 		this.chatBoxes = [
@@ -77,13 +80,22 @@ module.exports = {
 			}
 		} else if (level.player.remembers(x, y)){
 			if (level.map[x] && level.map[x][y]){
-				return level.map[x][y].darkTile;
+				return this.darkTile(level.map[x][y].tile);
 			} else {
 				return ut.NULLTILE;
 			}
 		} else {
 			return ut.NULLTILE;
 		}
+	},
+	darkTile: function (tile) {
+		const chara = tile.getChar();
+		if (this.darkTiles[chara]) {
+			return this.darkTiles[chara];
+		}
+		const darkTile = new ut.Tile(chara, 60, 60, 60);
+		this.darkTiles[chara] = darkTile;
+		return darkTile;
 	},
 	refresh: function(){
 		if (this.mode == 'TITLE') {
