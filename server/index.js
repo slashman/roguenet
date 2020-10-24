@@ -11,6 +11,7 @@ let currentChat = 0;
 
 const Game = require('./Game');
 const Being = require('./Being.class');
+const Tiles = require('./Tiles.enum');
 const { join } = require('path');
 
 const COLORS = [
@@ -110,6 +111,7 @@ function initHooks (socket) {
 
 	socket.on('getWorldState', function(){
 		socket.emit('worldState', {
+            tiles: Tiles,
             levels: Game.world.levels
         });
     });

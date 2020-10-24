@@ -8,7 +8,6 @@ TILE_MAP['#CBCBCB'] = Tiles.WALL;
 TILE_MAP['.CBCBCB'] = Tiles.FLOOR;
 TILE_MAP['*204000'] = Tiles.BUSH;
 TILE_MAP['=0080FF'] = Tiles.WATER;
-TILE_MAP['=B20000'] = Tiles.CARPET;
 TILE_MAP['@3399FF'] = Tiles.SIGN;
 TILE_MAP['Ó3399FF'] = Tiles.SIGN_LEFT_WING; // ╙
 TILE_MAP['½3399FF'] = Tiles.SIGN_RIGHT_WING; // ╜
@@ -16,7 +15,6 @@ TILE_MAP['É8000FF'] = Tiles.ALTAR_LEFT; // ╔
 TILE_MAP['Í8000FF'] = Tiles.ALTAR_MIDDLE; // ═
 TILE_MAP['»8000FF'] = Tiles.ALTAR_RIGHT; // ╗
 TILE_MAP['Ò663300'] = Tiles.WOOD_BARRIER; //╥
-TILE_MAP[',4D3D26'] = Tiles.DIRT;
 TILE_MAP['+FB00FF'] = Tiles.WINDOW;
 
 module.exports = {
@@ -29,7 +27,20 @@ module.exports = {
 			for (var y = 0; y < layer.height; y++){
 				const tile = layer.raster[y * layer.width + x];
 				const char = String.fromCharCode(tile.asciiCode);
-				const tileType = TILE_MAP[char + tile.fg.hex.toUpperCase()] || Tiles.FLOOR;
+				const tileKey = char + tile.fg.hex.toUpperCase();
+				let tileType = TILE_MAP[tileKey];
+				if (!tileType) {
+					console.log("Created tile " + tileKey);
+					tileType = {
+						tileId: tileKey,
+						character: char, // TODO: Convert to utf8
+						color: [tile.fg.r, tile.fg.g, tile.fg.b],
+						solid: false,
+						opaque: false
+					}
+					Tiles[tileKey] = tileType;
+					TILE_MAP[tileKey] = tileType;
+				}
 				level.map[x][y] = tileType;
 			}
 		}

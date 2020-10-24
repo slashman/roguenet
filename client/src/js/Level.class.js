@@ -6,7 +6,8 @@ var Level = function(game, id){
 }
 
 Level.prototype = {
-	loadData: function (data) {
+	loadData: function (tiles, data) {
+		Tiles.setData(tiles);
 		this.map = data.map.map(mapColumn => mapColumn.map (tile => Tiles[tile.tileId]));
 		this.beings = [];
 		this.beingsList = [];
