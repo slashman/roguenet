@@ -90,7 +90,14 @@ io.on('connection', function(socket){
             player = initPlayer(user, socket.id);
         }
         players[socket.id] = player;
-        //TODO: Maybe if the player has another active socket, kill it?
+        if (player.playerId != socket.id) {
+            const oldSocket = io.sockets.connected[player.playerId];
+            if (oldSocket) {
+                oldSocket.emit('clientChanged');
+                oldSocket.disconnect();
+            }
+            player.playerId = socket.id;
+        }
         initHooks(socket);
         socket.emit('loginResult', { success: true, player });
     });

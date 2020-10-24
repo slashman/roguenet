@@ -102,6 +102,12 @@ module.exports = {
                 this.game.input.conversationOver();
             }
         });
+
+        socket.on('clientChanged', () => {
+            this.game.display.message("You have logged from a different client. Disconnecting.");
+            this.game.display.disconnect();
+            this.game.input.disconnect();
+        });
     },
 
     login: function (username, password) {

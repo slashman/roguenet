@@ -68,7 +68,7 @@ module.exports = {
 		}*/
 		var xr = x - level.player.being.x;
 		var yr = y - level.player.being.y;
-		if (level.player.canSee(xr, yr)){
+		if (level.player.canSee(xr, yr) && !this.disconnected){
 			if (level.beings[x] && level.beings[x][y]){
 				return level.beings[x][y].tile;
 			} else if (level.items[x] && level.items[x][y]){
@@ -178,6 +178,12 @@ module.exports = {
 				this.unassignChatbox(this.chatBoxes[i].player.playerId);
 			}
 		}
+	},
+
+	disconnect: function () {
+		this.disconnected = true;
+		this.commandsBox.setText("Disconnected.");
+		this.refresh();
 	}
 
 }

@@ -187,6 +187,9 @@ module.exports = {
             this.activeInputBox = null;
 			this.updateCommands();
 		}
+	},
+	disconnect () {
+		this.mode = 'DISCONNECTED';
 	}
 
 }
