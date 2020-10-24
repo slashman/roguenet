@@ -67,7 +67,7 @@ function initPlayer(playerObj, socketId) {
     player.playerName = playerObj.playerName;
     player.username = playerObj.user;
     player.color = playerObj.color;
-    testLevel.addBeing(player, 37, 10);
+    testLevel.addBeing(player, 27, 86);
     return player;
 }
 
