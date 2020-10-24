@@ -1,5 +1,6 @@
 const fs = require("fs");
 const rexpaintjs = require('rexpaintjs')
+const iconv = require("iconv-lite");
 const Tiles = require('./Tiles.enum');
 
 const TILE_MAP = {};
@@ -32,9 +33,11 @@ module.exports = {
 				let tileType = TILE_MAP[tileKey];
 				if (!tileType) {
 					console.log("Created tile " + tileKey);
+					const characterByte = new Uint8Array(1);
+					characterByte[0] = tile.asciiCode;
 					tileType = {
 						tileId: tileKey,
-						character: char, // TODO: Convert to utf8
+						character: iconv.decode(characterByte, "cp437"),
 						color: [tile.fg.r, tile.fg.g, tile.fg.b],
 						solid: false,
 						opaque: false
