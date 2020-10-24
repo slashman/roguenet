@@ -9,7 +9,7 @@ module.exports = {
 	init: function(game, config){
 		this.game = game;
 		this.term = new ut.Viewport(document.getElementById("game"), 80, 25);
-		this.eng = new ut.Engine(this.term, this.getDisplayedTile.bind(this), 80, 25);
+		this.eng = new ut.Engine(this.term, this.getDisplayedTile.bind(this));
 
 		this.darkTiles = {};
 		
