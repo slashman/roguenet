@@ -82,6 +82,15 @@ Level.prototype = {
 			this.items[x] = [];
 		this.items[x][y] = false;
 	},
+	removeBeing: function(id) {
+		const beingIndex = this.beingsList.findIndex(being => being == this.playersMap[id]);
+		if (beingIndex != -1){
+			const being = this.beingsList[beingIndex];
+			delete this.beings[being.x][being.y];
+			this.beingsList.splice(beingIndex, 1);
+			delete this.playersMap[being.playerId];
+		}
+	},
 	getPlayer: function (id) {
 		return this.playersMap[id];
 	}

@@ -24,6 +24,9 @@ var Game = {
 		Input.init(this, Client);
 		Display.refresh();
 	},
+	unload: function () {
+		Client.disconnect();
+	},
 	login: function (username, password) { 
 		Client.login(username, password)
 		.then(result => {

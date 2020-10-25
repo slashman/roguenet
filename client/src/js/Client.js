@@ -28,6 +28,15 @@ module.exports = {
             debug('playerJoined', data);
             const player = new Being(this.world.level, data);
             this.world.level.addBeing(player, player.x, player.y);
+            this.game.display.message(data.playerName + " joins.");
+            this.game.player.updateFOV();
+        });
+
+        socket.on('playerDisconnected', data => {
+            debug('playerDisconnected', data);
+            this.game.display.message(data.playerName + " disconnected.");
+            this.world.level.removeBeing(data.playerId);
+            this.game.player.updateFOV();
         });
 
         socket.on('playerMoved', data => {
@@ -175,5 +184,9 @@ module.exports = {
 
     tryLogin: function(password) {
         return this.login(this.savedUsername, password);
+    },
+
+    disconnect: function () {
+        this.socket.close();
     }
 }

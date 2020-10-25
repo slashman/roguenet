@@ -60,7 +60,15 @@ Level.prototype = {
 		if (!this.items[x])
 			this.items[x] = [];
 		this.items[x][y] = false;
-    },
+	},
+	removeBeing: function(username) {
+		const beingIndex = this.beingsList.findIndex(being => being.username == username);
+		if (beingIndex != -1){
+			const being = this.beingsList[beingIndex];
+			delete this.beings[being.x][being.y];
+			this.beingsList.splice(beingIndex, 1);
+		}
+	},
     moveTo: function(being, dx,dy){		
 		if (!this.canWalkTo(being.x+dx,being.y+dy)){
 			return false;

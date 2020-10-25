@@ -111,6 +111,16 @@ function initHooks (socket) {
 
     socket.broadcast.emit('playerJoined', player);
 
+    socket.on('disconnect', (reason) => {
+        console.log('Player '+player.playerName+" disconnecting :"+reason);
+        if (reason === 'client namespace disconnect'/* || reason === 'ping timeout'*/) {
+            socket.broadcast.emit('playerDisconnected', player);
+            Game.world.getLevel('testLevel').removeBeing(player.username);
+            delete players[socket.id];
+            return;
+        }
+    });
+
 	socket.on('getWorldState', function(){
 		socket.emit('worldState', {
             tiles: Tiles,
