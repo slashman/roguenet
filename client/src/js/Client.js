@@ -51,15 +51,19 @@ module.exports = {
         socket.on('chatRequested', data => {
             debug('chatRequested', data);
             this.game.display.message("Waiting for " + data.playerName + " to accept...");
+            this.game.input.setMode('WAIT_CHAT');
+            this.game.input.inputEnabled = true;
         });
 
         socket.on('chatRequestRejected', data => {
             if (data.reason == "tooManyPlayers") {
                 this.game.display.message(data.playerName + " is talking with too many people now.");
+            } else if (data.reason == "alreadyHasRequest") {
+                this.game.display.message("Someone is already asking " + data.playerName + " to talk.");
             } else {
                 this.game.display.message(data.playerName + " cannot talk now.");
             }
-            this.game.input.inputEnabled = true;
+            this.game.input.setMode('MOVEMENT');
         });
 
         socket.on('chatRequestAccepted', data => {
@@ -71,8 +75,6 @@ module.exports = {
             this.game.display.chatBox.activate();
             this.game.talkManager.startChat();
             this.game.input.setMode('TALK');
-            this.game.input.inputEnabled = true;
-            this.game.input.chatPrompt = false;
         });
 
         socket.on('playerJoinedChat', data => {
@@ -81,8 +83,18 @@ module.exports = {
 
         socket.on('chatRequest', data => {
             debug('chatRequest', data);
-            this.game.display.message(data.playerName + " wants to talk with you. Y/N");
-            this.game.input.chatPrompt = true;
+            this.game.display.message(data.playerName + " wants to talk with you. Accept? Y/N");
+            this.game.input.setMode('PROMPT_CHAT');
+        });
+
+        socket.on('chatRequestCancelled', data => {
+            debug('chatRequestCancelled', data);
+            if (this.game.input.mode == 'PROMPT_CHAT') {
+                this.game.display.message(data.playerName + " cancelled the request.");
+            } else {
+                this.game.display.message("You cancel your request.");
+            }
+            this.game.input.setMode('MOVEMENT');
         });
 
         socket.on('messageSent', data => {
@@ -134,6 +146,11 @@ module.exports = {
         this.socket.emit('nudgeChat', {dx, dy});
     },
 
+    cancelChatRequest: function() {
+        debug('cancelChatRequest');
+        this.socket.emit('cancelChatRequest');
+    },
+
     leaveChat: function() {
         debug('leaveChat');
         this.socket.emit('leaveChat');
@@ -146,7 +163,7 @@ module.exports = {
     rejectChatRequest: function () {
         this.socket.emit('rejectChatRequest');
         this.game.display.message("Maybe some other time.");
-        this.game.input.chatPrompt = false;
+        this.game.input.setMode("MOVEMENT");
     },
     
 

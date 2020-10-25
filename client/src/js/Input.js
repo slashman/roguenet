@@ -6,6 +6,8 @@ module.exports = {
 		ut.initInput(this.onKeyDown.bind(this));
 		this.setMode('TITLE');
 		document.addEventListener('keydown', e => { 
+			if (!this.inputEnabled)
+				return
 			// Used for a better delay before repeating, works better for "typed" keys (instead of held down)
 			if (this.mode === 'TALK' || this.mode === 'TITLE'){
 				if (e.key.length == 1) {
@@ -14,15 +16,17 @@ module.exports = {
 					this.activeInputBox.submit();
 				}
 			}
-			if (this.mode === 'MOVEMENT'){
-				if (this.chatPrompt) { // TODO: Move to a separate Input Mode
-					if (e.key === "y" || e.key === "Y"){
-						this.game.client.acceptChatRequest();
-					} else if (e.key === "n" || e.key === "N"){
-						this.game.client.rejectChatRequest();
-					}
-					return;
+			if (this.mode === 'PROMPT_CHAT') {
+				if (e.key === "y" || e.key === "Y"){
+					this.game.client.acceptChatRequest();
+				} else if (e.key === "n" || e.key === "N"){
+					this.game.client.rejectChatRequest();
 				}
+			} else if (this.mode === 'WAIT_CHAT') {
+				if (e.key === "Escape") {
+					this.game.client.cancelChatRequest();
+				}
+			} else if (this.mode === 'MOVEMENT'){
 				if (e.key === "Escape") {
 					this.game.talkManager.endChat();
 					this.game.display.message("Conversation Ended.");
@@ -57,9 +61,6 @@ module.exports = {
 				this.activeInputBox.removeCharacter();
 			}
 		} else if (this.mode === 'MOVEMENT'){
-			if (this.chatPrompt) {
-				return;		
-			}
 			if (k === ut.KEY_COMMA){
 				this.game.player.tryPickup();
 				return;
