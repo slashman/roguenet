@@ -16,7 +16,6 @@ module.exports = {
 		this.textBox = new TextBox(this.term, 1, 29, {x:25, y:0}, this);
 		this.commandsBox = new TextBox(this.term, 1, 29, {x:25, y: 23}, this);
 		this.chatBoxes = [
-			new ChatBox(this.term, 7, 25, {x:0, y:0}, this),
 			new ChatBox(this.term, 7, 25, {x:0, y:7}, this),
 			new ChatBox(this.term, 7, 25, {x:0, y:14}, this),
 			new ChatBox(this.term, 7, 25, {x:54, y:0}, this),
@@ -24,10 +23,13 @@ module.exports = {
 			new ChatBox(this.term, 7, 25, {x:54, y:14}, this)
 		];
 		this.chatboxesMap = {};
-		this.chatBox = this.chatBoxes[0];
-		this.chatBox = new InputBox(this.game.input, this.chatBoxes[0].textBox, message => {
-			this.game.talkManager.sendMessage(message);
-		});
+		this.chatBox = new InputBox(
+			this.game.input,
+			new TextBox(this.term, 7, 25, { x: 0, y: 0}, this),
+			message => {
+				this.game.talkManager.sendMessage(message);
+			}
+		);
 		this.chatBox.clearOnSent = true;
 
 		this.usernameBox = new InputBox(
@@ -111,6 +113,7 @@ module.exports = {
 				this.eng.update(40, 12);
 			}
 			this.textBox.draw();
+			this.chatBox.draw();
 			// TODO: If player not in sight, mark chatbox as such? 
 			this.chatBoxes.forEach(c => c.draw());
 			this.commandsBox.draw();
