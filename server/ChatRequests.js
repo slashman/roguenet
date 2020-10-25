@@ -67,8 +67,14 @@ module.exports = {
 		} else if (this.chatRequests[target.playerId]) {
 			// Someone's already trying to talk with him
 			socket.emit('chatRequestRejected', {
-				playerName: player.playerName,
+				playerName: target.playerName,
 				reason: "alreadyHasRequest"
+			});
+		} else if (target.currentChatRequestToPlayerId) {
+			// Player is trying to talk with someone
+			socket.emit('chatRequestRejected', {
+				playerName: target.playerName,
+				reason: "hasActiveRequest"
 			});
 		} else {
 			// Ask the player if he wants to chat

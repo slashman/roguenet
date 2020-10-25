@@ -19,6 +19,7 @@ module.exports = {
 			const being = level.getBeing(this.being.x + dir.x, this.being.y + dir.y);
 			if (being) {
 				this.game.client.nudgeChat(dir.x, dir.y);
+				this.game.input.inputEnabled = true;
 				return;
 			}
 		}

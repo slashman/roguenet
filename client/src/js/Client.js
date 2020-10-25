@@ -60,6 +60,8 @@ module.exports = {
                 this.game.display.message(data.playerName + " is talking with too many people now.");
             } else if (data.reason == "alreadyHasRequest") {
                 this.game.display.message("Someone is already asking " + data.playerName + " to talk.");
+            } else if (data.reason == "hasActiveRequest") {
+                this.game.display.message(data.playerName + " is trying to talk with someone else.");
             } else {
                 this.game.display.message(data.playerName + " cannot talk now.");
             }
