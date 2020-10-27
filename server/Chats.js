@@ -80,8 +80,11 @@ module.exports = {
             playerId: player.playerId,
             playerName: player.playerName,
             conversationOver: chat.members.length == 1
-        });
-        socket.leave(chatId);
+		});
+		if (socket) {
+			// Player may be disconnected already!
+			socket.leave(chatId);
+		}
         delete player.currentChat;
         chat.members.splice(chat.members.findIndex(p => p.playerId == player.playerId), 1);
     }
