@@ -4,6 +4,7 @@ module.exports = {
 	visible: [],
 	memory: {},
 	items: [],
+	seenBeings: [],
 	init: function(game){
 		this.game = game;
 		for (var j = -this.MAX_SIGHT_RANGE; j <= this.MAX_SIGHT_RANGE; j++){
@@ -65,18 +66,23 @@ module.exports = {
 	getSightRange: function(){
 		return 15;
 	},
+	addToSeenBeings(being) {
+		this.seenBeings.push(being);
+	},
 	updateFOV: function(){
 		/*
 		 * This function uses simple raycasting, 
 		 * use something better for longer ranges
 		 * or increased performance
 		 */
+		this.seenBeings = [];
 		for (var j = -this.MAX_SIGHT_RANGE; j <= this.MAX_SIGHT_RANGE; j++)
 			for (var i = -this.MAX_SIGHT_RANGE; i <= this.MAX_SIGHT_RANGE; i++)
 				this.visible[i][j] = false;
 		var step = Math.PI * 2.0 / 1080;
 		for (var a = 0; a < Math.PI * 2; a += step)
 			this.shootRay(a);
+		this.game.display.peopleList.setData(this.seenBeings);
 		this.game.display.refresh();
 	},
 	shootRay: function (a) {
@@ -89,6 +95,11 @@ module.exports = {
 		for (var i = 0; i < maxdist; ++i) {
 			var testx = Math.round(xx);
 			var testy = Math.round(yy);
+			if (!this.visible[testx-this.being.x][testy-this.being.y]) {
+				const being = this.game.world.level.getBeing(testx, testy);
+				if (being && being != this.being)
+					this.addToSeenBeings(being);
+			}
 			this.visible[testx-this.being.x][testy-this.being.y] = true;
 			this.remember(testx, testy);
 			try { 

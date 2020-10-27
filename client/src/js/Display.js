@@ -1,6 +1,7 @@
 var TextBox = require('./ui/TextBox.class');
 var ChatBox = require('./ui/ChatBox.class');
 var InputBox = require('./ui/InputBox.class');
+const List = require('./ui/List.class');
 var Box = require('./ui/Box.class');
 
 module.exports = {
@@ -31,6 +32,8 @@ module.exports = {
 			}
 		);
 		this.chatBox.clearOnSent = true;
+
+		this.peopleList = new List (this.term, this.peopleCellRenderer, 2, { x: 60, y: 10});
 
 		this.usernameBox = new InputBox(
 			this.game.input,
@@ -65,9 +68,9 @@ module.exports = {
 	},
 	getDisplayedTile: function(x,y){
 		var level = this.game.world.level;
-		/*if (x === level.player.being.x && y === level.player.being.y){
-			return level.player.tile;
-		}*/
+		if (x === level.player.being.x && y === level.player.being.y){
+			return level.player.being.tile;
+		}
 		var xr = x - level.player.being.x;
 		var yr = y - level.player.being.y;
 		if (level.player.canSee(xr, yr) && !this.disconnected){
@@ -116,6 +119,7 @@ module.exports = {
 			this.chatBox.draw();
 			// TODO: If player not in sight, mark chatbox as such? 
 			this.chatBoxes.forEach(c => c.draw());
+			this.peopleList.draw();
 			this.commandsBox.draw();
 		}
 		this.term.render();
@@ -187,6 +191,12 @@ module.exports = {
 		this.disconnected = true;
 		this.commandsBox.setText("Disconnected.");
 		this.refresh();
+	},
+
+	peopleCellRenderer (term, being, x, y) {
+		term.put(being.tile, x, y);
+		term.putString("- " + being.playerName, x + 2, y, 170, 170, 170);
+		term.putString("Black TShirt", x, y+1, 170, 170, 170);
 	}
 
 }
