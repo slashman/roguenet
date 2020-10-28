@@ -114,6 +114,7 @@ function initHooks (socket) {
     socket.on('disconnect', (reason) => {
         console.log('Player '+player.playerName+" disconnecting :"+reason);
         if (reason === 'client namespace disconnect'/* || reason === 'ping timeout'*/) {
+            Chats.leaveChatMessage(socket);
             socket.broadcast.emit('playerDisconnected', player);
             Game.world.getLevel('testLevel').removeBeing(player.username);
             delete players[socket.id];
