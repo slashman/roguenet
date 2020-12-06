@@ -32,6 +32,9 @@ InputBox.prototype = {
         this._updateShownText();
     },
     addCharacter: function (char) {
+        if (this.textBox.isFull()) {
+            return;
+        }
         this.charBuffer += char;
         this._updateShownText();
     },

@@ -68,7 +68,11 @@ TextBox.prototype.addText = function(text){
         this.curx += tokens[i].length + 1;
     }
 };
-    
+
+TextBox.prototype.isFull = function() {
+	return this.cury == this.height - 1 && this.curx == this.width - 1;
+}
+
 TextBox.prototype.setText = function(text) {
 	this.clear();
 	this.addText(text);
