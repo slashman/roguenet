@@ -50,7 +50,11 @@ module.exports = {
 			new TextBox(this.term, 1, 30, {x:20, y:8}, this),
 			password => {
 				this.passwordBox.active = false;
-				this.game.login(this.savedUsername, password);
+				if (this.game.input.mode == 'CREATE') {
+					this.game.create(this.savedUsername, password);
+				} else if (this.game.input.mode == 'LOGIN') {
+					this.game.login(this.savedUsername, password);
+				}
 			}
 		);
 		this.passwordBox.masked = true;
@@ -58,13 +62,20 @@ module.exports = {
 		this.inventoryBox = new Box(this.term, 15, 40, {x:19, y:4});
 		this.centered = config && config.centered;
 		this.centered = true;
-		this.usernameBox.activate();
 		this.mode = 'TITLE';
 	},
+	setMode: function (mode) {
+		this.mode = mode;
+	},
 	loginFailed: function () {
-		this.term.putString("Login Failed", 5, 15, 255, 0, 0);
 		this.usernameBox.activate();
-		this.refresh();
+		this.term.putString("Login Failed", 5, 15, 255, 0, 0);
+		this.term.render();
+	},
+	createFailed: function () {
+		this.usernameBox.activate();
+		this.term.putString("Create Failed", 5, 15, 255, 0, 0);
+		this.term.render();
 	},
 	getDisplayedTile: function(x,y){
 		var level = this.game.world.level;
@@ -104,7 +115,20 @@ module.exports = {
 	},
 	refresh: function(){
 		if (this.mode == 'TITLE') {
+			this.term.clear();
 			this.term.putString(":: Roguenet ::", 5, 5, 255, 85, 85);
+			this.term.putString("a. Create character", 5, 7, 170, 170, 170);
+			this.term.putString("b. Login", 5, 8, 170, 170, 170);
+		} else if (this.mode == 'CREATE') {
+			this.term.clear();
+			this.term.putString(":: Create Character ::", 5, 5, 255, 85, 85);
+			this.term.putString("User:", 5, 7, 170, 170, 170);
+			this.term.putString("Password:", 5, 8, 170, 170, 170);
+			this.usernameBox.draw();
+			this.passwordBox.draw();
+		} else if (this.mode == 'LOGIN') {
+			this.term.clear();
+			this.term.putString(":: Login ::", 5, 5, 255, 85, 85);
 			this.term.putString("User:", 5, 7, 170, 170, 170);
 			this.term.putString("Password:", 5, 8, 170, 170, 170);
 			this.usernameBox.draw();

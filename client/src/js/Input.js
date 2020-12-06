@@ -9,7 +9,17 @@ module.exports = {
 			if (!this.inputEnabled)
 				return
 			// Used for a better delay before repeating, works better for "typed" keys (instead of held down)
-			if (this.mode === 'TALK' || this.mode === 'TITLE'){
+			if (this.mode === 'TITLE') {
+				if (e.key === "a" || e.key === "A") {
+					this.game.display.setMode('CREATE');
+					this.game.display.usernameBox.activate();
+					this.setMode('CREATE');
+				} else if (e.key === "b" || e.key === "B") {
+					this.game.display.setMode('LOGIN');
+					this.game.display.usernameBox.activate();
+					this.setMode('LOGIN');
+				}
+			} else if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN'){
 				if (e.key.length == 1) {
 					this.activeInputBox.addCharacter(e.key);
 				} else if (e.key === "Enter"){
@@ -52,13 +62,16 @@ module.exports = {
 	onKeyDown: function(k){
 		if (!this.inputEnabled)
 			return;
-		if (this.mode === 'TITLE'){
+		if (this.mode === 'TALK'){
 			if (k === ut.KEY_BACKSPACE){
 				this.activeInputBox.removeCharacter();
 			}
-		} else if (this.mode === 'TALK'){
+		} else if (this.mode === 'CREATE' || this.mode === 'LOGIN'){
 			if (k === ut.KEY_BACKSPACE){
 				this.activeInputBox.removeCharacter();
+			} else if (k === ut.KEY_ESCAPE) {
+				this.game.display.setMode('TITLE');
+				this.setMode('TITLE');
 			}
 		} else if (this.mode === 'MOVEMENT'){
 			if (k === ut.KEY_COMMA){
@@ -175,13 +188,12 @@ module.exports = {
 					availableCommands += "Bump people to talk";
 				}
 				this.game.display.setCommands(availableCommands);
-				this.game.display.refresh();
 			break;
 			case 'TALK':
 				this.game.display.setCommands("[ESC] - Switch to Movement | [Enter] Send Message");
-				this.game.display.refresh();
 			break;
 		}
+		this.game.display.refresh();
 	},
 	conversationOver () {
 		if (this.mode == 'TALK') {

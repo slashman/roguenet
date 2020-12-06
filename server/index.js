@@ -32,7 +32,7 @@ const COLORS = [
     [255, 255, 255]
 ];
 
-const testUsers = [
+const users = [
     {
         user: 'rodney',
         password: 'pwd',
@@ -80,10 +80,27 @@ io.on('connection', function(socket){
     socket.on('login', function(credentials){
         const username = credentials.username;
         const password = credentials.password;
-        const user = testUsers.find(p => p.user == username && p.password == password);
-        if (!user) {
-            socket.emit('loginResult', { success: false });
-            return;
+        const create = credentials.create;
+        let user;
+        if (create) {
+            user = users.find(p => p.user == username);
+            if (user) {
+                socket.emit('loginResult', { success: false }); // Already exists
+                return;
+            }
+            user = {
+                user: username,
+                password: password,
+                playerName: username,
+                color: COLORS[7]
+            }
+            users.push(user);
+        } else {
+            user = users.find(p => p.user == username && p.password == password);
+            if (!user) {
+                socket.emit('loginResult', { success: false });
+                return;
+            }
         }
         let player = players[socket.id];
         if (!player) {

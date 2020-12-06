@@ -141,6 +141,13 @@ module.exports = {
         });
     },
 
+    create: function (username, password) {
+        this.socket.emit('login', { username, password, create: true }); // TODO: Have a separate flow for signups
+        return new Promise(resolve => { 
+            this.loginResolve = resolve;
+        });
+    },
+
     getWorldState: function () {
         this.socket.emit('getWorldState');
         return new Promise(resolve => { 

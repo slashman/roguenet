@@ -42,6 +42,22 @@ var Game = {
 				Display.loginFailed();
 			}
 		});
+	},
+	create: function (username, password) { 
+		Client.create(username, password)
+		.then(result => {
+			if (result.success) {
+				return World.init(this, Client)
+				.then(() => {
+					Display.mode = 'GAME';
+					Input.setMode('MOVEMENT');
+					this.player.updateFOV();
+					Display.textBox.setText("Welcome to the temple, " + this.player.being.playerName +".");
+				});
+			} else {
+				Display.createFailed();
+			}
+		});
 	}
 }
 
