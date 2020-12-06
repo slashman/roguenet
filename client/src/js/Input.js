@@ -175,9 +175,11 @@ module.exports = {
 					availableCommands += "Bump people to talk";
 				}
 				this.game.display.setCommands(availableCommands);
+				this.game.display.refresh();
 			break;
 			case 'TALK':
 				this.game.display.setCommands("[ESC] - Switch to Movement | [Enter] Send Message");
+				this.game.display.refresh();
 			break;
 		}
 	},

@@ -14,26 +14,26 @@ module.exports = {
 
 		this.darkTiles = {};
 		
-		this.textBox = new TextBox(this.term, 1, 29, {x:25, y:0}, this);
-		this.commandsBox = new TextBox(this.term, 1, 29, {x:25, y: 23}, this);
+		this.textBox = new TextBox(this.term, 2, 80 - 25, {x: 25, y: 0}, this);
+		this.commandsBox = new TextBox(this.term, 2, 80 - 25, {x: 25, y: 23}, this);
+
 		this.chatBoxes = [
-			new ChatBox(this.term, 7, 25, {x:0, y:7}, this),
-			new ChatBox(this.term, 7, 25, {x:0, y:14}, this),
-			new ChatBox(this.term, 7, 25, {x:54, y:0}, this),
-			new ChatBox(this.term, 7, 25, {x:54, y:7}, this),
-			new ChatBox(this.term, 7, 25, {x:54, y:14}, this)
+			new ChatBox(this.term, 5, 25, {x:0, y:5}, this),
+			new ChatBox(this.term, 5, 25, {x:0, y:10}, this),
+			new ChatBox(this.term, 5, 25, {x:0, y:15}, this),
+			new ChatBox(this.term, 5, 25, {x:0, y:20}, this),
 		];
 		this.chatboxesMap = {};
 		this.chatBox = new InputBox(
 			this.game.input,
-			new TextBox(this.term, 7, 25, { x: 0, y: 0}, this),
+			new TextBox(this.term, 4, 25, { x: 0, y: 1}, this),
 			message => {
 				this.game.talkManager.sendMessage(message);
 			}
 		);
 		this.chatBox.clearOnSent = true;
 
-		this.peopleList = new List (this.term, this.peopleCellRenderer, 2, { x: 60, y: 10});
+		this.peopleList = new List (this.term, this.peopleCellRenderer, 2, { x: 55, y: 5});
 
 		this.usernameBox = new InputBox(
 			this.game.input,
@@ -116,9 +116,13 @@ module.exports = {
 				this.eng.update(40, 12);
 			}
 			this.textBox.draw();
-			this.chatBox.draw();
-			// TODO: If player not in sight, mark chatbox as such? 
-			this.chatBoxes.forEach(c => c.draw());
+			if (this.game.talkManager.isTalkActive) {
+				if (this.game.input.mode == 'TALK') {
+					this.game.display.term.putString("Type your message:", 0, 0, 170, 170, 170);
+					this.chatBox.draw();
+				}
+				this.chatBoxes.forEach(c => c.draw());
+			}
 			this.peopleList.draw();
 			this.commandsBox.draw();
 		}
@@ -159,7 +163,7 @@ module.exports = {
 	getOrAssignChatbox: function (player) {
 		let chatbox = this.chatboxesMap[player.playerId];
 		if (!chatbox) {
-			for (let i = 1; i < this.chatBoxes.length; i++) {
+			for (let i = 0; i < this.chatBoxes.length; i++) {
 				if (!this.chatBoxes[i].player) {
 					this.chatboxesMap[player.playerId] = this.chatBoxes[i];
 					this.chatBoxes[i].setPlayer(player);

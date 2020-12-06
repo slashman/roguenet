@@ -86,6 +86,7 @@ module.exports = {
             this.game.display.chatBox.activate();
             this.game.talkManager.startChat();
             this.game.input.setMode('TALK');
+            this.game.display.refresh();
         });
 
         socket.on('playerJoinedChat', data => {
