@@ -75,7 +75,7 @@ ChatRequests.init(io, players);
 Chats.init(io, players);
 
 io.on('connection', function(socket){
-    console.log('Someone connected to us');
+    console.log('Connection detected, stand by for login');
     // Stand by for login
 
     socket.on('login', function(credentials){
@@ -169,7 +169,7 @@ function initHooks (socket) {
     
     socket.on('moveTo', function(dir){
         const player = players[socket.id];
-        console.log('Player '+player.playerName+" wants to move x:"+dir.dx+" y:"+dir.dy);
+        // console.log('Player '+player.playerName+" wants to move x:"+dir.dx+" y:"+dir.dy);
         if (ActionRateLimiter.limitAction(socket)) {
 			return;
         }
