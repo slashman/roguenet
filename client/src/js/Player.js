@@ -76,6 +76,7 @@ module.exports = {
 		 * or increased performance
 		 */
 		this.seenBeings = [];
+		this.addToSeenBeings(this.being);
 		for (var j = -this.MAX_SIGHT_RANGE; j <= this.MAX_SIGHT_RANGE; j++)
 			for (var i = -this.MAX_SIGHT_RANGE; i <= this.MAX_SIGHT_RANGE; i++)
 				this.visible[i][j] = false;
