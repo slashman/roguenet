@@ -33,7 +33,7 @@ module.exports = {
 		);
 		this.chatBox.clearOnSent = true;
 
-		this.peopleList = new List (this.term, this.peopleCellRenderer, 2, { x: 55, y: 5});
+		this.peopleList = new List (this.term, this.peopleCellRenderer, 1, { x: 55, y: 5});
 
 		this.usernameBox = new InputBox(
 			this.game.input,
@@ -224,7 +224,6 @@ module.exports = {
 	peopleCellRenderer (term, being, x, y) {
 		term.put(being.tile, x, y);
 		term.putString("- " + being.playerName, x + 2, y, 170, 170, 170);
-		term.putString("Black TShirt", x, y+1, 170, 170, 170);
 	}
 
 }
