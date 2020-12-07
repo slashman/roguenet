@@ -14,7 +14,7 @@ const ActionRateLimiter = require('./ActionRateLimiter');
 const { join } = require('path');
 
 const COLORS = [
-    [0, 0, 0],
+//    [0, 0, 0],
     [0, 0, 170],
     [0, 170, 0],
     [0, 170, 170],
@@ -37,25 +37,25 @@ const users = [
         user: 'rodney',
         password: 'pwd',
         playerName: 'Rodney',
-        color: COLORS[2]
+        colorIndex: 2
     },
     {
         user: 'rodinia',
         password: 'pwd',
         playerName: 'Rodinia',
-        color: COLORS[4]
+        colorIndex: 4
     },
     {
         user: 'slashie',
         password: 'pwd',
         playerName: 'Slashie',
-        color: COLORS[6]
+        colorIndex: 6
     },
     {
         user: 'gaby',
         password: 'pwd',
         playerName: 'Gaby',
-        color: COLORS[5]
+        colorIndex: 5
     }
 ];
 
@@ -65,7 +65,8 @@ function initPlayer(playerObj, socketId) {
     player.playerId = socketId;
     player.playerName = playerObj.playerName;
     player.username = playerObj.user;
-    player.color = playerObj.color;
+    player.colorIndex = playerObj.colorIndex;
+    player.color = COLORS[playerObj.colorIndex];
     testLevel.addBeing(player, 27, 86);
     return player;
 }
@@ -92,7 +93,7 @@ io.on('connection', function(socket){
                 user: username,
                 password: password,
                 playerName: username,
-                color: COLORS[7]
+                colorIndex: 6
             }
             users.push(user);
         } else {
@@ -143,6 +144,26 @@ function initHooks (socket) {
 		socket.emit('worldState', {
             tiles: Tiles,
             levels: Game.world.levels
+        });
+    });
+
+    socket.on('changeColor', function(){
+        const player = players[socket.id];
+        if (ActionRateLimiter.limitAction(socket)) {
+            return;
+        }
+        if (!player) {
+            return;
+        }
+        player.colorIndex++;
+        if (player.colorIndex == COLORS.length - 1) {
+            player.colorIndex = 0;
+        }
+        player.color = COLORS[player.colorIndex];
+
+        io.emit('playerChangedColor', {
+            playerId: player.playerId,
+            color: player.color
         });
     });
     

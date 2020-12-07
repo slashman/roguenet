@@ -39,6 +39,16 @@ module.exports = {
             this.game.player.updateFOV();
         });
 
+        socket.on('playerChangedColor', data => {
+            if (!this.world.level) return;
+            let player = this.world.level.getPlayer(data.playerId);
+            if (!player){
+                return;
+            }
+            player.changeColor(data.color);
+            this.game.player.updateFOV(); //TODO: How expensive is this client side? we should only do this if the player is close.
+        });
+
         socket.on('playerMoved', data => {
             if (!this.world.level) return;
             let player = this.world.level.getPlayer(data.playerId);
@@ -46,7 +56,7 @@ module.exports = {
                 return;
             }
             player.teleportTo(data.x, data.y);
-            this.game.player.updateFOV();
+            this.game.player.updateFOV(); //TODO: How expensive is this client side? we should only do this if the player is close.
             if (player == this.game.player.being) {
                 this.game.input.inputEnabled = true;
             }
@@ -139,6 +149,10 @@ module.exports = {
         return new Promise(resolve => { 
             this.loginResolve = resolve;
         });
+    },
+
+    changeColor: function () {
+        this.socket.emit('changeColor');
     },
 
     create: function (username, password) {

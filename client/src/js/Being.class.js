@@ -23,7 +23,10 @@ Being.prototype = {
 		if (!this.level.beings[this.x])
 			this.level.beings[this.x] = [];
 		this.level.beings[this.x][this.y] = this;
-    }
+	},
+	changeColor: function (color) {
+		this.tile = new ut.Tile('@', color[0], color[1], color[2]);
+	}
 }
 
 module.exports = Being;
