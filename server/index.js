@@ -87,6 +87,7 @@ io.on('connection', function(socket){
             user = users.find(p => p.user == username);
             if (user) {
                 socket.emit('loginResult', { success: false }); // Already exists
+                console.log('Create Player failed: User '+username+" already exists");
                 return;
             }
             user = {
@@ -100,6 +101,7 @@ io.on('connection', function(socket){
             user = users.find(p => p.user == username && p.password == password);
             if (!user) {
                 socket.emit('loginResult', { success: false });
+                console.log('Login failed for user '+username);
                 return;
             }
         }
@@ -114,12 +116,14 @@ io.on('connection', function(socket){
         if (player.playerId != socket.id) {
             const oldSocket = io.sockets.connected[player.playerId];
             if (oldSocket) {
+                console.log('Disconnecting existing client for user '+username+ ".");
                 oldSocket.emit('clientChanged');
                 oldSocket.disconnect();
             }
             player.playerId = socket.id;
         }
         initHooks(socket);
+        console.log('User '+username+ " logs in");
         socket.emit('loginResult', { success: true, player });
     });
 });
