@@ -12,6 +12,7 @@ module.exports = {
             if (data.success) {
                 this.game.player.playerId = data.player.playerId;
                 this._initHooks(socket);
+                this.isAdmin = data.isAdmin;
             }
             this.loginResolve(data);
         });
@@ -142,6 +143,12 @@ module.exports = {
             this.game.display.disconnect();
             this.game.input.disconnect();
         });
+
+        socket.on('smitten', () => {
+            this.game.display.message("You have been smitten. Disconnecting.");
+            this.game.display.disconnect();
+            this.game.input.disconnect();
+        });
     },
 
     login: function (username, password) {
@@ -210,5 +217,11 @@ module.exports = {
 
     disconnect: function () {
         this.socket.close();
+    },
+
+    smite: function (dir) {
+        if (this.isAdmin) {
+            this.socket.emit('smite', dir);
+        }
     }
 }

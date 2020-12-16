@@ -9,6 +9,7 @@ const Game = require('./Game');
 const Being = require('./Being.class');
 const Tiles = require('./Tiles.enum');
 const ChatRequests = require('./ChatRequests');
+const AdminActions = require('./AdminActions');
 const Chats = require('./Chats');
 const ActionRateLimiter = require('./ActionRateLimiter');
 const { join } = require('path');
@@ -34,28 +35,11 @@ const COLORS = [
 
 const users = [
     {
-        user: 'rodney',
-        password: 'pwd',
-        playerName: 'Rodney',
-        colorIndex: 2
-    },
-    {
-        user: 'rodinia',
-        password: 'pwd',
-        playerName: 'Rodinia',
-        colorIndex: 4
-    },
-    {
         user: 'slashie',
         password: 'pwd',
         playerName: 'Slashie',
-        colorIndex: 6
-    },
-    {
-        user: 'gaby',
-        password: 'pwd',
-        playerName: 'Gaby',
-        colorIndex: 5
+        colorIndex: 6,
+        isAdmin: true
     }
 ];
 
@@ -73,6 +57,7 @@ function initPlayer(playerObj, socketId) {
 
 ChatRequests.init(io, players);
 Chats.init(io, players);
+AdminActions.init(io, players);
 
 io.on('connection', function(socket){
     console.log('Connection detected, stand by for login');
@@ -122,13 +107,13 @@ io.on('connection', function(socket){
             }
             player.playerId = socket.id;
         }
-        initHooks(socket);
+        initHooks(socket, user);
         console.log('User '+username+ " logs in");
-        socket.emit('loginResult', { success: true, player });
+        socket.emit('loginResult', { success: true, player, isAdmin: user.isAdmin == true });
     });
 });
 
-function initHooks (socket) {
+function initHooks (socket, user) {
     const player = players[socket.id];
 
     socket.broadcast.emit('playerJoined', player);
@@ -194,6 +179,9 @@ function initHooks (socket) {
         }
         ActionRateLimiter.update(socket);
     });
+    if (user.isAdmin) {
+        AdminActions.bindSocket(socket);
+    }
 
     ChatRequests.bindSocket(socket);
     Chats.bindSocket(socket);

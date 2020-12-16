@@ -49,6 +49,9 @@ module.exports = {
 				} else if (e.key === "Tab") {
 					this.game.client.changeColor();
 					return;
+				} else if (e.key === "S") {
+					this.game.client.smite(this.lastMoveDir);
+					return;
 				}
 			} else if (this.mode === 'TALK') {
 				if (e.key === "Escape"){
@@ -125,6 +128,7 @@ module.exports = {
 				return;
 			}
 			this.inputEnabled = false;
+			this.lastMoveDir = { dx: this.movedir.x, dy: this.movedir.y };
 			this.game.player.tryMove(this.movedir);
 		} else if (this.mode === 'INVENTORY'){
 			if (k === ut.KEY_ESCAPE){

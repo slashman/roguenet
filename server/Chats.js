@@ -10,17 +10,22 @@ module.exports = {
 		if (!player.currentChat) {
 			return;
 		}
+		this.leaveChat(player, socket);
+	},
+
+	leaveChat (player, socket) {
 		const chatId = player.currentChat;
 		const chat = this.chats[chatId];
 		if (!chat) {
 			return;
 		}
-		this.leaveChat(player, socket);
+		this._leaveChat(player, socket);
 		if (chat.members.length == 1) {
-			this.leaveChat(chat.members[0]);
+			this._leaveChat(chat.members[0]);
 			delete this.chats[chatId];
 		}
 	},
+
 	sendMessage (socket, message) {
 		const messageText = message.message;
 		const player = this.players[socket.id];
@@ -70,7 +75,7 @@ module.exports = {
         socket.join(chatGroupName);
         this.chats[chatGroupName].members.push(player);
     },
-	leaveChat(player, socket) {
+	_leaveChat(player, socket) {
         const chatId = player.currentChat;
         const chat = this.chats[chatId];
         if (!socket) {
