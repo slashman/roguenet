@@ -180,6 +180,13 @@ function initHooks (socket, user) {
             });
             if (result === "pickedKey") {
                 io.emit('serverMessage', { message: "You pick a red key." });
+            } else if (result === "setGeo") {
+                const currentGeo = testLevel.geo;
+                const currentGeoCacher = testLevel.geoCacher;
+                testLevel.newGeo(player);
+                io.emit('serverMessage', { message: "You pick the " + currentGeo + " left by " + currentGeoCacher + ", and drop a " + testLevel.geo + ". You are #"+testLevel.geoNumber+" to find the cache." });
+            } else if (result === "foundGeo") {
+                io.emit('serverMessage', { message: "There is a " + testLevel.geo + " here, cached by " + testLevel.geoCacher + " (#" + testLevel.geoNumber + ")." });
             }
         } else {
             socket.emit('actionFailed');

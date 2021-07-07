@@ -2,6 +2,64 @@ var Level = function(id){
 	this.init(id);
 }
 
+const geoObjects = [
+	"Leather armor",
+	"Studded leather armor",
+	"Ring mail",
+	"Scale mail",
+	"Chain mail",
+	"Splint mail",
+	"Banded mail",
+	"Plate mail",
+	"Arrow",
+	"Crossbow",
+	"Crossbow bolt",
+	"Dagger",
+	"Dart",
+	"Long sword",
+	"Mace",
+	"Rock",
+	"Short bow",
+	"Sling",
+	"Shuriken",
+	"Spear",
+	"Two-handed sword",
+	"Staff",
+	"Wand",
+
+	"Ring of Add strength",
+	"Ring of Adornment",
+	"Ring of Aggravate monsters",
+	"Ring of Dexterity",
+	"Ring of Increase damage",
+	"Ring of Maintain armor",
+	"Ring of Protection",
+	"Ring of Regeneration",
+	"Ring of Searching",
+	"Ring of See invisible",
+	"Ring of Slow digestion",
+	"Ring of Stealth",
+	"Ring of Sustain strength",
+	"Ring of Teleportation",
+
+	"Potion of Blindness",
+	"Potion of Confusion",
+	"Potion of Extra healing",
+	"Potion of Gain strength",
+	"Potion of Hallucination",
+	"Potion of Haste self",
+	"Potion of Healing",
+	"Potion of Levitation",
+	"Potion of Magic detection",
+	"Potion of Monster detection",
+	"Potion of Paralysis",
+	"Potion of Poison",
+	"Potion of Raise level",
+	"Potion of Restore strength",
+	"Potion of See invisible",
+	"Potion of Thirst quenching"
+];
+
 Level.prototype = {
 	init: function(id){
 		this.map = [];
@@ -10,6 +68,9 @@ Level.prototype = {
 		this.exits = [];
 		this.items = [];
 		this.id = id;
+		this.geo = "Cheap plastic imitation of Amulet of Yendor.";
+		this.geoCacher = "Slashie";
+		this.geoNumber = 1;
 	},
 	addBeing: function(being, x, y){
 		this.beingsList.push(being);
@@ -87,6 +148,14 @@ Level.prototype = {
 				result = "pickedKey";
 			}
 		}
+		if (tx == 6 && ty == 7) {
+			if (!being.hadFoundGeo) {
+				being.hadFoundGeo = true;
+				result = "setGeo";
+			} else {
+				result = "foundGeo";
+			}
+		}
 		this.beings[being.x][being.y] = false;
 		being.x = being.x + dx;
 		being.y = being.y + dy;
@@ -97,6 +166,11 @@ Level.prototype = {
 	},
 	getPlayerByUsername: function (username) {
 		return this.beingsList.find(being => being.username == username);
+	},
+	newGeo: function (being) {
+		this.geo = geoObjects[Math.floor(Math.random()*geoObjects.length)];
+		this.geoNumber++;
+		this.geoCacher = being.playerName;
 	}
 }
 
