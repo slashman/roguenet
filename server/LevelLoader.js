@@ -28,11 +28,13 @@ module.exports = {
 			level.map[x] = [];
 			for (var y = 0; y < layer.height; y++){
 				const tile = layer.raster[y * layer.width + x];
-				const char = String.fromCharCode(tile.asciiCode);
+				let char = String.fromCharCode(tile.asciiCode);
+				if (tile.asciiCode == 21) {
+					char = "§";
+				}
 				const tileKey = char + tile.fg.hex.toUpperCase();
 				let tileType = TILE_MAP[tileKey];
 				if (!tileType) {
-					console.log("Created tile " + tileKey);
 					const characterByte = new Uint8Array(1);
 					characterByte[0] = tile.asciiCode;
 					tileType = {
@@ -42,6 +44,10 @@ module.exports = {
 						solid: false,
 						opaque: false
 					}
+					if (tile.asciiCode == 21) {
+						tileType.character = "§";
+					}
+					console.log("Created tile " + tileKey + "["+tileType.character+"] from tile ["+tile.asciiCode+"]");
 					Tiles[tileKey] = tileType;
 					TILE_MAP[tileKey] = tileType;
 				}
