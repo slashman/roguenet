@@ -21,7 +21,7 @@ TILE_MAP['#B20000'] = Tiles.PORTICULIS;
 
 module.exports = {
 	loadLevel: async function(level){
-		var fileBuffer = fs.readFileSync('maps/temple.xp');
+		var fileBuffer = fs.readFileSync('maps/temple7DRLCeleb.xp');
 		const map = await rexpaintjs.fromBuffer(fileBuffer);
 		const layer = map.layers[0];
 		for (var x = 0; x < layer.width; x++){

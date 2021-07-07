@@ -6,83 +6,18 @@ var Level = function(game, id){
 }
 
 const areas = [
-	{ x: 41, y: 49, w: 7, h: 6, // Eastern Gardens
-		name: 'Rainy Day',
-		videoId: '8_VOIQDVtHs',
-		gameDetails: "An evil corporation is draining the planet's resources, the only way to stop them is to blow the core of their four reactors in the Kradia Valley.",
-		author: 'slashie and quietgecko',
-		playURL: 'https://slash.itch.io/rainy-day',
-	},
-	{ x: 7, y: 21, w: 12, h: 6, // Inside the temple
-		name: 'Shattered Forest',
-		videoId: "_CbL4yBwJYA",
-		gameDetails: 'Evil spirits have shattered the forest! Master the broken terrain and find the root cause of all this chaos!',
-		author: 'Verdagon',
-		playURL: 'https://verdagon.itch.io/shattered-forest',
-	},
-	{ x: 7, y: 30, w: 12, h: 6, // Inside the temple
-		name: 'Rune Master',
-		videoId: undefined,
-		gameDetails: "Runemaster is roguelike heavly focused on spellcrafting. I've tried to give magic a new face, complex but rewarding.",
-		author: 'Samel',
-		playURL: 'https://samelinux.itch.io/runemaster',
-	},
-	{ x: 36, y: 21, w: 12, h: 6, // Inside the temple
-		name: 'SUV Dungeon',
-		gameDetails: 'Sport utility dungeon crawling tactics',
-		videoId: "TTQtAgEtDsg",
-		author: 'NeverK',
-		playURL: 'https://never-k.itch.io/suv-dungeon',
-	},
-	{ x: 36, y: 30, w: 12, h: 6,  // Inside the temple
-		name: 'OctoRogue',
-		videoId: "eXQg_hH-Vqw",
-		gameDetails: 'Play as an octopus in a traditional roguelike',
-		author: 'kylep',
-		playURL: 'https://kylep.itch.io/octorogue',
-	},
-	{ x: 20, y: 37, w: 6, h: 12, // Inside the temple
-	  name: 'Medieval Upbringing',
-	  gameDetails: 'Medieval childhood simulator as a multidimensional optimization problem.',
-	  author: 'ostr',
-	  playURL: 'https://ostr.itch.io/medieval-upbringing',
-	  videoId: 'sH5L152NeFY'
-	},
-	{ x: 20, y: 49, w: 6, h: 12, // Inside the temple
-		name: 'Furball Catacombs',
-		gameDetails: 'Be a cat. Hunt mice in a labyrinth that defies geometry. Lick yourself a lot. Become very sharp.',
-		author: 'laurheth',
-		playURL: 'https://laurheth.itch.io/furball-catacombs',
-		videoId: "IUBBoQe_s0U"
-	},
-	{ x: 29, y: 49, w: 6, h: 12, // Inside the temple
-		name: 'Rogue of the Seven Seas',
-		gameDetails: 'Beginning with a simple dingy and 100 coins to your name, you sail from island to island.',
-		author: 'gamepopper',
-		playURL: 'https://gamepopper.itch.io/rogue-of-the-seven-seas',
-		videoId: "DWZWm9Z4ek8"
-	},
-	{ x: 41, y: 60, w: 5, h: 8, // Eastern Gardens
-		name: 'Wyrm\'s Wrath',
-		gameDetails: 'Traditional roguelike meets deck-builder meets snake. Play as a multi-tiled wyrm, find the rogue who killed your mother, and eat him.',
-		author: 'mscottmoore',
-		playURL: 'https://mscottmoore.itch.io/wyrms-wrath',
-		videoId: 'dnyzoWtYSt0'
-	},
-	{ x: 41, y: 70, w: 5, h: 8, // Eastern Gardens
-		name: 'Mantis',
-		gameDetails: 'Fast-paced dungeon crawler.',
-		author: 'suricatta413',
-		playURL: 'https://suricatta413.itch.io/mantis',
-		videoId: 'Lexb8Ia1Q3M'
-	},
-	{ x: 29, y: 37, w: 6, h: 12, // Inside the temple
-		name: 'Cardinal Ramship Pirate',
-		gameDetails: 'A burn-based [sic] ram-em-up.',
-		author: 'st33d',
-		playURL: 'https://st33d.itch.io/cardinal-ramship-pirate',
-		videoId: "6rt24KAVmt0"
-	}
+	{ x: 41, y: 20, w: 12, h: 6, name: "Enter the Chronosphere", gameDetails: "A tactical bullet hell roguelike where each turn is a slice of realtime action", videoId: "9ay2eHL9BOk", author: "Rhys and Ned", playURL: "https://rhys_vdw.itch.io/enter-the-chronosphere"},
+	{ x: 70, y: 20, w: 12, h: 6, name: "Autonomy", gameDetails: "You play an Ai that must take over the machines around it to avoid destruction and escape.", videoId: "YXu_EOaWF-k", author: "Jay", playURL: "https://jaysgame.itch.io/autonomy"},
+	{ x: 41, y: 30, w: 12, h: 6, name: "Bloplike", gameDetails: "Each entity's magical powers are wirtten in its DNA. Build your own from Trigger and Effect genes.", videoId: "h3_RNZ8LPsM", author: "Drestin", playURL: "https://drestin.itch.io/7rld2021-bloplike"},
+	{ x: 70, y: 30, w: 12, h: 6, name: "Duntris", gameDetails: "", videoId: "5ZRxFXSumPo", author: "anttihaavikko", playURL: "https://anttihaavikko.itch.io/duntris"},
+	{ x: 26, y: 20, w: 10, h: 6, name: "Pieux", gameDetails: "Using your humble armaments and dynamic movement, atone for your sins and find peace among chaos", videoId: "b6kN5rxc_FY", author: "Slogo", playURL: "https://slogo.itch.io/pieux"},
+	{ x: 87, y: 20, w: 10, h: 6, name: "Shackles of the Stellar Tyrant", gameDetails: "A fully physically simulated action roguelike", videoId: "hwtjQBYAwqU", author: "Chao", playURL: "https://chao.itch.io/shackles-of-the-stellar-tyrant"},
+	{ x: 26, y: 30, w: 10, h: 6, name: "Amoeba Roguelike", gameDetails: "Play as a giant, constantly evolving amoeba and fight off intensifying waves of humans.", videoId: "8JVWJDPI-rw", author: "Vectis", playURL: "https://vectis.itch.io/amoeba-roguelike"},
+	{ x: 87, y: 30, w: 10, h: 6, name: "Rogue Meteor", gameDetails: "A Retro Sci-Fi Rogue-ish game where you try to get you off this god forsaken rock.", videoId: "C5aSHwI0Jv4", author: "Ponywolf", playURL: "https://ponywolf.itch.io/roguemeteor"},
+	{ x: 13, y: 20, w: 11, h: 6, name: "Dungeon Tetris", gameDetails: "A traditional roguelike, with a tetris twist", videoId: "dh8b0tRHgUA", author: "Numeron", playURL: "https://numeron.itch.io/dungeon-tetris"},
+	{ x: 98, y: 20, w: 11, h: 6, name: "Idol Knight", gameDetails: "A small scale tactical roguelike inspired by classics like Hoplite or Imbroglio.", videoId: "MJwC69LyTu8", author: "Tinytouchtales", playURL: "https://tinytouchtales.itch.io/idolknight"},
+	{ x: 13, y: 30, w: 11, h: 6, name: "Rogue Impact", gameDetails: "Genshin Impact inspired Roguelike.  Party-based and Gacha mechanics!", videoId: "J0wnqmOlaiw", author: "Jeff Lait", playURL: "https://jmlait.itch.io/rogue-impact"},
+	{ x: 98, y: 30, w: 11, h: 6, name: "Runemaster", gameDetails: "You are a runemaster that crafts his own spells combining runes.", videoId: "", author: "Luca Giacometti", playURL: "https://samelinux.itch.io/runemaster"}
 ]
 
 
