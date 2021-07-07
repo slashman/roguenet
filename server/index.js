@@ -168,12 +168,19 @@ function initHooks (socket, user) {
             return;
         }
         const testLevel = Game.world.getLevel('testLevel'); //TODO: Get level from player
-		if(testLevel.moveTo(player, dir.dx, dir.dy)){
+        const result = testLevel.moveTo(player, dir.dx, dir.dy);
+        if(result === "needKey") {
+            io.emit('serverMessage', { message: "It's locked." });
+            socket.emit('actionFailed');
+		} else if(result){
             io.emit('playerMoved', {
                 playerId: player.playerId,
                 x: player.x,
                 y: player.y
             });
+            if (result === "pickedKey") {
+                io.emit('serverMessage', { message: "You pick a red key." });
+            }
         } else {
             socket.emit('actionFailed');
         }

@@ -104,6 +104,10 @@ module.exports = {
             this.game.display.message(data.playerName + " joins the conversation.");
         });
 
+        socket.on('serverMessage', data => {
+            this.game.display.message(data.message);
+        });
+
         socket.on('chatRequest', data => {
             debug('chatRequest', data);
             this.game.display.message(data.playerName + " wants to talk with you. Accept? Y/N");

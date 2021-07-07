@@ -73,13 +73,27 @@ Level.prototype = {
 		if (!this.canWalkTo(being.x+dx,being.y+dy)){
 			return false;
 		}
+		const tx = being.x + dx;
+		const ty = being.y + dy;
+		let result = true;
+		if (tx == 5 && ty == 1) {
+			if (!being.hasKey) {
+				return "needKey";
+			}
+		}
+		if (tx == 149 && ty == 80) {
+			if (!being.hasKey) {
+				being.hasKey = true;
+				result = "pickedKey";
+			}
+		}
 		this.beings[being.x][being.y] = false;
 		being.x = being.x + dx;
 		being.y = being.y + dy;
 		if (!this.beings[being.x])
 			this.beings[being.x] = [];
 		this.beings[being.x][being.y] = being;
-		return true;
+		return result;
 	},
 	getPlayerByUsername: function (username) {
 		return this.beingsList.find(being => being.username == username);
