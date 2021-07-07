@@ -170,7 +170,7 @@ function initHooks (socket, user) {
         const testLevel = Game.world.getLevel('testLevel'); //TODO: Get level from player
         const result = testLevel.moveTo(player, dir.dx, dir.dy);
         if(result === "needKey") {
-            io.emit('serverMessage', { message: "It's locked." });
+            socket.emit('serverMessage', { message: "It's locked." });
             socket.emit('actionFailed');
 		} else if(result){
             io.emit('playerMoved', {
@@ -179,14 +179,14 @@ function initHooks (socket, user) {
                 y: player.y
             });
             if (result === "pickedKey") {
-                io.emit('serverMessage', { message: "You pick a red key." });
+                socket.emit('serverMessage', { message: "You pick a red key." });
             } else if (result === "setGeo") {
                 const currentGeo = testLevel.geo;
                 const currentGeoCacher = testLevel.geoCacher;
                 testLevel.newGeo(player);
-                io.emit('serverMessage', { message: "You pick the " + currentGeo + " left by " + currentGeoCacher + ", and drop a " + testLevel.geo + ". You are #"+testLevel.geoNumber+" to find the cache." });
+                socket.emit('serverMessage', { message: "You pick the " + currentGeo + " left by " + currentGeoCacher + ", and drop a " + testLevel.geo + ". You are #"+testLevel.geoNumber+" to find the cache." });
             } else if (result === "foundGeo") {
-                io.emit('serverMessage', { message: "There is a " + testLevel.geo + " here, cached by " + testLevel.geoCacher + " (#" + testLevel.geoNumber + ")." });
+                socket.emit('serverMessage', { message: "There is a " + testLevel.geo + " here, cached by " + testLevel.geoCacher + " (#" + testLevel.geoNumber + ")." });
             }
         } else {
             socket.emit('actionFailed');
