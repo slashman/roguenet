@@ -12,6 +12,21 @@ module.exports = {
         }
         chatBox.setText(message);
     },
+
+    startedTyping: function (player) {
+        const chatBox = this.game.display.getOrAssignChatbox(player);
+        if (!chatBox) {
+            return; // Edge case
+        }
+        chatBox.setIsTyping(true);
+    },
+    stoppedTyping: function (player) {
+        const chatBox = this.game.display.getOrAssignChatbox(player);
+        if (!chatBox) {
+            return; // Edge case
+        }
+        chatBox.setIsTyping(false);
+    },
     disablePlayer: function (playerId) {
         this.game.display.unassignChatbox(playerId);
     },

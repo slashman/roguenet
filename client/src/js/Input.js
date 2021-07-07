@@ -1,3 +1,5 @@
+const IsTypingChecker = require('./IsTypingChecker');
+
 module.exports = {
 	inputEnabled: true,
 	init: function(game, client){
@@ -5,6 +7,7 @@ module.exports = {
 		this.client = client;
 		ut.initInput(this.onKeyDown.bind(this));
 		this.setMode('TITLE');
+		IsTypingChecker.init(client);
 		document.addEventListener('keydown', e => { 
 			if (!this.inputEnabled)
 				return
@@ -21,6 +24,11 @@ module.exports = {
 				}
 			} else if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN'){
 				if (e.key.length == 1) {
+					IsTypingChecker.startTyping();
+					if (this.stoppedTypingTimeout) {
+						clearTimeout(this.stoppedTypingTimeout);
+					}
+					this.stoppedTypingTimeout = setTimeout(() => IsTypingChecker.stopTyping(), 1000);
 					this.activeInputBox.addCharacter(e.key);
 				} else if (e.key === "Enter"){
 					this.activeInputBox.submit();

@@ -39,9 +39,32 @@ module.exports = {
 			messageText
 		});
 	},
+
+	startTyping (socket) {
+		const player = this.players[socket.id];
+		if (!player.currentChat) {
+			return;
+		}
+		this.io.to(player.currentChat).emit('startedTyping', {
+			playerId: player.playerId
+		});
+	},
+
+	stopTyping (socket) {
+		const player = this.players[socket.id];
+		if (!player.currentChat) {
+			return;
+		}
+		this.io.to(player.currentChat).emit('stoppedTyping', {
+			playerId: player.playerId
+		});
+	},
+
 	bindSocket (socket) {
 		socket.on('leaveChat', this.leaveChatMessage.bind(this, socket));
 		socket.on('sendMessage', (message) => this.sendMessage(socket, message));
+		socket.on('startTyping', this.startTyping.bind(this, socket));
+		socket.on('stopTyping', this.stopTyping.bind(this, socket));
 	},
 	getNewChatId () {
 		return 'hangout_' + (++this.currentChat);

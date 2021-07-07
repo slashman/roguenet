@@ -129,6 +129,24 @@ module.exports = {
             this.game.talkManager.displayMessage(player, data.messageText);
         });
 
+        socket.on('startedTyping', data => {
+            if (!this.world.level) return;
+            let player = this.world.level.getPlayer(data.playerId);
+            if (!player){
+                return;
+            }
+            this.game.talkManager.startedTyping(player);
+        });
+
+        socket.on('stoppedTyping', data => {
+            if (!this.world.level) return;
+            let player = this.world.level.getPlayer(data.playerId);
+            if (!player){
+                return;
+            }
+            this.game.talkManager.stoppedTyping(player);
+        });
+
         socket.on('playerLeft', data => {
             this.game.display.message(data.playerName + " lefts the conversation.");
             this.game.talkManager.disablePlayer(data.playerId);
@@ -204,6 +222,14 @@ module.exports = {
         this.socket.emit('rejectChatRequest');
         this.game.display.message("Maybe some other time.");
         this.game.input.setMode("MOVEMENT");
+    },
+
+    startTyping: function () {
+        this.socket.emit('startTyping');
+    },
+
+    stopTyping: function () {
+        this.socket.emit('stopTyping');
     },
     
 

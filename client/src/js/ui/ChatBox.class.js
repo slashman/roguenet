@@ -29,7 +29,7 @@ ChatBox.prototype.draw = function(){
     this.term.putString(this.spaces, this.position.x, this.position.y, 170, 170, 170);
     if (this.player) {
         this.term.put(this.player.tile, this.position.x, this.position.y);
-        this.term.putString("- " + this.player.playerName, this.position.x + 2, this.position.y, 170, 170, 170);
+        this.term.putString("- " + this.player.playerName + (this.isTyping ? " (Typing)" : ""), this.position.x + 2, this.position.y, 170, 170, 170);
     }
     this.textBox.draw();
     this.term.render();
@@ -37,6 +37,11 @@ ChatBox.prototype.draw = function(){
 
 ChatBox.prototype.setText = function(t){
     this.textBox.setText(t);
+};
+
+ChatBox.prototype.setIsTyping = function(b){
+    this.isTyping = b;
+    this.draw();
 };
 
 module.exports = ChatBox;
