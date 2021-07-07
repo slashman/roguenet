@@ -22,12 +22,25 @@
 			margin-right: auto;
 			text-align: center;
 		}
+
+		.whiteLink {
+			color: white;
+		}
 	</style>
 </head>
 
 <body onload="Game.start();" onunload="Game.unload();">
 	<div class="centerer">
 		<div id="game"></div>
+		<p><a href = "https://roguetemple.com/7drlExpo" class = "whiteLink" target = "_blank">Click to see the Developers' Schedule</a></p>
+		<div id="areaInfo">
+			<p id = "areaTitle"></p>
+			<p id = "gameDetails"></p>
+			<p id = "gamePlay"></p>
+			<div id = "videoContainer" style="display: none;">
+				<iframe id = "videoFrame" width="560" height="315" src="https://www.youtube.com/embed/8_VOIQDVtHs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

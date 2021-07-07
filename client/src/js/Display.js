@@ -147,10 +147,47 @@ module.exports = {
 				}
 				this.chatBoxes.forEach(c => c.draw());
 			}
+			const level = this.game.world.level;
+			const area = level.getArea(level.player.being.x, level.player.being.y);
 			this.peopleList.draw();
 			this.commandsBox.draw();
+			if (area) {
+				this.showAreaInfo(area);
+			} else {
+				this.hideAreaInfo();
+			}
 		}
 		this.term.render();
+	},
+	hideAreaInfo: function () {
+		if (!this.currentArea) {
+			return;
+		}
+		delete this.currentArea;
+		document.getElementById("areaInfo").style.display = 'none';
+	},
+	showAreaInfo: function (area) {
+		if (this.currentArea == area) {
+			return;
+		}
+		this.currentArea = area;
+		document.getElementById("areaInfo").style.display = 'block';
+		this.message('You are in the "' + area.name  + '" booth. '+ area.gameDetails, 0, 0, 170, 170, 170);
+
+		/*
+		document.getElementById("areaTitle").innerHTML = 'You are in the [' + area.name  + '] booth';
+		document.getElementById("gameDetails").innerHTML = area.gameDetails;*/
+		document.getElementById("gamePlay").innerHTML = area.name + ' by ' + area.author  + ' <a class = "whiteLink" href = "' + area.playURL + '" target = "_blank">Play Now!</a>';
+		const video = document.getElementById("videoFrame");
+		const videoContainer = document.getElementById("videoContainer");
+		if (area.videoId) {
+			video.setAttribute( "src", "https://www.youtube.com/embed/"+ area.videoId);
+			console.log("set source");
+			videoContainer.style.display = 'block';
+		} else {
+			videoContainer.style.display = 'none';
+		}
+
 	},
 	showInventory: function(){
 		this.inventoryBox.draw();

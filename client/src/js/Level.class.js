@@ -5,6 +5,87 @@ var Level = function(game, id){
 	this.init(game, id);
 }
 
+const areas = [
+	{ x: 41, y: 49, w: 7, h: 6, // Eastern Gardens
+		name: 'Rainy Day',
+		videoId: '8_VOIQDVtHs',
+		gameDetails: "An evil corporation is draining the planet's resources, the only way to stop them is to blow the core of their four reactors in the Kradia Valley.",
+		author: 'slashie and quietgecko',
+		playURL: 'https://slash.itch.io/rainy-day',
+	},
+	{ x: 7, y: 21, w: 12, h: 6, // Inside the temple
+		name: 'Shattered Forest',
+		videoId: "_CbL4yBwJYA",
+		gameDetails: 'Evil spirits have shattered the forest! Master the broken terrain and find the root cause of all this chaos!',
+		author: 'Verdagon',
+		playURL: 'https://verdagon.itch.io/shattered-forest',
+	},
+	{ x: 7, y: 30, w: 12, h: 6, // Inside the temple
+		name: 'Rune Master',
+		videoId: undefined,
+		gameDetails: "Runemaster is roguelike heavly focused on spellcrafting. I've tried to give magic a new face, complex but rewarding.",
+		author: 'Samel',
+		playURL: 'https://samelinux.itch.io/runemaster',
+	},
+	{ x: 36, y: 21, w: 12, h: 6, // Inside the temple
+		name: 'SUV Dungeon',
+		gameDetails: 'Sport utility dungeon crawling tactics',
+		videoId: "TTQtAgEtDsg",
+		author: 'NeverK',
+		playURL: 'https://never-k.itch.io/suv-dungeon',
+	},
+	{ x: 36, y: 30, w: 12, h: 6,  // Inside the temple
+		name: 'OctoRogue',
+		videoId: "eXQg_hH-Vqw",
+		gameDetails: 'Play as an octopus in a traditional roguelike',
+		author: 'kylep',
+		playURL: 'https://kylep.itch.io/octorogue',
+	},
+	{ x: 20, y: 37, w: 6, h: 12, // Inside the temple
+	  name: 'Medieval Upbringing',
+	  gameDetails: 'Medieval childhood simulator as a multidimensional optimization problem.',
+	  author: 'ostr',
+	  playURL: 'https://ostr.itch.io/medieval-upbringing',
+	  videoId: 'sH5L152NeFY'
+	},
+	{ x: 20, y: 49, w: 6, h: 12, // Inside the temple
+		name: 'Furball Catacombs',
+		gameDetails: 'Be a cat. Hunt mice in a labyrinth that defies geometry. Lick yourself a lot. Become very sharp.',
+		author: 'laurheth',
+		playURL: 'https://laurheth.itch.io/furball-catacombs',
+		videoId: "IUBBoQe_s0U"
+	},
+	{ x: 29, y: 49, w: 6, h: 12, // Inside the temple
+		name: 'Rogue of the Seven Seas',
+		gameDetails: 'Beginning with a simple dingy and 100 coins to your name, you sail from island to island.',
+		author: 'gamepopper',
+		playURL: 'https://gamepopper.itch.io/rogue-of-the-seven-seas',
+		videoId: "DWZWm9Z4ek8"
+	},
+	{ x: 41, y: 60, w: 5, h: 8, // Eastern Gardens
+		name: 'Wyrm\'s Wrath',
+		gameDetails: 'Traditional roguelike meets deck-builder meets snake. Play as a multi-tiled wyrm, find the rogue who killed your mother, and eat him.',
+		author: 'mscottmoore',
+		playURL: 'https://mscottmoore.itch.io/wyrms-wrath',
+		videoId: 'dnyzoWtYSt0'
+	},
+	{ x: 41, y: 70, w: 5, h: 8, // Eastern Gardens
+		name: 'Mantis',
+		gameDetails: 'Fast-paced dungeon crawler.',
+		author: 'suricatta413',
+		playURL: 'https://suricatta413.itch.io/mantis',
+		videoId: 'Lexb8Ia1Q3M'
+	},
+	{ x: 29, y: 37, w: 6, h: 12, // Inside the temple
+		name: 'Cardinal Ramship Pirate',
+		gameDetails: 'A burn-based [sic] ram-em-up.',
+		author: 'st33d',
+		playURL: 'https://st33d.itch.io/cardinal-ramship-pirate',
+		videoId: "6rt24KAVmt0"
+	}
+]
+
+
 Level.prototype = {
 	loadData: function (tiles, data) {
 		Tiles.setData(tiles);
@@ -93,6 +174,9 @@ Level.prototype = {
 	},
 	getPlayer: function (id) {
 		return this.playersMap[id];
+	},
+	getArea: function (x, y) {
+		return areas.find(a => x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h);
 	}
 }
 
