@@ -148,7 +148,7 @@ module.exports = {
         });
 
         socket.on('playerLeft', data => {
-            this.game.display.message(data.playerName + " lefts the conversation.");
+            this.game.display.message(data.playerName + " left the conversation.");
             this.game.talkManager.disablePlayer(data.playerId);
             if (data.conversationOver) {
                 this.game.talkManager.endChat();
