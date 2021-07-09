@@ -199,7 +199,7 @@ module.exports = {
     },
 
     moveTo: function(dx, dy) {
-        debug('moveTo', {dx, dy});
+        // debug('moveTo', {dx, dy});
         this.socket.emit('moveTo', {dx, dy});
     },
 
