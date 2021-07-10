@@ -80,6 +80,9 @@ Level.prototype = {
 		being.y = y;
 		this.beings[x][y] = being;
 	},
+	addBeingNear: function(being, x, y){
+		this.getValidLocNear(x, y, this.canWalkTo.bind(this), (x, y) => this.addBeing(being, x, y));
+	},
 	canWalkTo: function(x, y){
 		try {
 			if (this.map[x][y].solid){
@@ -102,10 +105,27 @@ Level.prototype = {
 			this.exits[x] = [];
 		this.exits[x][y] = levelId;
 	},
+	canPutItem: function(x, y){
+		try {
+			if (this.map[x][y].solid){
+				return false;
+			}
+		} catch (e){
+			// Catch OOB
+			return false;
+		}
+		if (this.items[x] && this.items[x][y]){
+			return false;
+		}
+		return true;
+	},
 	addItem: function(item, x, y){
 		if (!this.items[x])
 			this.items[x] = [];
 		this.items[x][y] = item;
+	},
+	addItemNear: function(item, x, y){
+		this.getValidLocNear(x, y, this.canPutItem.bind(this), (x, y) => this.addItem(item, x, y));
 	},
 	getItem: function(x, y){
 		if (!this.items[x])
@@ -166,6 +186,24 @@ Level.prototype = {
 	},
 	getPlayerByUsername: function (username) {
 		return this.beingsList.find(being => being.username == username);
+	},
+	// Find a valid location nearby the given x,y by spiralling out until
+	// isValid returns true (first east, then clockwise around and out).
+	// Flood fill might be more appropriate for this, but more expensive.
+	getValidLocNear: function(x, y, isValid, callback) {
+		let layer = 1;
+		let leg = 0;
+		let ix = 0;
+		let iy = 0;
+		while (!isValid(x + ix, y + iy)){
+			switch (leg){
+				case 0: ix++; if (ix == layer) leg++; break;
+				case 1: iy++; if (iy == layer) leg++; break;
+				case 2: ix--; if (-ix == layer) leg++; break;
+				case 3: iy--; if (-iy == layer){ leg = 0; layer++; } break;
+			}
+		}
+		callback(x + ix, y + iy);
 	},
 	newGeo: function (being) {
 		this.geo = geoObjects[Math.floor(Math.random()*geoObjects.length)];
