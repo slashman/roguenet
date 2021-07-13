@@ -56,6 +56,13 @@ TextBox.prototype.addText = function(text){
 
 	var tokens = text.split(" ");
     for (var i = 0; i < tokens.length; i++) {
+		// If this single token is longer than a whole line, break it up.
+		if (tokens[i].length + 1 > this.width) {
+			// Cut with an extra -1 because normal tokens are treated as trailing
+			// a space, and it looks wierd not to conform and wrap that cell early.
+			tokens.splice(i + 1, 0, tokens[i].substr(this.width - 2));
+			tokens[i] = tokens[i].substr(0, this.width - 2);
+		}
         var distance = this.width - this.curx;
         if (distance < tokens[i].length + 1) {
             this.curx = 0;
