@@ -15,23 +15,27 @@ module.exports = {
 			if (this.mode === 'TITLE') {
 				if (e.key === "a" || e.key === "A") {
 					this.game.display.setMode('CREATE');
-					this.game.display.usernameBox.activate();
+					this.game.display.usernameBox.setActive(true);
 					this.setMode('CREATE');
 				} else if (e.key === "b" || e.key === "B") {
 					this.game.display.setMode('LOGIN');
-					this.game.display.usernameBox.activate();
+					this.game.display.usernameBox.setActive(true);
 					this.setMode('LOGIN');
 				}
 			} else if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN'){
-				if (e.key.length == 1) {
-					IsTypingChecker.startTyping();
+				const consumed = this.activeInputBox.applyKey(e.key, e.metaKey, e.ctrlKey, e.altKey, e.shiftKey);
+				if (consumed) {
 					if (this.stoppedTypingTimeout) {
 						clearTimeout(this.stoppedTypingTimeout);
 					}
-					this.stoppedTypingTimeout = setTimeout(() => IsTypingChecker.stopTyping(), 1000);
-					this.activeInputBox.addCharacter(e.key);
-				} else if (e.key === "Enter"){
-					this.activeInputBox.submit();
+					if (e.key === 'Enter'){
+						// applyKey will have called activeInputBox.submit()
+						IsTypingChecker.stopTyping();
+					} else {
+						IsTypingChecker.startTyping();
+						this.stoppedTypingTimeout = setTimeout(() => IsTypingChecker.stopTyping(), 1000);
+					}
+					e.preventDefault(); // Prevent e.g. select-all from bubbling up
 				}
 			}
 			if (this.mode === 'PROMPT_CHAT') {
@@ -51,7 +55,7 @@ module.exports = {
 					this.game.client.leaveChat();
 					this.updateCommands();
 				} else if (this.game.talkManager.isTalkActive && e.key === "Enter") {
-					this.game.display.chatBox.activate();
+					this.game.display.chatBox.setActive(true);
 					this.game.input.setMode('TALK');
 					this.game.display.message("You start talking.");
 				} else if (e.key === "Tab") {
@@ -70,19 +74,38 @@ module.exports = {
 				}
 			}
 		});
+		document.addEventListener('paste', (e) => {
+			if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN') {
+				this.activeInputBox.addText(e.clipboardData.getData('text/plain'));
+				e.preventDefault();
+			}
+		});
+		document.addEventListener('copy',  (e) => {
+			if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN') {
+				const selectedText = this.activeInputBox.getSelection();
+				if (selectedText && this.activeInputBox.masked){
+					e.clipboardData.setData('text/plain', selectedText);
+				}
+				e.preventDefault();
+			}
+		});
+		document.addEventListener('cut',  (e) => {
+			if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN') {
+				const selectedText = this.activeInputBox.deleteSelection();
+				if (selectedText && !this.activeInputBox.masked){
+					e.clipboardData.setData('text/plain', selectedText);
+				}
+				e.preventDefault();
+			}
+		});
 	},
 	movedir: { x: 0, y: 0 },
 	onKeyDown: function(k){
 		if (!this.inputEnabled)
 			return;
-		if (this.mode === 'TALK'){
-			if (k === ut.KEY_BACKSPACE){
-				this.activeInputBox.removeCharacter();
-			}
-		} else if (this.mode === 'CREATE' || this.mode === 'LOGIN'){
-			if (k === ut.KEY_BACKSPACE){
-				this.activeInputBox.removeCharacter();
-			} else if (k === ut.KEY_ESCAPE) {
+		if (this.mode === 'CREATE' || this.mode === 'LOGIN'){
+			if (k === ut.KEY_ESCAPE) {
+				if (this.activeInputBox) this.activeInputBox.setActive(false);
 				this.game.display.setMode('TITLE');
 				this.setMode('TITLE');
 			}

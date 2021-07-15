@@ -94,7 +94,7 @@ module.exports = {
             } else {
                 this.game.display.message("You are now talking with " + data.playerName + ".");
             }
-            this.game.display.chatBox.activate();
+            this.game.display.chatBox.setActive(true);
             this.game.talkManager.startChat();
             this.game.input.setMode('TALK');
             this.game.display.refresh();
