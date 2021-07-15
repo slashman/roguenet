@@ -11,7 +11,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "iconv-lite": "^0.6.2",
-    "rexpaintjs": "^0.1.1",
+    "rexpaintjs": "^0.1.2",
     "socket.io": "^2.3.0"
   }
 }
