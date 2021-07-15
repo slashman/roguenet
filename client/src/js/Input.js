@@ -83,7 +83,7 @@ module.exports = {
 		document.addEventListener('copy',  (e) => {
 			if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN') {
 				const selectedText = this.activeInputBox.getSelection();
-				if (selectedText && this.activeInputBox.masked){
+				if (selectedText && !this.activeInputBox.masked){
 					e.clipboardData.setData('text/plain', selectedText);
 				}
 				e.preventDefault();
