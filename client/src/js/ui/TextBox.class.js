@@ -90,4 +90,8 @@ TextBox.prototype.clear = function() {
 	this.cury = 0;
 };
 
+TextBox.prototype.getFilledHeight = function () {
+	return this.cury + 1;
+}
+
 module.exports = TextBox;
