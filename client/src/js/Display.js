@@ -21,7 +21,7 @@ module.exports = {
 		this.chatboxesMap = {};
 		this.chatBox = new InputBox(
 			this.game.input,
-			new TextBox(this.term, 4, 25, { x: 0, y: 1}, this),
+			new TextBox(this.term, 4, 24, { x: 0, y: 1}, this),
 			message => {
 				this.game.talkManager.sendMessage(message);
 			}
@@ -34,9 +34,9 @@ module.exports = {
 			this.game.input,
 			new TextBox(this.term, 1, 30, {x:20, y:7}, this),
 			username => {
-				this.usernameBox.active = false;
+				this.usernameBox.setActive(false);
 				this.savedUsername = username;
-				this.passwordBox.activate();
+				this.passwordBox.setActive(true);
 			}
 		);
 
@@ -44,7 +44,7 @@ module.exports = {
 			this.game.input, 
 			new TextBox(this.term, 1, 30, {x:20, y:8}, this),
 			password => {
-				this.passwordBox.active = false;
+				this.passwordBox.setActive(false);
 				if (this.game.input.mode == 'CREATE') {
 					this.game.create(this.savedUsername, password);
 				} else if (this.game.input.mode == 'LOGIN') {
@@ -63,12 +63,12 @@ module.exports = {
 		this.mode = mode;
 	},
 	loginFailed: function () {
-		this.usernameBox.activate();
+		this.usernameBox.setActive(true);
 		this.term.putString("Login Failed", 5, 15, 255, 0, 0);
 		this.term.render();
 	},
 	createFailed: function () {
-		this.usernameBox.activate();
+		this.usernameBox.setActive(true);
 		this.term.putString("Create Failed", 5, 15, 255, 0, 0);
 		this.term.render();
 	},
@@ -207,7 +207,7 @@ module.exports = {
 		this.refresh();		
 	},
 	message: function(str){
-		this.textBox.addText(str);
+		this.textBox.addText(str + ' ');
 		this.textBox.draw();
 		this.term.render();
 	},
