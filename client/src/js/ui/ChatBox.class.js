@@ -23,6 +23,12 @@ ChatBox.prototype.reset = function(){
 };
 
 ChatBox.prototype.draw = function(){
+    this.drawHeader();
+    this.textBox.draw();
+    this.term.render();
+};
+
+ChatBox.prototype.drawHeader = function () {
     if (!this.player) {
         return;
     }
@@ -31,8 +37,6 @@ ChatBox.prototype.draw = function(){
         this.term.put(this.player.tile, this.position.x, this.position.y);
         this.term.putString("- " + this.player.playerName + (this.isTyping ? " (Typing)" : ""), this.position.x + 2, this.position.y, 170, 170, 170);
     }
-    this.textBox.draw();
-    this.term.render();
 };
 
 ChatBox.prototype.setText = function(t){
@@ -41,7 +45,12 @@ ChatBox.prototype.setText = function(t){
 
 ChatBox.prototype.setIsTyping = function(b){
     this.isTyping = b;
-    this.draw();
+    this.drawHeader();
+    this.term.render();
 };
+
+ChatBox.prototype.getFilledHeight = function () {
+    return this.textBox.getFilledHeight() + 1;
+}
 
 module.exports = ChatBox;
