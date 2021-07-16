@@ -50,10 +50,12 @@ module.exports = {
 					this.game.display.message("Conversation Ended.");
 					this.game.client.leaveChat();
 					this.updateCommands();
-				} else if (this.game.talkManager.isTalkActive && e.key === "Enter") {
-					this.game.display.chatBox.activate();
-					this.game.input.setMode('TALK');
-					this.game.display.message("You start talking.");
+				} else if (e.key === "Enter") {
+					if (this.game.talkManager.isTalkActive || this.game.talkManager.isYellActive) {
+						this.game.display.chatBox.activate();
+						this.game.input.setMode('TALK');
+						this.game.display.message("You start talking.");
+					}
 				} else if (e.key === "Tab") {
 					this.game.client.changeColor();
 					return;
@@ -199,7 +201,7 @@ module.exports = {
 				if (this.game.talkManager.isTalkActive) {
 					availableCommands += "[ESC] - Leave Chat | [Enter] Switch to Talking";
 				} else {
-					availableCommands += "Bump people to talk | [Tab] Change color";
+					availableCommands += "[Enter] Switch to Talking | [Tab] Change color";
 				}
 				this.game.display.setCommands(availableCommands);
 			break;
