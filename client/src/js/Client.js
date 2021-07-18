@@ -133,6 +133,18 @@ module.exports = {
             this.game.talkManager.displayMessage(player, data.messageText);
         });
 
+        socket.on('messageShout', data => {
+            if (!this.world.level) return;
+            let player = this.world.level.getPlayer(data.playerId);
+            if (!player){
+                return;
+            }
+            if (this.game.player.seenBeings.indexOf(player) == -1) {
+                return;
+            }
+            this.game.talkManager.displayMessage(player, data.messageText);
+        });
+
         socket.on('startedTyping', data => {
             if (!this.world.level) return;
             let player = this.world.level.getPlayer(data.playerId);
@@ -239,6 +251,10 @@ module.exports = {
 
     sendMessage: function (message) {
         this.socket.emit('sendMessage', {message});
+    },
+
+    yellMessage: function (message) {
+        this.socket.emit('yellMessage', {message});
     },
 
     tryLogin: function(password) {
