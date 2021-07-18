@@ -13,8 +13,9 @@ InputBox.prototype = {
     _updateShownText: function() {
         let showText = this.masked ? this.maskBuffer() : this.charBuffer;
         this.textBox.clear();
+        let textTiles;
         if (showText.length) {
-            let textTiles = this.textBox.addText(showText);
+            textTiles = this.textBox.addText(showText);
             if (this.selectionIndex !== null) {
                 const fromIndex = Math.min(this.selectionIndex, this.cursorIndex);
                 const toIndex = Math.max(this.selectionIndex, this.cursorIndex);
@@ -26,6 +27,8 @@ InputBox.prototype = {
                     tmp = tile.b; tile.b = tile.bb; tile.bb = tmp;
                 }
             }
+        } else {
+            textTiles = [];
         }
         // Always add a reserved space at the end for the cursor, which ensures
         // getRemainingSpace is accurate for e.g. pasting. Also, with the way
@@ -46,11 +49,15 @@ InputBox.prototype = {
         this.onSubmit(this.charBuffer);
         if (this.clearOnSent) {
             this.charBuffer = "";
+            this.cursorIndex = 0;
+        this.selectionIndex = null;
         }
         this._updateShownText();
     },
     cancelMessage: function (){
         this.charBuffer = "";
+        this.cursorIndex = 0;
+        this.selectionIndex = null;
         this._updateShownText();
     },
     draw: function () {

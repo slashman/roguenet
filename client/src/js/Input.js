@@ -72,6 +72,7 @@ module.exports = {
 					this.setMode('MOVEMENT');
 					this.game.display.message("Movement Mode Activated.");
 					this.activeInputBox.cancelMessage();
+					this.activeInputBox.setActive(false);
 					this.activeInputBox = null;
 				}
 			}
