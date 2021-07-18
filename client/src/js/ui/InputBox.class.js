@@ -13,16 +13,18 @@ InputBox.prototype = {
     _updateShownText: function() {
         let showText = this.masked ? this.maskBuffer() : this.charBuffer;
         this.textBox.clear();
-        let textTiles = this.textBox.addText(showText);
-        if (this.selectionIndex !== null) {
-            const fromIndex = Math.min(this.selectionIndex, this.cursorIndex);
-            const toIndex = Math.max(this.selectionIndex, this.cursorIndex);
-            for (var i = fromIndex; i < toIndex; i++) {
-                const tile = textTiles[i];
-                let // Swap foreground and background to indicate selected text
-                tmp = tile.r; tile.r = tile.br; tile.br = tmp;
-                tmp = tile.g; tile.g = tile.bg; tile.bg = tmp;
-                tmp = tile.b; tile.b = tile.bb; tile.bb = tmp;
+        if (showText.length) {
+            let textTiles = this.textBox.addText(showText);
+            if (this.selectionIndex !== null) {
+                const fromIndex = Math.min(this.selectionIndex, this.cursorIndex);
+                const toIndex = Math.max(this.selectionIndex, this.cursorIndex);
+                for (var i = fromIndex; i < toIndex; i++) {
+                    const tile = textTiles[i];
+                    let // Swap foreground and background to indicate selected text
+                    tmp = tile.r; tile.r = tile.br; tile.br = tmp;
+                    tmp = tile.g; tile.g = tile.bg; tile.bg = tmp;
+                    tmp = tile.b; tile.b = tile.bb; tile.bb = tmp;
+                }
             }
         }
         // Always add a reserved space at the end for the cursor, which ensures
