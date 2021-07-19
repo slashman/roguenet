@@ -1,7 +1,21 @@
-var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
+const fs = require('fs');
+const express = require('express');
+
+const HTTPS = true;
+
+const app = express();
+
+let server
+if (HTTPS) {
+    const credentials = {
+        key: fs.readFileSync('/etc/letsencrypt/live/net.roguetemple.com/privkey.pem', 'utf8'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/net.roguetemple.com/fullchain.pem', 'utf8')
+    };
+    server = require('https').createServer(credentials, app);
+} else {
+    server = require('http').createServer(app);
+}
+const io = require('socket.io')(server);
 
 var players = {};
 
