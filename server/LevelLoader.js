@@ -5,10 +5,10 @@ const Tiles = require('./Tiles.enum');
 
 const TILE_MAP = {};
 TILE_MAP[',006600'] = Tiles.GRASS;
-TILE_MAP['#CBCBCB'] = Tiles.WALL;
+TILE_MAP['#666666'] = Tiles.WALL;
 TILE_MAP['.CBCBCB'] = Tiles.FLOOR;
-TILE_MAP['*204000'] = Tiles.BUSH;
-TILE_MAP['=0080FF'] = Tiles.WATER;
+TILE_MAP['*006600'] = Tiles.BUSH;
+TILE_MAP['=0000B2'] = Tiles.WATER;
 TILE_MAP['@3399FF'] = Tiles.SIGN;
 TILE_MAP['Ó3399FF'] = Tiles.SIGN_LEFT_WING; // ╙
 TILE_MAP['½3399FF'] = Tiles.SIGN_RIGHT_WING; // ╜
@@ -21,7 +21,7 @@ TILE_MAP['#B20000'] = Tiles.PORTICULIS;
 
 module.exports = {
 	loadLevel: async function(level){
-		var fileBuffer = fs.readFileSync('maps/temple7DRLCeleb.xp');
+		var fileBuffer = fs.readFileSync('maps/esplanade.xp');
 		const map = await rexpaintjs.fromBuffer(fileBuffer);
 		const layer = map.layers[0];
 		for (var x = 0; x < layer.width; x++){
