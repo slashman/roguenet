@@ -25,6 +25,7 @@ const Tiles = require('./Tiles.enum');
 const ChatRequests = require('./ChatRequests');
 const AdminActions = require('./AdminActions');
 const Chats = require('./Chats');
+const Yell = require('./Yell');
 const ActionRateLimiter = require('./ActionRateLimiter');
 const { join } = require('path');
 
@@ -70,7 +71,8 @@ function initPlayer(playerObj, socketId) {
 }
 
 ChatRequests.init(io, players);
-Chats.init(io, players);
+//Chats.init(io, players);
+Yell.init(io, players);
 AdminActions.init(io, players);
 
 io.on('connection', function(socket){
@@ -135,7 +137,7 @@ function initHooks (socket, user) {
     socket.on('disconnect', (reason) => {
         console.log('Player '+player.playerName+" disconnecting :"+reason);
         if (reason === 'client namespace disconnect'/* || reason === 'ping timeout'*/) {
-            Chats.leaveChatMessage(socket);
+            //Chats.leaveChatMessage(socket);
             socket.broadcast.emit('playerDisconnected', player);
             Game.world.getLevel('testLevel').removeBeing(player.username);
             delete players[socket.id];
@@ -212,7 +214,8 @@ function initHooks (socket, user) {
     }
 
     ChatRequests.bindSocket(socket);
-    Chats.bindSocket(socket);
+    //Chats.bindSocket(socket);
+    Yell.bindSocket(socket);
 }
 
 Game.start().then(() => {

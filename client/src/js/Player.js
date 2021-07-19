@@ -16,12 +16,14 @@ module.exports = {
 	},
 	tryMove: function(dir){
 		const level = this.game.world.level;
-		if (!this.game.talkManager.isTalkActive) {
-			const being = level.getBeing(this.being.x + dir.x, this.being.y + dir.y);
-			if (being) {
+		const being = level.getBeing(this.being.x + dir.x, this.being.y + dir.y);
+		if (being) {
+			if (!this.game.talkManager.isTalkActive && !this.game.talkManager.isYellActive) {
 				this.game.client.nudgeChat(dir.x, dir.y);
 				this.game.input.inputEnabled = true;
 				return;
+			} else {
+				// TODO: Inspect!
 			}
 		}
 		if (!level.canWalkTo(this.being.x + dir.x, this.being.y + dir.y)){

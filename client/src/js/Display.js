@@ -17,12 +17,7 @@ module.exports = {
 		this.textBox = new TextBox(this.term, 2, 80 - 25, {x: 25, y: 0}, this);
 		this.commandsBox = new TextBox(this.term, 2, 80 - 25, {x: 25, y: 23}, this);
 
-		this.chatBoxes = [
-			new ChatBox(this.term, 5, 25, {x:0, y:5}, this),
-			new ChatBox(this.term, 5, 25, {x:0, y:10}, this),
-			new ChatBox(this.term, 5, 25, {x:0, y:15}, this),
-			new ChatBox(this.term, 5, 25, {x:0, y:20}, this),
-		];
+		this.chatBoxes = [];
 		this.chatboxesMap = {};
 		this.chatBox = new InputBox(
 			this.game.input,
@@ -140,13 +135,13 @@ module.exports = {
 				this.eng.update(40, 12);
 			}
 			this.textBox.draw();
-			if (this.game.talkManager.isTalkActive) {
+			if (this.game.talkManager.isTalkActive || this.game.talkManager.isYellActive) {
 				if (this.game.input.mode == 'TALK') {
 					this.game.display.term.putString("Type your message:", 0, 0, 170, 170, 170);
 					this.chatBox.draw();
 				}
-				this.chatBoxes.forEach(c => c.draw());
 			}
+			this.chatBoxes.forEach(c => c.draw());
 			const level = this.game.world.level;
 			const area = level.getArea(level.player.being.x, level.player.being.y);
 			this.peopleList.draw();
@@ -221,19 +216,56 @@ module.exports = {
 		this.commandsBox.draw();
 		this.term.render();
 	},
-	getOrAssignChatbox: function (player) {
-		let chatbox = this.chatboxesMap[player.playerId];
-		if (!chatbox) {
-			for (let i = 0; i < this.chatBoxes.length; i++) {
-				if (!this.chatBoxes[i].player) {
-					this.chatboxesMap[player.playerId] = this.chatBoxes[i];
-					this.chatBoxes[i].setPlayer(player);
-					this.chatBoxes[i].draw();
-					return this.chatBoxes[i];
+	getLastChatboxForPlayer: function (player) {
+		return this.chatboxesMap[player.playerId];
+	},
+	spawnChatbox: function (player, message) {
+		const lastChatbox = this.getLastChatboxForPlayer(player);
+		if (lastChatbox) {
+			lastChatbox.setIsTyping(false);
+		}
+		if (this.lastSpawnedChatbox) {
+			this.chatboxCursorY += this.lastSpawnedChatbox.getFilledHeight();
+			if (this.chatboxCursorY > 19) {
+				// Overflow
+				this.chatboxCursorY = 5;
+			}
+		} else {
+			this.chatboxCursorY = 5;
+		}
+		const chatBox = new ChatBox(this.term, 5, 25, {x:0, y: this.chatboxCursorY}, this);
+		this.chatboxesMap[player.playerId] = chatBox;
+		this.chatBoxes.push(chatBox);
+		chatBox.setPlayer(player);
+		chatBox.setText(message);
+		chatBox.draw();
+		// Check if the new chatBox overlaps other chatboxes including a vertical padding
+		let overlap = false;
+		for (let i = 0; i < this.chatBoxes.length; i++) {
+			const theChatBox = this.chatBoxes[i];
+			if (theChatBox == chatBox) {
+				continue;
+			}
+			const x1 = theChatBox.position.y;
+			const x2 = theChatBox.position.y + theChatBox.getFilledHeight() - 1;
+			const y1 = chatBox.position.y;
+			const y2 = chatBox.position.y + chatBox.getFilledHeight() + 2;
+			if (x1 <= y2 && y1 <= x2) {
+				if (this.chatboxesMap[theChatBox.player.playerId] == theChatBox) {
+					delete this.chatboxesMap[theChatBox.player.playerId];
 				}
+				theChatBox.reset();
+				theChatBox.draw();
+				this.chatBoxes.splice(i, 1);
+				i--;
+				overlap = true;
 			}
 		}
-		return chatbox;
+		if (overlap) {
+			this.refresh();
+		}
+		this.lastSpawnedChatbox = chatBox;
+		return chatBox;
 	},
 	unassignChatbox: function (playerId) {
 		let chatbox = this.chatboxesMap[playerId];
