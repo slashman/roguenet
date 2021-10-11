@@ -82,7 +82,25 @@ const TILES = {
 		color: [178, 0, 255],
 		solid: true,
 		opaque: false
-	}
+	},
+	CLOSED_DOOR: {
+		character: '+',
+		color: [178, 89, 0],
+		solid: true,
+		opaque: true
+	},
+	WINDOW_2: {
+		character: '─',
+		color: [0, 108, 217],
+		solid: true,
+		opaque: false
+	},
+	WINDOW_3: {
+		character: '│',
+		color: [0, 108, 217],
+		solid: true,
+		opaque: false
+	},
 }
 
 Object.keys(TILES).forEach(key => TILES[key].tileId = key);

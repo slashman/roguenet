@@ -17,11 +17,14 @@ TILE_MAP['Í8000FF'] = Tiles.ALTAR_MIDDLE; // ═
 TILE_MAP['»8000FF'] = Tiles.ALTAR_RIGHT; // ╗
 TILE_MAP['Ò663300'] = Tiles.WOOD_BARRIER; //╥
 TILE_MAP['+FB00FF'] = Tiles.WINDOW;
+TILE_MAP['Ä006CD9'] = Tiles.WINDOW_2;
+TILE_MAP['³006CD9'] = Tiles.WINDOW_3;
+TILE_MAP['+B25900'] = Tiles.CLOSED_DOOR;
 TILE_MAP['#B20000'] = Tiles.PORTICULIS;
 
 module.exports = {
 	loadLevel: async function(level){
-		var fileBuffer = fs.readFileSync('maps/temple7DRLCeleb.xp');
+		var fileBuffer = fs.readFileSync('maps/templeRoguelikeCeleb.xp');
 		const map = await rexpaintjs.fromBuffer(fileBuffer);
 		const layer = map.layers[0];
 		for (var x = 0; x < layer.width; x++){
