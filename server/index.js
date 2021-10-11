@@ -66,7 +66,7 @@ function initPlayer(playerObj, socketId) {
     player.username = playerObj.user;
     player.colorIndex = playerObj.colorIndex;
     player.color = COLORS[playerObj.colorIndex];
-    testLevel.addBeingNear(player, 61, 86);
+    testLevel.addBeingNear(player, 25, 29);
     return player;
 }
 
