@@ -173,23 +173,20 @@ module.exports = {
 			return;
 		}
 		this.currentArea = area;
-		document.getElementById("areaInfo").style.display = 'block';
-		this.message('You are in the "' + area.name  + '" booth. '+ area.gameDetails, 0, 0, 170, 170, 170);
-
-		/*
-		document.getElementById("areaTitle").innerHTML = 'You are in the [' + area.name  + '] booth';
-		document.getElementById("gameDetails").innerHTML = area.gameDetails;*/
-		document.getElementById("gamePlay").innerHTML = area.name + ' by ' + area.author  + ' <a class = "whiteLink" href = "' + area.playURL + '" target = "_blank">Play Now!</a>';
-		const video = document.getElementById("videoFrame");
-		const videoContainer = document.getElementById("videoContainer");
-		if (area.videoId) {
-			video.setAttribute( "src", "https://www.youtube.com/embed/"+ area.videoId);
-			console.log("set source");
-			videoContainer.style.display = 'block';
-		} else {
-			videoContainer.style.display = 'none';
+		this.message(area.enterMessage, 0, 0, 170, 170, 170);
+		if (area.type === 'video') {
+			document.getElementById("areaInfo").style.display = 'block';
+			document.getElementById("gamePlay").innerHTML = area.videoTitle + ' <a class = "whiteLink" href = "' + area.playURL + '" target = "_blank">Play Now!</a>';
+			const video = document.getElementById("videoFrame");
+			const videoContainer = document.getElementById("videoContainer");
+			if (area.videoId) {
+				video.setAttribute( "src", "https://www.youtube.com/embed/"+ area.videoId);
+				console.log("set source");
+				videoContainer.style.display = 'block';
+			} else {
+				videoContainer.style.display = 'none';
+			}
 		}
-
 	},
 	drawBeingDetails: function () {
 		const being = this.examinedBeing;

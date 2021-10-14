@@ -22,5 +22,15 @@ module.exports = {
 			y: 21,
 			def: Items.ROGUELIKECEL_TSHIRT
 		}
+	],
+	areas: [
+		{ x: 18, y:42, w: 4, h: 4, type: 'talk', enterMessage: 'You enter a private conversation area.' },
+		{ x: 104, y: 29, w: 5, h: 2, type: 'video', enterMessage: "Rogue (1980) by Michael Toy, Glenn Wichman, and Ken Arnold.", videoTitle: "Rogue", videoId: "T7ZVeJVOYe0", playURL: ""},
+		{ x: 98, y: 23, w: 2, h: 5, type: 'video', enterMessage: "Hack (1984) by Jay Fenlason, Kenny Woodland, Mike Thome, and Jonathan Payne.", videoTitle: "Hack", videoId: "", playURL: ""},
+		{ x: 98, y: 12, w: 2, h: 5, type: 'video', enterMessage: "NetHack (1987) by Mike Stephenson, Izchak Miller, and Janet Walz.", videoTitle: "Nethack", videoId: "", playURL: ""},
+		{ x: 113, y: 23, w: 2, h: 5, type: 'video', enterMessage: "Moria (1983) by Robert Alan Koeneke.", videoTitle: "Moria", videoId: "MnKyvlexxgM", playURL: ""},
+		{ x: 113, y: 12, w: 2, h: 5, type: 'video', enterMessage: "Angband (1990) by Alex Cutler and Andy Astrand.", videoTitle: "Angband", videoId: "BDidsq-HQP8", playURL: ""},
+		{ x: 104, y: 26, w: 5, h: 2, type: 'video', enterMessage: "Larn (1986) by Noah Morgan.", videoTitle: "Larn ", videoId: "", playURL: ""},
+		{ x: 104, y: 5, w: 5, h: 2, type: 'video', enterMessage: "ADOM (1994) by Thomas Biskup.", videoTitle: "ADOM", videoId: "", playURL: ""},
 	]
 }

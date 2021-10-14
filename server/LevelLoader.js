@@ -66,5 +66,6 @@ module.exports = {
 			}
 			level.itemGivers[ig.x][ig.y] = ig;
 		});
+		level.areas = metadata.areas;
 	}
 }

@@ -6,15 +6,6 @@ var Level = function(game, id){
 	this.init(game, id);
 }
 
-const areas = [
-	{ x: 104, y: 29, w: 5, h: 2, name: "Rogue", gameDetails: "", videoId: "T7ZVeJVOYe0", author: "Michael Toy, Glenn Wichman, Ken Arnold", playURL: ""},
-	{ x: 98, y: 23, w: 2, h: 5, name: "Hack", gameDetails: "", videoId: "", author: "Jay Fenlason, Kenny Woodland, Mike Thome, Jonathan Payne", playURL: ""},
-	{ x: 98, y: 12, w: 2, h: 5, name: "Nethack", gameDetails: "", videoId: "", author: "Mike Stephenson, Izchak Miller, Janet Walz", playURL: ""},
-	{ x: 113, y: 23, w: 2, h: 5, name: "Moria", gameDetails: "", videoId: "MnKyvlexxgM", author: "Robert Alan Koeneke", playURL: ""},
-	{ x: 113, y: 12, w: 2, h: 5, name: "Angband", gameDetails: "", videoId: "BDidsq-HQP8", author: "Alex Cutler, Andy Astrand", playURL: ""},
-	{ x: 104, y: 26, w: 5, h: 2, name: "Larn ", gameDetails: "", videoId: "", author: "Noah Morgan", playURL: ""},
-	{ x: 104, y: 5, w: 5, h: 2, name: "ADOM", gameDetails: "", videoId: "", author: "Thomas Biskup", playURL: ""},
-]
 
 
 Level.prototype = {
@@ -31,6 +22,7 @@ Level.prototype = {
 		});
 		this.exits = [];
 		this.items = [];
+		this.areas = data.areas;
 	},
 	init: function(game){
 		this.game = game;
@@ -108,7 +100,7 @@ Level.prototype = {
 		return this.playersMap[id];
 	},
 	getArea: function (x, y) {
-		return areas.find(a => x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h);
+		return this.areas.find(a => x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h);
 	}
 }
 
