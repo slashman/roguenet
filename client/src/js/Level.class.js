@@ -1,5 +1,6 @@
 const Being = require("./Being.class");
 const Tiles = require("./Tiles.enum");
+const Items = require("./Items");
 
 var Level = function(game, id){
 	this.init(game, id);
@@ -17,8 +18,9 @@ const areas = [
 
 
 Level.prototype = {
-	loadData: function (tiles, data) {
+	loadData: function (tiles, items, data) {
 		Tiles.setData(tiles);
+		Items.setData(items);
 		this.map = data.map.map(mapColumn => mapColumn.map (tile => Tiles[tile.tileId]));
 		this.beings = [];
 		this.beingsList = [];

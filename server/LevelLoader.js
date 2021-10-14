@@ -57,5 +57,14 @@ module.exports = {
 				level.map[x][y] = tileType;
 			}
 		}
+		// Level map loaded (tiles), now let's add the items from the metadata
+		const metadata = require('./maps/templeRoguelikeCeleb');
+		level.itemGivers = [];
+		metadata.itemGivers.forEach(ig => {
+			if (!level.itemGivers[ig.x]) {
+				level.itemGivers[ig.x] = [];
+			}
+			level.itemGivers[ig.x][ig.y] = ig;
+		});
 	}
 }

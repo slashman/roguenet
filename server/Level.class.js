@@ -150,6 +150,11 @@ Level.prototype = {
 			this.beingsList.splice(beingIndex, 1);
 		}
 	},
+	getItemGiver: function (x, y) {
+		if (!this.itemGivers[x])
+			return undefined;
+		return this.itemGivers[x][y];
+	},
     moveTo: function(being, dx,dy){		
 		if (!this.canWalkTo(being.x+dx,being.y+dy)){
 			return false;
@@ -158,16 +163,25 @@ Level.prototype = {
 		const ty = being.y + dy;
 		let result = true;
 		if (tx == 5 && ty == 1) {
-			if (!being.hasKey) {
+			if (!being.hasItem('geoKey')) {
 				return "needKey";
 			}
 		}
+		const itemGiver = this.getItemGiver(tx, ty);
+		if (itemGiver) {
+			return {
+				type: 'bumpWithItemGiver',
+				itemGiver,
+				alreadyHas: being.hasItem(itemGiver.def.id)
+			}
+		}
+		/*
 		if (tx == 149 && ty == 80) {
 			if (!being.hasKey) {
 				being.hasKey = true;
 				result = "pickedKey";
 			}
-		}
+		}*/
 		if (tx == 6 && ty == 7) {
 			if (!being.hadFoundGeo) {
 				being.hadFoundGeo = true;

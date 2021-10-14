@@ -114,6 +114,20 @@ module.exports = {
             this.game.input.setMode('PROMPT_CHAT');
         });
 
+        socket.on('promptGetItem', data => {
+            debug('promptGetItem', data);
+            this.game.display.message("Pick up a "+ data +"? Y/N");
+            this.game.input.setMode('PROMPT_GET_ITEM');
+        });
+
+        socket.on('showPlayerInfo', data => {
+            if (data.context == 'inventory') {
+                this.game.input.activateInventory(data.items);
+            } else { 
+                this.game.display.showPlayerInfo(data);
+            }
+        });
+
         socket.on('chatRequestCancelled', data => {
             debug('chatRequestCancelled', data);
             if (this.game.input.mode == 'PROMPT_CHAT') {
@@ -240,8 +254,18 @@ module.exports = {
         this.game.input.setMode("MOVEMENT");
     },
 
+    respondGetItem: function (pickUp) {
+        this.socket.emit('getItemResponse', pickUp);
+        this.game.display.message(pickUp ? "Yes" : "No");
+        this.game.input.setMode("MOVEMENT");
+    },
+
     startTyping: function () {
         this.socket.emit('startTyping');
+    },
+
+    showPlayerInfo: function (context) {
+        this.socket.emit('examinePlayer', context);
     },
 
     stopTyping: function () {

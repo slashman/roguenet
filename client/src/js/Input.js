@@ -1,4 +1,6 @@
+const Item = require('./Item.class');
 const IsTypingChecker = require('./IsTypingChecker');
+const Items = require('./Items');
 
 module.exports = {
 	inputEnabled: true,
@@ -34,7 +36,13 @@ module.exports = {
 					this.activeInputBox.submit();
 				}
 			}
-			if (this.mode === 'PROMPT_CHAT') {
+			if (this.mode === 'PROMPT_GET_ITEM') {
+				if (e.key === "y" || e.key === "Y"){
+					this.game.client.respondGetItem(true);
+				} else if (e.key === "n" || e.key === "N"){
+					this.game.client.respondGetItem(false);
+				}
+			} else if (this.mode === 'PROMPT_CHAT') {
 				if (e.key === "y" || e.key === "Y"){
 					this.game.client.acceptChatRequest();
 				} else if (e.key === "n" || e.key === "N"){
@@ -56,6 +64,13 @@ module.exports = {
 						this.game.input.setMode('TALK');
 						this.game.display.message("You start talking.");
 					}
+				} else if (e.key.toUpperCase() === "I") {
+					this.game.client.showPlayerInfo('inventory');
+					this.setMode('INVENTORY');
+					return;
+				} else if (e.key.toUpperCase() === "S") {
+					this.game.client.showPlayerInfo('status');
+					return;
 				} else if (e.key === "Tab") {
 					this.game.client.changeColor();
 					return;
@@ -72,6 +87,17 @@ module.exports = {
 				}
 			}
 		});
+	},
+	activateInventory: function (items) {
+		if (items.length === 0){
+			this.game.display.message("You don't have any items");
+			this.setMode('MOVEMENT');
+			return;
+		}
+		this.selectedItemIndex = 0;
+		items = items.map(i => new Item(Items[i]));
+		this.selectedItem = items[0];
+		this.game.display.showInventory(items);
 	},
 	movedir: { x: 0, y: 0 },
 	onKeyDown: function(k){
@@ -91,17 +117,6 @@ module.exports = {
 		} else if (this.mode === 'MOVEMENT'){
 			if (k === ut.KEY_COMMA){
 				this.game.player.tryPickup();
-				return;
-			}
-			if (k === ut.KEY_I){
-				if (this.game.player.items.length === 0){
-					this.game.display.message("You don't have any items");
-					return;
-				}
-				this.setMode('INVENTORY');
-				this.selectedItemIndex = 0;
-				this.selectedItem = this.game.player.items[0];
-				this.game.display.showInventory();
 				return;
 			}
 			this.movedir.x = 0;
@@ -148,13 +163,13 @@ module.exports = {
 				if (this.selectedItemIndex > 0){
 					this.selectedItemIndex --;
 				}
-				this.selectedItem = this.game.player.items[this.selectedItemIndex];
+				this.selectedItem = this.game.display.currentItems[this.selectedItemIndex];
 				this.game.display.showInventory();
 			} else if (k === ut.KEY_DOWN || k === ut.KEY_J){
-				if (this.selectedItemIndex < this.game.player.items.length - 1){
+				if (this.selectedItemIndex < this.game.display.currentItems.length - 1){
 					this.selectedItemIndex ++;
 				}
-				this.selectedItem = this.game.player.items[this.selectedItemIndex];
+				this.selectedItem = this.game.display.currentItems[this.selectedItemIndex];
 				this.game.display.showInventory();
 			} else if (k === ut.KEY_D){
 				this.game.player.tryDrop(this.selectedItem);

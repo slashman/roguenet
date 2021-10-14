@@ -54,7 +54,7 @@ module.exports = {
 		);
 		this.passwordBox.masked = true;
 
-		this.inventoryBox = new Box(this.term, 15, 40, {x:19, y:4});
+		this.inventoryBox = new Box(this.term, 15, 40, {x:25, y:5});
 		this.centered = config && config.centered;
 		this.centered = true;
 		this.mode = 'TITLE';
@@ -151,6 +151,9 @@ module.exports = {
 			} else {
 				this.hideAreaInfo();
 			}
+			if (this.game.input.mode == 'INVENTORY' && this.currentItems) {
+				this.showInventory();
+			}
 		}
 		this.term.render();
 	},
@@ -184,25 +187,29 @@ module.exports = {
 		}
 
 	},
-	showInventory: function(){
+	showInventory: function(items){
+		if (items) {
+			this.currentItems = items;
+		}
 		this.inventoryBox.draw();
-		var xBase = 20;
+		var xBase = 26;
 		var yBase = 5;
 		this.term.putString("Inventory", xBase, yBase, 255, 0, 0);
-		for (var i = 0; i < this.game.player.items.length; i++){
-			var item = this.game.player.items[i];
+		for (var i = 0; i < this.currentItems.length; i++){
+			var y = yBase + 2 + i;
+			var item = this.currentItems[i];
 			if (item == this.game.input.selectedItem){
-				this.term.put(this.CURSOR_TILE, xBase, yBase+1+i);
+				this.term.put(this.CURSOR_TILE, xBase, y);
 			} else {
-				this.term.put(this.BLANK_TILE, xBase, yBase+1+i);
+				this.term.put(this.BLANK_TILE, xBase, y);
 			}
-			this.term.put(item.def.tile, xBase+2, yBase+1+i);
-			this.term.put(item.def.tile, xBase+2, yBase+1+i);
-			this.term.putString(item.def.name, xBase + 4, yBase+1+i, 255, 255, 255);
+			this.term.put(item.def.tile, xBase+2, y);
+			this.term.putString(item.def.name, xBase + 4, y, 255, 255, 255);
 		}
 		this.term.render();
 	},
 	hideInventory: function(){
+		this.currentItems = undefined; 
 		this.term.clear();
 		this.refresh();		
 	},
@@ -293,6 +300,11 @@ module.exports = {
 	peopleCellRenderer (term, being, x, y) {
 		term.put(being.tile, x, y);
 		term.putString("- " + being.playerName, x + 2, y, 170, 170, 170);
+	},
+
+	showPlayerInfo (data) {
+		console.log(data);
 	}
+
 
 }

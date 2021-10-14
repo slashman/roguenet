@@ -28,6 +28,8 @@ const Chats = require('./Chats');
 const Yell = require('./Yell');
 const ActionRateLimiter = require('./ActionRateLimiter');
 const { join } = require('path');
+const Item = require('./Item.class');
+const Items = require('./Items.enum');
 
 const COLORS = [
 //    [0, 0, 0],
@@ -66,6 +68,7 @@ function initPlayer(playerObj, socketId) {
     player.username = playerObj.user;
     player.colorIndex = playerObj.colorIndex;
     player.color = COLORS[playerObj.colorIndex];
+    player.state = 'moving';
     testLevel.addBeingNear(player, 25, 29);
     return player;
 }
@@ -148,6 +151,7 @@ function initHooks (socket, user) {
 	socket.on('getWorldState', function(){
 		socket.emit('worldState', {
             tiles: Tiles,
+            items: Items,
             levels: Game.world.levels
         });
     });
@@ -171,7 +175,51 @@ function initHooks (socket, user) {
             color: player.color
         });
     });
-    
+
+    socket.on('getItemResponse', function(pickup){
+        const player = players[socket.id];
+        if (!player) {
+            console.log('socket '+socket.id+" has no player");
+            socket.emit('actionFailed');
+            player.state = 'moving';
+            return;
+        }
+        if (player.state !== 'gettingItem') {
+            console.log('Player '+player.playerName+" is not in 'gettingItem' state during 'getItemResponse' command.");
+            socket.emit('actionFailed');
+            player.state = 'moving';
+            return;
+        }
+        if (!player.itemGiver) {
+            console.log('Player '+player.playerName+" has no itemGiver during 'getItemResponse' command.");
+            socket.emit('actionFailed');
+            player.state = 'moving';
+            return;
+        }
+        if (pickup) { 
+            player.addItem(new Item(player.itemGiver.def));
+        }
+        player.state = 'moving';
+    });
+
+    socket.on('examinePlayer', function(context) {
+        const player = players[socket.id];
+        if (ActionRateLimiter.limitAction(socket)) {
+			return;
+        }
+        if (!player) {
+            console.log('socket '+socket.id+" has no player");
+            socket.emit('actionFailed');
+            return;
+        }
+        socket.emit('showPlayerInfo', {
+            context,
+            name: player.playerName,
+            items: player.inventory.map(i => i.def.id)
+        });
+
+    });
+
     socket.on('moveTo', function(dir){
         const player = players[socket.id];
         // console.log('Player '+player.playerName+" wants to move x:"+dir.dx+" y:"+dir.dy);
@@ -183,9 +231,25 @@ function initHooks (socket, user) {
             socket.emit('actionFailed');
             return;
         }
+        if (player.state !== 'moving') {
+            console.log('Player '+player.playerName+" is not in 'moving' state.");
+            socket.emit('actionFailed');
+            return;
+        }
         const testLevel = Game.world.getLevel('testLevel'); //TODO: Get level from player
         const result = testLevel.moveTo(player, dir.dx, dir.dy);
-        if(result === "needKey") {
+        if(!result) {
+            socket.emit('actionFailed');
+        } else if (result.type == 'bumpWithItemGiver') {
+            if (result.alreadyHas) {
+                socket.emit('serverMessage', { message: "You already have the " + result.itemGiver.def.name + "."});
+            } else {
+                player.itemGiver = result.itemGiver;
+                player.state = 'gettingItem';
+                socket.emit('promptGetItem', result.itemGiver.def.name);
+            }
+            socket.emit('actionFailed');
+        } else if(result === "needKey") {
             socket.emit('serverMessage', { message: "It's locked." });
             socket.emit('actionFailed');
 		} else if(result){
@@ -204,8 +268,6 @@ function initHooks (socket, user) {
             } else if (result === "foundGeo") {
                 socket.emit('serverMessage', { message: "There is a " + testLevel.geo + " here, cached by " + testLevel.geoCacher + " (#" + testLevel.geoNumber + ")." });
             }
-        } else {
-            socket.emit('actionFailed');
         }
         ActionRateLimiter.update(socket);
     });
