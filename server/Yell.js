@@ -7,7 +7,7 @@ module.exports = {
 		const messageText = message.message;
 		const player = this.players[socket.id];
 		console.log('yelling message at ' + player.x + "," + player.y);
-		this.io.emit('messageShout', {
+		this._emitToGroup(player, 'messageShout', {
 			playerId: player.playerId,
 			x: player.x,
 			y: player.y,
@@ -15,16 +15,21 @@ module.exports = {
 		});
 	},
 
+	_emitToGroup (player, message, payload) {
+		console.log('sending [' + message + '] to [' + player.currentChatChannel + ']');
+		this.io.to(player.currentChatChannel).emit(message, payload);
+	},
+
 	startTyping (socket) {
 		const player = this.players[socket.id];
-		this.io.emit('startedTyping', {
+		this._emitToGroup(player, 'startedTyping', {
 			playerId: player.playerId
 		});
 	},
 
 	stopTyping (socket) {
 		const player = this.players[socket.id];
-		this.io.emit('stoppedTyping', {
+		this._emitToGroup(player,'stoppedTyping', {
 			playerId: player.playerId
 		});
 	},

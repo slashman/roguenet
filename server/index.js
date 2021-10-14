@@ -69,6 +69,7 @@ function initPlayer(playerObj, socketId) {
     player.colorIndex = playerObj.colorIndex;
     player.color = COLORS[playerObj.colorIndex];
     player.state = 'moving';
+    player.currentChatChannel = 'nearbyConversation';
     testLevel.addBeingNear(player, 25, 29);
     return player;
 }
@@ -131,6 +132,7 @@ io.on('connection', function(socket){
             player.playerId = socket.id;
         }
         initHooks(socket, user);
+        socket.join(player.currentChatChannel);
         console.log('User '+username+ " logs in");
         socket.emit('loginResult', { success: true, player, isAdmin: user.isAdmin == true });
     });
@@ -241,7 +243,7 @@ function initHooks (socket, user) {
             return;
         }
         const testLevel = Game.world.getLevel('testLevel'); //TODO: Get level from player
-        const result = testLevel.moveTo(player, dir.dx, dir.dy);
+        const result = testLevel.moveTo(socket, player, dir.dx, dir.dy);
         if(!result) {
             socket.emit('actionFailed');
         } else if (result.type == 'bumpWithItemGiver') {

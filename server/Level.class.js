@@ -166,7 +166,7 @@ Level.prototype = {
 			return undefined;
 		return this.itemGivers[x][y];
 	},
-    moveTo: function(being, dx,dy){		
+    moveTo: function(socket, being, dx,dy) {
 		const tx = being.x + dx;
 		const ty = being.y + dy;
 		const tBeing = this.getBeing(tx, ty);
@@ -214,7 +214,17 @@ Level.prototype = {
 		if (!this.beings[being.x])
 			this.beings[being.x] = [];
 		this.beings[being.x][being.y] = being;
+		this.landOnArea(socket, being);
 		return result;
+	},
+	landOnArea: function (socket, being) {
+		const area = this.getArea(being.x, being.y);
+		if (being.currentArea && (!area || area != being.currentArea)) {
+			being.leaveArea(socket);
+		}
+		if (area && area != being.currentArea) {
+			being.joinArea(socket, area);
+		}
 	},
 	getPlayerByUsername: function (username) {
 		return this.beingsList.find(being => being.username == username);
@@ -241,6 +251,9 @@ Level.prototype = {
 		this.geo = geoObjects[Math.floor(Math.random()*geoObjects.length)];
 		this.geoNumber++;
 		this.geoCacher = being.playerName;
+	},
+	getArea: function (x, y) {
+		return this.areas.find(a => x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h);
 	}
 }
 
