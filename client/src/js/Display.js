@@ -144,7 +144,11 @@ module.exports = {
 			this.chatBoxes.forEach(c => c.draw());
 			const level = this.game.world.level;
 			const area = level.getArea(level.player.being.x, level.player.being.y);
-			this.peopleList.draw();
+			if (this.examinedBeing) {
+				this.drawBeingDetails();
+			} else {
+				this.peopleList.draw();
+			}
 			this.commandsBox.draw();
 			if (area) {
 				this.showAreaInfo(area);
@@ -186,6 +190,21 @@ module.exports = {
 			videoContainer.style.display = 'none';
 		}
 
+	},
+	drawBeingDetails: function () {
+		const being = this.examinedBeing;
+		if (!being)
+			return;
+		var xBase = 56;
+		var yBase = 2;
+		this.term.putString("Looking at " + being.name, xBase, yBase, 255, 0, 0);
+		const items = being.items;
+		for (var i = 0; i < items.length; i++){
+			var y = yBase + 2 + i;
+			var item = items[i];
+			this.term.put(item.def.tile, xBase, y);
+			this.term.putString(item.def.name, xBase + 2, y, 255, 255, 255);
+		}
 	},
 	showInventory: function(items){
 		if (items) {
@@ -303,7 +322,15 @@ module.exports = {
 	},
 
 	showPlayerInfo (data) {
+		this.examinedBeing = data;
 		console.log(data);
+		this.game.input.updateCommands();
+		this.refresh();
+	},
+
+	hidePlayerInfo () {
+		this.examinedBeing = undefined;
+		this.refresh();
 	}
 
 

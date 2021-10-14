@@ -1,6 +1,4 @@
-const Item = require('./Item.class');
 const IsTypingChecker = require('./IsTypingChecker');
-const Items = require('./Items');
 
 module.exports = {
 	inputEnabled: true,
@@ -54,9 +52,13 @@ module.exports = {
 				}
 			} else if (this.mode === 'MOVEMENT'){
 				if (e.key === "Escape") {
-					this.game.talkManager.endChat();
-					this.game.display.message("Conversation Ended.");
-					this.game.client.leaveChat();
+					if (this.game.display.examinedBeing) {
+						this.game.display.hidePlayerInfo();
+					} else {
+						this.game.talkManager.endChat();
+						this.game.display.message("Conversation Ended.");
+						this.game.client.leaveChat();
+					}
 					this.updateCommands();
 				} else if (e.key === "Enter") {
 					if (this.game.talkManager.isTalkActive || this.game.talkManager.isYellActive) {
@@ -95,7 +97,6 @@ module.exports = {
 			return;
 		}
 		this.selectedItemIndex = 0;
-		items = items.map(i => new Item(Items[i]));
 		this.selectedItem = items[0];
 		this.game.display.showInventory(items);
 	},
@@ -215,6 +216,8 @@ module.exports = {
 				let availableCommands = "";
 				if (this.game.talkManager.isTalkActive) {
 					availableCommands += "[ESC] - Leave Chat | [Enter] Switch to Talking";
+				} else if (this.game.display.examinedBeing) {
+					availableCommands += "[ESC] Hide Inspector | [Enter] Switch to Talking | [Tab] Change color";
 				} else {
 					availableCommands += "[Enter] Switch to Talking | [Tab] Change color";
 				}

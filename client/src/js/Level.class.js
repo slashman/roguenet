@@ -60,9 +60,9 @@ Level.prototype = {
 			// Catch OOB
 			return false;
 		}
-		if (this.beings[x] && this.beings[x][y]){
+		/*if (this.beings[x] && this.beings[x][y]){
 			return false;
-		}
+		}*/
 		if (this.player && this.player.x === x && this.player.y === y)
 			return false;
 		return true;

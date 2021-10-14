@@ -253,6 +253,13 @@ function initHooks (socket, user) {
                 socket.emit('promptGetItem', result.itemGiver.def.name);
             }
             socket.emit('actionFailed');
+        } else if (result.type == 'bumpWithBeing') {
+            socket.emit('showPlayerInfo', {
+                context: 'info',
+                name: result.being.playerName,
+                items: result.being.inventory.map(i => i.def.id)
+            });
+            socket.emit('actionFailed'); // Movement failed, the initial action
         } else if(result === "needKey") {
             socket.emit('serverMessage', { message: "It's locked." });
             socket.emit('actionFailed');

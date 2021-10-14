@@ -167,11 +167,18 @@ Level.prototype = {
 		return this.itemGivers[x][y];
 	},
     moveTo: function(being, dx,dy){		
-		if (!this.canWalkTo(being.x+dx,being.y+dy)){
-			return false;
-		}
 		const tx = being.x + dx;
 		const ty = being.y + dy;
+		const tBeing = this.getBeing(tx, ty);
+		if (tBeing) {
+			return {
+				type: 'bumpWithBeing',
+				being: tBeing
+			}
+		}
+		if (!this.canWalkTo(tx, ty)){
+			return false;
+		}
 		let result = true;
 		if (tx == 5 && ty == 1) {
 			if (!being.hasItem('geoKey')) {

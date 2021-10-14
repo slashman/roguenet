@@ -1,5 +1,7 @@
 const Being = require('./Being.class');
 const config = require('./config');
+const Item = require('./Item.class');
+const Items = require('./Items');
 
 module.exports = {
     init: function (game) {
@@ -121,6 +123,7 @@ module.exports = {
         });
 
         socket.on('showPlayerInfo', data => {
+            data.items = data.items.map(i => new Item(Items[i]));;
             if (data.context == 'inventory') {
                 this.game.input.activateInventory(data.items);
             } else { 
