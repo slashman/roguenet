@@ -142,13 +142,24 @@ Level.prototype = {
 			this.items[x] = [];
 		this.items[x][y] = false;
 	},
-	removeBeing: function(username) {
+	removeBeing: function(username, disable) {
 		const beingIndex = this.beingsList.findIndex(being => being.username == username);
 		if (beingIndex != -1){
 			const being = this.beingsList[beingIndex];
 			delete this.beings[being.x][being.y];
-			this.beingsList.splice(beingIndex, 1);
+			if (disable) {
+				being.disabled = true;
+			} else {
+				this.beingsList.splice(beingIndex, 1);
+			}
 		}
+	},
+	reactivateBeing: function(being) {
+		being.disabled = false;
+		if (!this.beings[being.x]) {
+			this.beings[being.x] = [];
+		}
+		this.beings[being.x][being.y] = being;
 	},
 	getItemGiver: function (x, y) {
 		if (!this.itemGivers[x])

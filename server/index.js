@@ -110,8 +110,12 @@ io.on('connection', function(socket){
             }
         }
         let player = players[socket.id];
+        const level = Game.world.getLevel('testLevel');
         if (!player) {
-            player = Game.world.getLevel('testLevel').getPlayerByUsername(user.user);
+            player = level.getPlayerByUsername(user.user);
+        }
+        if (player && player.disabled) {
+            level.reactivateBeing(player);
         }
         if (!player) {
             player = initPlayer(user, socket.id);
@@ -142,7 +146,7 @@ function initHooks (socket, user) {
         if (reason === 'client namespace disconnect'/* || reason === 'ping timeout'*/) {
             //Chats.leaveChatMessage(socket);
             socket.broadcast.emit('playerDisconnected', player);
-            Game.world.getLevel('testLevel').removeBeing(player.username);
+            Game.world.getLevel('testLevel').removeBeing(player.username, true);
             delete players[socket.id];
             return;
         }
