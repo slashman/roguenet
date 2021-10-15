@@ -264,6 +264,7 @@ module.exports = {
 			if (this.chatboxCursorY > 19) {
 				// Overflow
 				this.chatboxCursorY = 5;
+				this.chatBoxes.forEach(c => c.setFaded());
 			}
 		} else {
 			this.chatboxCursorY = 5;
