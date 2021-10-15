@@ -21,7 +21,17 @@ module.exports = {
 			x: 33,
 			y: 21,
 			def: Items.ROGUELIKECEL_TSHIRT
-		}
+		},
+		{ x: 93, y: 30, def: Items.ROGUETEMPLE_BOOK },
+		{ x: 94, y: 30, def: Items.FAKE_AMULET_OF_YENDOR },
+		{ x: 95, y: 30, def: Items.VORPAL_BLADE_TOY },
+		{ x: 96, y: 30, def: Items.LARN_PLUSH_DOG },
+		{ x: 93, y: 34, def: Items.AXE_MINOTAUR_EMPEROR },
+		{ x: 94, y: 34, def: Items.EXPENSIVE_CAMERA },
+		{ x: 95, y: 34, def: Items.BALROG_FIGURINE },
+		{ x: 96, y: 34, def: Items.ANGBAND_VARIANTS_BOOK },
+
+		{ x: 103, y: 34, def: Items.MUSEUM_FLIER },
 	],
 	areas: [
 		{ x: 18, y:42, w: 4, h: 4, type: 'talk', enterMessage: 'You enter a private conversation area. Topic is: Favorite Roguelike.', channelId: 'private1' },
