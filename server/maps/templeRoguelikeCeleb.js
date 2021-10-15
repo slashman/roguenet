@@ -32,6 +32,14 @@ module.exports = {
 		{ x: 96, y: 34, def: Items.ANGBAND_VARIANTS_BOOK },
 
 		{ x: 103, y: 34, def: Items.MUSEUM_FLIER },
+
+		{ x: 7, y: 18, def: Items.DRINK_1 },
+		{ x: 8, y: 18, def: Items.DRINK_2 },
+		{ x: 9, y: 18, def: Items.DRINK_3 },
+		{ x: 10, y: 18, def: Items.DRINK_4 },
+		{ x: 11, y: 18, def: Items.DRINK_5 },
+		{ x: 12, y: 18, def: Items.DRINK_6 },
+		{ x: 13, y: 18, def: Items.DRINK_7 },
 	],
 	areas: [
 		{ x: 18, y:42, w: 4, h: 4, type: 'talk', enterMessage: 'You enter a private conversation area. Topic is: Favorite Roguelike.', channelId: 'private1' },

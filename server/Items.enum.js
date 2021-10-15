@@ -99,5 +99,61 @@ module.exports = {
 		color: [203, 203, 203],
 		character: '?',
 		useMessage: 'A collection of 7 games that helped define a genre. Stay in front of each display to learn about them.'
+	},
+	DRINK_1: {
+		id: 'DRINK_1',
+		name: 'Yendor\'s Legend',
+		color: [255, 0, 0],
+		character: '!',
+		useMessage: 'You feel buffed!',
+		cost: 10
+	},
+	DRINK_2: {
+		id: 'DRINK_2',
+		name: 'Slow Permadeath',
+		color: [140, 0, 0],
+		character: '!',
+		useMessage: 'This tastes like normal beer.',
+		cost: 10
+	},
+	DRINK_3: {
+		id: 'DRINK_3',
+		name: 'The Procedural Cocktail',
+		color: [128, 128, 128],
+		character: '!',
+		useMessage: 'The flavor of this drink seems to mutate as it runs through your throat.',
+		cost: 10
+	},
+	DRINK_4: {
+		id: 'DRINK_4',
+		name: 'The Stupid Death',
+		color: [0, 0, 255],
+		character: '!',
+		useMessage: 'This drink is extremely sweet.',
+		cost: 10
+	},
+	DRINK_5: {
+		id: 'DRINK_5',
+		name: 'Todesgetränk',
+		color: [255, 255, 0],
+		character: '!',
+		useMessage: 'Argh! this one really packs a punch!',
+		cost: 10
+	},
+	DRINK_6: {
+		id: 'DRINK_6',
+		name: 'Ängeltårar',
+		color: [255, 255, 0],
+		character: '!',
+		useMessage: 'You feel like you are floating a bit.',
+		cost: 10
+	},
+	DRINK_7: {
+		id: 'DRINK_7',
+		name: 'Plain Water?',
+		color: [51, 255, 51],
+		character: '!',
+		useMessage: 'This doesn\'t really taste like plain water...',
+		cost: 10
 	}
 }
