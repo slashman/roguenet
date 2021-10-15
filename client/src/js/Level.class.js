@@ -23,6 +23,7 @@ Level.prototype = {
 		this.exits = [];
 		this.items = [];
 		this.areas = data.areas;
+		this.soundAreas = data.soundAreas;
 	},
 	init: function(game){
 		this.game = game;
@@ -101,6 +102,9 @@ Level.prototype = {
 	},
 	getArea: function (x, y) {
 		return this.areas.find(a => x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h);
+	},
+	getSoundArea: function (x, y) {
+		return this.soundAreas.find(a => x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h);
 	}
 }
 

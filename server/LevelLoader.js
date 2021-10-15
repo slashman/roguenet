@@ -45,7 +45,8 @@ module.exports = {
 						character: iconv.decode(characterByte, "cp437"),
 						color: [tile.fg.r, tile.fg.g, tile.fg.b],
 						solid: false,
-						opaque: false
+						opaque: false,
+						stepSFX: 'grass1,grass2,grass3,grass4,grass5,grass6' // By default
 					}
 					if (tile.asciiCode == 21) {
 						tileType.character = "§";
@@ -67,5 +68,6 @@ module.exports = {
 			level.itemGivers[ig.x][ig.y] = ig;
 		});
 		level.areas = metadata.areas;
+		level.soundAreas = metadata.soundAreas;
 	}
 }

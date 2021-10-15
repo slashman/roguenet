@@ -37,5 +37,10 @@ module.exports = {
 		{ x: 113, y: 12, w: 2, h: 5, type: 'video', enterMessage: "Angband (1990) by Alex Cutler and Andy Astrand.", videoTitle: "Angband", videoId: "BDidsq-HQP8", playURL: ""},
 		{ x: 104, y: 26, w: 5, h: 2, type: 'video', enterMessage: "Larn (1986) by Noah Morgan.", videoTitle: "Larn ", videoId: "", playURL: ""},
 		{ x: 104, y: 5, w: 5, h: 2, type: 'video', enterMessage: "ADOM (1994) by Thomas Biskup.", videoTitle: "ADOM", videoId: "", playURL: ""},
+	],
+	soundAreas: [
+		{ x: 4, y: 18, w: 36, h: 45, sound: 'party' },
+		{ x: 53, y: 4, w: 17, h: 33 , sound: 'temple' },
+		{ x: 97, y: 4, w: 19, h: 32, sound: 'museum' }
 	]
 }

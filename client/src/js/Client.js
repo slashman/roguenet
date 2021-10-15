@@ -62,6 +62,7 @@ module.exports = {
             this.game.player.updateFOV(); //TODO: How expensive is this client side? we should only do this if the player is close.
             if (player == this.game.player.being) {
                 this.game.input.inputEnabled = true;
+                this.game.player.landOn(data.x, data.y);
             }
         });
 
@@ -261,7 +262,12 @@ module.exports = {
 
     respondGetItem: function (pickUp) {
         this.socket.emit('getItemResponse', pickUp);
-        this.game.display.message(pickUp ? "Yes" : "No");
+        if (pickUp) {
+            this.game.display.message("You pick it up.");
+            this.game.audio.playSfx('pickup');
+        } else {
+            this.game.display.message("No.");
+        }
         this.game.input.setMode("MOVEMENT");
     },
 

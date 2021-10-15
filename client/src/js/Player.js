@@ -32,6 +32,21 @@ module.exports = {
 		}
 		this.game.client.moveTo(dir.x, dir.y);
 	},
+	landOn: function (x, y) {
+		const soundArea = this.game.world.level.getSoundArea(x, y);
+		if (this.currentSoundArea && (!soundArea || soundArea.sound != this.currentSoundArea.sound)) {
+			this.game.audio.stopCurrentMx();
+			this.currentSoundArea = undefined;
+		}
+		if (soundArea && (!this.currentSoundArea || soundArea.sound != this.currentSoundArea.sound)) {
+			this.game.audio.playMx(soundArea.sound);
+			this.currentSoundArea = soundArea;
+		}
+		const cell = this.game.world.level.map[x][y];
+		if (cell.stepSFX) {
+			this.game.audio.playSfx(cell.stepSFX);
+		}
+	},
 	remember: function(x, y){
 		var memory = this.memory[this.game.world.level.id];
 		if (!memory){

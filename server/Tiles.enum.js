@@ -3,7 +3,8 @@ const TILES = {
 		character: '.',
 		color: [203, 203, 203],
 		solid: false,
-		opaque: false
+		opaque: false,
+		stepSFX: 'rock1,rock2,rock3,rock4,rock5,rock6'
 	},
 	WALL: {
 		character: '#',
@@ -15,7 +16,8 @@ const TILES = {
 		character: ',',
 		color: [0, 128, 0],
 		solid: false,
-		opaque: false
+		opaque: false,
+		stepSFX: 'grass1,grass2,grass3,grass4,grass5,grass6'
 	},
 	BUSH: {
 		character: '*',
