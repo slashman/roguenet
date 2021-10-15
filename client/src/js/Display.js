@@ -190,7 +190,7 @@ module.exports = {
 		this.message(area.enterMessage, 0, 0, 170, 170, 170);
 		if (area.type === 'video') {
 			document.getElementById("areaInfo").style.display = 'block';
-			document.getElementById("gamePlay").innerHTML = area.videoTitle + ' <a class = "whiteLink" href = "' + area.playURL + '" target = "_blank">Play Now!</a>';
+			document.getElementById("gamePlay").innerHTML = area.videoTitle/* + ' <a class = "whiteLink" href = "' + area.playURL + '" target = "_blank">Play Now!</a>'*/;
 			const video = document.getElementById("videoFrame");
 			const videoContainer = document.getElementById("videoContainer");
 			if (area.videoId) {
