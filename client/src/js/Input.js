@@ -188,7 +188,7 @@ module.exports = {
 				this.game.display.hideInventory();
 				this.setMode('MOVEMENT');
 			} else if (k === ut.KEY_ENTER || k === ut.KEY_U){
-				if (this.selectedItem.def.targetted || this.selectedItem.def.type.targetted){
+				if (this.selectedItem.def.targetted){
 					this.game.display.message("Select a direction.");
 					this.game.display.hideInventory();
 					this.setMode('SELECT_DIRECTION');
