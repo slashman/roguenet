@@ -1,15 +1,16 @@
 const fs = require('fs');
 const express = require('express');
+const config = require('./config');
 
-const HTTPS = true;
+const HTTPS = config.https.enabled;
 
 const app = express();
 
 let server
 if (HTTPS) {
     const credentials = {
-        key: fs.readFileSync('/etc/letsencrypt/live/net.roguetemple.com/privkey.pem', 'utf8'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/net.roguetemple.com/fullchain.pem', 'utf8')
+        key: fs.readFileSync(config.https.keyFile, 'utf8'),
+        cert: fs.readFileSync(config.https.certFile, 'utf8')
     };
     server = require('https').createServer(credentials, app);
 } else {
