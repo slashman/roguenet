@@ -54,7 +54,7 @@ module.exports = {
 				if (e.key === "Escape") {
 					if (this.game.display.examinedBeing) {
 						this.game.display.hidePlayerInfo();
-					} else {
+					} else if (this.game.talkManager.isTalkActive){
 						this.game.talkManager.endChat();
 						this.game.display.message("Conversation Ended.");
 						this.game.client.leaveChat();
