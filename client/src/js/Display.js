@@ -160,6 +160,8 @@ module.exports = {
 				this.peopleList.draw();
 			}
 			this.commandsBox.draw();
+			const connected = level.beingsList.length + " online";
+			this.term.putString(connected, 79 - connected.length, 24, 170, 170, 170);
 			if (area) {
 				this.showAreaInfo(area);
 			} else {
