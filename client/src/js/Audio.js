@@ -6,6 +6,14 @@ module.exports = {
   currentMx: '',
   init: function(game) {
     this.game = game;
+    this.enabled = true;
+  },
+  toggle: function () {
+    this.enabled = !this.enabled;
+    if (this.enabled)
+      Howler.volume(1);
+    else
+      Howler.volume(0);
   },
   registerSfx: function({ key, ...cfg }) {
     this.sfx[key] = this.createSound({

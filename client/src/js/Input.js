@@ -90,6 +90,9 @@ module.exports = {
 					this.setMode('BADGE');
 					return;
 				} else if (e.key.toUpperCase() === "S") {
+					this.game.audio.toggle();
+					return;
+				} else if (e.key.toUpperCase() === "Z") {
 					this.game.client.showPlayerInfo('info');
 					return;
 				} else if (e.key === "Tab") {
@@ -232,9 +235,9 @@ module.exports = {
 				if (this.game.talkManager.isTalkActive) {
 					availableCommands += "[ESC] Leave Chat | [Enter] Talk";
 				} else if (this.game.display.examinedBeing) {
-					availableCommands += "[Enter] Talk | [Tab] Color | [B]adge | [S]tatus | <Bump> to Examine";
+					availableCommands += "[Enter] Talk | [Tab] Color | [I]nventory | <Bump> to Examine";
 				} else {
-					availableCommands += "[Enter] Talk | [Tab] Color | [B]adge | [S]tatus | <Bump> to Examine";
+					availableCommands += "[Enter] Talk | [Tab] Color | [I]nventory | <Bump> to Examine";
 				}
 				this.game.display.setCommands(availableCommands);
 			break;

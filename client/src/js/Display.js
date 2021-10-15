@@ -18,7 +18,7 @@ module.exports = {
 		this.darkTiles = {};
 		
 		this.textBox = new TextBox(this.term, 2, 80 - 25, {x: 25, y: 0}, this);
-		this.commandsBox = new TextBox(this.term, 2, 80 - 25, {x: 25, y: 23}, this);
+		this.commandsBox = new TextBox(this.term, 1, 80, {x: 0, y: 24}, this);
 
 		this.chatBoxes = [];
 		this.chatboxesMap = {};
@@ -161,13 +161,14 @@ module.exports = {
 			}
 			this.commandsBox.draw();
 			const connected = level.beingsList.length + " online";
-			this.term.putString(connected, 0, 24, 170, 170, 170);
+			this.term.putString(connected, 79 - connected.length, 23, 170, 170, 170);
 			if (area) {
 				this.showAreaInfo(area);
 				Howler.volume(0);
 			} else {
 				this.hideAreaInfo();
-				Howler.volume(1);
+				if (this.game.audio.enabled)
+					Howler.volume(1);
 			}
 			const goldStr = "$" + level.player.being.money;
 			this.term.putString(goldStr, 79 - goldStr.length, 24, 255, 255, 0);
