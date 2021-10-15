@@ -6,21 +6,21 @@ module.exports = {
 		this.audio.registerMx({
 			key: 'party',
 			src: 'party.ogg',
-			volume: 0.8,
+			volume: 0.6,
 			loop: true
 		});
 
 		this.audio.registerMx({
 			key: 'temple',
 			src: 'temple.ogg',
-			volume: 0.8,
+			volume: 0.6,
 			loop: true
 		});
 
 		this.audio.registerMx({
 			key: 'museum',
 			src: 'museum.ogg',
-			volume: 0.8,
+			volume: 0.6,
 			loop: true
 		});
 
