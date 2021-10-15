@@ -164,8 +164,10 @@ module.exports = {
 			this.term.putString(connected, 0, 24, 170, 170, 170);
 			if (area) {
 				this.showAreaInfo(area);
+				Howler.volume(0);
 			} else {
 				this.hideAreaInfo();
+				Howler.volume(1);
 			}
 			const goldStr = "$" + level.player.being.money;
 			this.term.putString(goldStr, 79 - goldStr.length, 24, 255, 255, 0);
