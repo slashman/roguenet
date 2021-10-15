@@ -51,6 +51,9 @@ module.exports = {
 					if (tile.asciiCode == 21) {
 						tileType.character = "§";
 					}
+					if (tile.asciiCode == 12) {
+						tileType.character = "♀";
+					}
 					console.log("Created tile " + tileKey + "["+tileType.character+"] from tile ["+tile.asciiCode+"]");
 					Tiles[tileKey] = tileType;
 					TILE_MAP[tileKey] = tileType;
