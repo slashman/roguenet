@@ -12,6 +12,20 @@ module.exports = {
 			if (!this.inputEnabled)
 				return
 			// Used for a better delay before repeating, works better for "typed" keys (instead of held down)
+			if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN' || this.mode === 'BADGE'){
+				if (e.key.length == 1) {
+					IsTypingChecker.startTyping();
+					if (this.stoppedTypingTimeout) {
+						clearTimeout(this.stoppedTypingTimeout);
+					}
+					this.stoppedTypingTimeout = setTimeout(() => IsTypingChecker.stopTyping(), 1000);
+					this.activeInputBox.addCharacter(e.key);
+					return;
+				} else if (e.key === "Enter"){
+					this.activeInputBox.submit();
+					return;
+				}
+			}
 			if (this.mode === 'TITLE') {
 				if (e.key === "a" || e.key === "A") {
 					this.game.display.setMode('CREATE');
@@ -22,19 +36,20 @@ module.exports = {
 					this.game.display.usernameBox.activate();
 					this.setMode('LOGIN');
 				}
-			} else if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN' || this.mode === 'BADGE'){
-				if (e.key.length == 1) {
-					IsTypingChecker.startTyping();
-					if (this.stoppedTypingTimeout) {
-						clearTimeout(this.stoppedTypingTimeout);
+			} else if (this.mode === 'INVENTORY') {
+				if (e.key === "Enter") {
+					if (this.selectedItem.def.targetted){
+						this.game.display.message("Select a direction.");
+						this.game.display.hideInventory();
+						this.setMode('SELECT_DIRECTION');
+						this.directionAction = 'USE_ITEM';
+					} else {
+						this.game.player.tryUse(this.selectedItem);
+						this.game.display.hideInventory();
+						this.setMode('MOVEMENT');
 					}
-					this.stoppedTypingTimeout = setTimeout(() => IsTypingChecker.stopTyping(), 1000);
-					this.activeInputBox.addCharacter(e.key);
-				} else if (e.key === "Enter"){
-					this.activeInputBox.submit();
 				}
-			}
-			if (this.mode === 'PROMPT_GET_ITEM') {
+			} else if (this.mode === 'PROMPT_GET_ITEM') {
 				if (e.key === "y" || e.key === "Y"){
 					this.game.client.respondGetItem(true);
 				} else if (e.key === "n" || e.key === "N"){
@@ -187,17 +202,6 @@ module.exports = {
 				this.game.player.tryDrop(this.selectedItem);
 				this.game.display.hideInventory();
 				this.setMode('MOVEMENT');
-			} else if (k === ut.KEY_ENTER || k === ut.KEY_U){
-				if (this.selectedItem.def.targetted){
-					this.game.display.message("Select a direction.");
-					this.game.display.hideInventory();
-					this.setMode('SELECT_DIRECTION');
-					this.directionAction = 'USE_ITEM';
-				} else {
-					this.game.player.tryUse(this.selectedItem);
-					this.game.display.hideInventory();
-					this.setMode('MOVEMENT');
-				}
 			}
 		} else if (this.mode === 'SELECT_DIRECTION'){
 			if (k === ut.KEY_ESCAPE){
