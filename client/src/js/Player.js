@@ -174,7 +174,12 @@ module.exports = {
 		}
 	},
 	tryUse: function(item, dx, dy){
-		item.def.type.useFunction(this.game, item, dx, dy);
+		if (item.def.useMessage) {
+			this.game.display.message(item.def.useMessage);
+		} else {
+			this.game.display.message("You don't know how to use it.");
+		}
+		
 	},
 	tryTalk: function() {
 		if (true || this.game.world.level.inChatArea(this.being.x, this.being.y)) {

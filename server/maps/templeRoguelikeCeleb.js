@@ -22,7 +22,7 @@ module.exports = {
 			y: 21,
 			def: Items.ROGUELIKECEL_TSHIRT
 		},
-		{ x: 93, y: 30, def: Items.ROGUETEMPLE_BOOK },
+		{ x: 93, y: 30, def: Items.POTION_LARN },
 		{ x: 94, y: 30, def: Items.FAKE_AMULET_OF_YENDOR },
 		{ x: 95, y: 30, def: Items.VORPAL_BLADE_TOY },
 		{ x: 96, y: 30, def: Items.LARN_PLUSH_DOG },

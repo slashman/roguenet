@@ -4,7 +4,8 @@ module.exports = {
 			const t = itemsData[key];
 			this[key] = {
 				tile: new ut.Tile(t.character, t.color[0], t.color[1], t.color[2]),
-				name: t.name
+				name: t.name,
+				useMessage: t.useMessage
 			}
 		});
 	}
