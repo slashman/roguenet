@@ -22,7 +22,7 @@ module.exports = {
 					this.game.display.usernameBox.activate();
 					this.setMode('LOGIN');
 				}
-			} else if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN'){
+			} else if (this.mode === 'TALK' || this.mode === 'CREATE' || this.mode === 'LOGIN' || this.mode === 'BADGE'){
 				if (e.key.length == 1) {
 					IsTypingChecker.startTyping();
 					if (this.stoppedTypingTimeout) {
@@ -70,8 +70,12 @@ module.exports = {
 					this.game.client.showPlayerInfo('inventory');
 					this.setMode('INVENTORY');
 					return;
+				} else if (e.key.toUpperCase() === "B") {
+					this.game.client.showPlayerInfo('editBadge');
+					this.setMode('BADGE');
+					return;
 				} else if (e.key.toUpperCase() === "S") {
-					this.game.client.showPlayerInfo('status');
+					this.game.client.showPlayerInfo('info');
 					return;
 				} else if (e.key === "Tab") {
 					this.game.client.changeColor();
@@ -114,6 +118,13 @@ module.exports = {
 			} else if (k === ut.KEY_ESCAPE) {
 				this.game.display.setMode('TITLE');
 				this.setMode('TITLE');
+			}
+		} else if (this.mode === 'BADGE'){
+			if (k === ut.KEY_BACKSPACE){
+				this.activeInputBox.removeCharacter();
+			} else if (k === ut.KEY_ESCAPE) {
+				this.game.display.setMode('GAME');
+				this.setMode('MOVEMENT')
 			}
 		} else if (this.mode === 'MOVEMENT'){
 			if (k === ut.KEY_COMMA){
@@ -215,16 +226,16 @@ module.exports = {
 			case 'MOVEMENT':
 				let availableCommands = "";
 				if (this.game.talkManager.isTalkActive) {
-					availableCommands += "[ESC] - Leave Chat | [Enter] Switch to Talking";
+					availableCommands += "[ESC] Leave Chat | [Enter] Talk";
 				} else if (this.game.display.examinedBeing) {
-					availableCommands += "[ESC] Hide Inspector | [Enter] Switch to Talking | [Tab] Change color";
+					availableCommands += "[Enter] Talk | [Tab] Color | [B]adge | [S]tatus | <Bump> to Examine";
 				} else {
-					availableCommands += "[Enter] Switch to Talking | [Tab] Change color";
+					availableCommands += "[Enter] Talk | [Tab] Color | [B]adge | [S]tatus | <Bump> to Examine";
 				}
 				this.game.display.setCommands(availableCommands);
 			break;
 			case 'TALK':
-				this.game.display.setCommands("[ESC] - Switch to Movement | [Enter] Send Message");
+				this.game.display.setCommands("[Escape] Switch to Movement | [Enter] Send Message");
 			break;
 		}
 		this.game.display.refresh();

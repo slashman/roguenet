@@ -3,6 +3,7 @@ var ChatBox = require('./ui/ChatBox.class');
 var InputBox = require('./ui/InputBox.class');
 const List = require('./ui/List.class');
 var Box = require('./ui/Box.class');
+const BadgeForm = require('./ui/BadgeForm');
 
 module.exports = {
 	BLANK_TILE: new ut.Tile(' ', 255, 255, 255),
@@ -11,6 +12,8 @@ module.exports = {
 		this.game = game;
 		this.term = new ut.Viewport(document.getElementById("game"), 80, 25);
 		this.eng = new ut.Engine(this.term, this.getDisplayedTile.bind(this));
+
+		BadgeForm.init(this.term, game, this);
 
 		this.darkTiles = {};
 		
@@ -61,6 +64,10 @@ module.exports = {
 	},
 	setMode: function (mode) {
 		this.mode = mode;
+	},
+	editBadge: function (data) {
+		this.setMode('BADGE');
+		BadgeForm.activate(data);
 	},
 	loginFailed: function () {
 		this.usernameBox.activate();
@@ -128,6 +135,9 @@ module.exports = {
 			this.term.putString("Password:", 5, 8, 170, 170, 170);
 			this.usernameBox.draw();
 			this.passwordBox.draw();
+		} else if (this.mode == 'BADGE') {
+			this.term.clear();
+			BadgeForm.render();
 		} else if (this.mode == 'GAME') {
 			if (this.centered) {
 				this.eng.update(this.game.player.being.x, this.game.player.being.y);
@@ -194,10 +204,12 @@ module.exports = {
 			return;
 		var xBase = 56;
 		var yBase = 2;
-		this.term.putString("Looking at " + being.name, xBase, yBase, 255, 0, 0);
+		this.term.putString(being.displayName + " (" + being.pronouns +")", xBase, yBase, 255, 0, 0);
+		this.term.putString(being.species + " " + being.specialty, xBase, yBase + 1, 255, 0, 0);
+		this.term.putString(being.bio, xBase, yBase + 2, 255, 0, 0);
 		const items = being.items;
 		for (var i = 0; i < items.length; i++){
-			var y = yBase + 2 + i;
+			var y = yBase + 4 + i;
 			var item = items[i];
 			this.term.put(item.def.tile, xBase, y);
 			this.term.putString(item.def.name, xBase + 2, y, 255, 255, 255);

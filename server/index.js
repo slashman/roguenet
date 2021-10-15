@@ -71,6 +71,13 @@ function initPlayer(playerObj, socketId) {
     player.color = COLORS[playerObj.colorIndex];
     player.state = 'moving';
     player.currentChatChannel = 'nearbyConversation';
+
+    player.displayName = player.playerName;
+    player.pronouns = '';
+    player.species = 'Human';
+    player.specialty = '';
+    player.bio = '';
+
     testLevel.addBeingNear(player, 25, 29);
     return player;
 }
@@ -219,12 +226,7 @@ function initHooks (socket, user) {
             socket.emit('actionFailed');
             return;
         }
-        socket.emit('showPlayerInfo', {
-            context,
-            name: player.playerName,
-            items: player.inventory.map(i => i.def.id)
-        });
-
+        emitBeingInfo(socket, player, context)
     });
 
     socket.on('moveTo', function(dir){
@@ -257,11 +259,7 @@ function initHooks (socket, user) {
             }
             socket.emit('actionFailed');
         } else if (result.type == 'bumpWithBeing') {
-            socket.emit('showPlayerInfo', {
-                context: 'info',
-                name: result.being.playerName,
-                items: result.being.inventory.map(i => i.def.id)
-            });
+            emitBeingInfo(socket, result.being, 'info');
             socket.emit('actionFailed'); // Movement failed, the initial action
         } else if(result === "needKey") {
             socket.emit('serverMessage', { message: "It's locked." });
@@ -285,6 +283,15 @@ function initHooks (socket, user) {
         }
         ActionRateLimiter.update(socket);
     });
+
+    socket.on('saveBadgeInfo', function(badgeInfo){
+        const player = players[socket.id];
+        if (!player) {
+            console.log('socket '+socket.id+" has no player");
+            return;
+        }
+        Object.assign(player, badgeInfo);
+    });
     if (user.isAdmin) {
         AdminActions.bindSocket(socket);
     }
@@ -299,3 +306,16 @@ Game.start().then(() => {
         console.log('listening on *:3001');
       });
 });
+
+function emitBeingInfo(socket, being, context) {
+    socket.emit('showPlayerInfo', {
+        context,
+        name: being.playerName,
+        items: being.inventory.map(i => i.def.id),
+        displayName: being.displayName,
+        pronouns: being.pronouns,
+        species: being.species,
+        specialty: being.specialty,
+        bio: being.bio
+    });
+}

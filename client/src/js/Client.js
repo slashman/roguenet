@@ -126,7 +126,9 @@ module.exports = {
             data.items = data.items.map(i => new Item(Items[i]));;
             if (data.context == 'inventory') {
                 this.game.input.activateInventory(data.items);
-            } else { 
+            } else if (data.context == 'editBadge') {
+                this.game.display.editBadge(data);
+            } else {
                 this.game.display.showPlayerInfo(data);
             }
         });
@@ -296,5 +298,9 @@ module.exports = {
         if (this.isAdmin) {
             this.socket.emit('smite', dir);
         }
+    },
+
+    saveBadgeInfo: function (displayName, pronouns, species, specialty, bio) {
+        this.socket.emit('saveBadgeInfo', {displayName, pronouns, species, specialty, bio});
     }
 }
