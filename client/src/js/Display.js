@@ -24,7 +24,7 @@ module.exports = {
 		this.chatboxesMap = {};
 		this.chatBox = new InputBox(
 			this.game.input,
-			new TextBox(this.term, 4, 25, { x: 0, y: 1}, this),
+			new TextBox(this.term, 4, 34, { x: 0, y: 1}, this),
 			message => {
 				this.game.talkManager.sendMessage(message);
 			}
@@ -268,7 +268,7 @@ module.exports = {
 		} else {
 			this.chatboxCursorY = 5;
 		}
-		const chatBox = new ChatBox(this.term, 5, 25, {x:0, y: this.chatboxCursorY}, this);
+		const chatBox = new ChatBox(this.term, 5, 34, {x:0, y: this.chatboxCursorY}, this);
 		this.chatboxesMap[player.playerId] = chatBox;
 		this.chatBoxes.push(chatBox);
 		chatBox.setPlayer(player);
