@@ -161,12 +161,14 @@ module.exports = {
 			}
 			this.commandsBox.draw();
 			const connected = level.beingsList.length + " online";
-			this.term.putString(connected, 79 - connected.length, 24, 170, 170, 170);
+			this.term.putString(connected, 0, 24, 170, 170, 170);
 			if (area) {
 				this.showAreaInfo(area);
 			} else {
 				this.hideAreaInfo();
 			}
+			const goldStr = "$" + level.player.being.money;
+			this.term.putString(goldStr, 79 - goldStr.length, 24, 255, 255, 0);
 			if (this.game.input.mode == 'INVENTORY' && this.currentItems) {
 				this.showInventory();
 			}

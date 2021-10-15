@@ -78,6 +78,8 @@ function initPlayer(playerObj, socketId) {
     player.specialty = '';
     player.bio = '';
 
+    player.money = 100;
+
     testLevel.addBeingNear(player, 25, 29);
     return player;
 }
@@ -211,7 +213,18 @@ function initHooks (socket, user) {
             return;
         }
         if (pickup) { 
+            if (player.itemGiver.def.cost) {
+                if (player.money < player.itemGiver.def.cost) {
+                    socket.emit('serverMessage', { message: "You don't have enough gold."});
+                    socket.emit('actionFailed');
+                    player.state = 'moving';
+                    return;
+                }
+                player.money -= player.itemGiver.def.cost;
+            }
             player.addItem(new Item(player.itemGiver.def));
+            socket.emit('itemGranted', player.itemGiver.def);
+            socket.emit('updateMoney', player.money);
         }
         player.state = 'moving';
     });
@@ -255,7 +268,7 @@ function initHooks (socket, user) {
             } else {
                 player.itemGiver = result.itemGiver;
                 player.state = 'gettingItem';
-                socket.emit('promptGetItem', result.itemGiver.def.name);
+                socket.emit('promptGetItem', result.itemGiver.def);
             }
             socket.emit('actionFailed');
         } else if (result.type == 'bumpWithBeing') {

@@ -119,8 +119,22 @@ module.exports = {
 
         socket.on('promptGetItem', data => {
             debug('promptGetItem', data);
-            this.game.display.message("Pick up a "+ data +"? Y/N");
+            if (data.cost) {
+                this.game.display.message("Buy "+ data.name +" for " + data.cost + " gold? Y/N");
+            } else {
+                this.game.display.message("Pick up "+ data.name +"? Y/N");
+            }
             this.game.input.setMode('PROMPT_GET_ITEM');
+        });
+
+        socket.on('itemGranted', data => {
+            this.game.display.message("You got " + data.name + ".");
+            this.game.audio.playSfx('pickup');
+        });
+
+        socket.on('updateMoney', data => {
+            this.game.player.being.money = data;
+            this.game.display.refresh();
         });
 
         socket.on('showPlayerInfo', data => {
@@ -262,10 +276,7 @@ module.exports = {
 
     respondGetItem: function (pickUp) {
         this.socket.emit('getItemResponse', pickUp);
-        if (pickUp) {
-            this.game.display.message("You pick it up.");
-            this.game.audio.playSfx('pickup');
-        } else {
+        if (!pickUp) {
             this.game.display.message("No.");
         }
         this.game.input.setMode("MOVEMENT");
