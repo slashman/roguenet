@@ -17,6 +17,7 @@ Level.prototype = {
 		this.beingsList = [];
 		this.playersMap = {};
 		data.beingsList.forEach(beingData => {
+			if (beingData.disabled) return;
 			const being = new Being(this, beingData);
 			this.addBeing(being, being.x, being.y);
 		});
