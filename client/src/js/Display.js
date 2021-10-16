@@ -209,17 +209,17 @@ module.exports = {
 		const being = this.examinedBeing;
 		if (!being)
 			return;
-		var xBase = 56;
+		var xBase = 51;
 		var yBase = 2;
-		this.term.putString(being.displayName + " (" + being.pronouns +")", xBase, yBase, 255, 0, 0);
-		this.term.putString(being.species + " " + being.specialty, xBase, yBase + 1, 255, 0, 0);
-		this.term.putString(being.bio, xBase, yBase + 2, 255, 0, 0);
+		this.term.putString(being.displayName + " (" + being.pronouns +")", xBase, yBase, 255, 255, 0);
+		this.term.putString(being.species + " " + being.specialty, xBase, yBase + 1, 170, 170, 170);
+		this.term.putString(being.bio, xBase, yBase + 2, 170, 170, 170);
 		const items = being.items;
 		for (var i = 0; i < items.length; i++){
 			var y = yBase + 4 + i;
 			var item = items[i];
 			this.term.put(item.def.tile, xBase, y);
-			this.term.putString(item.def.name, xBase + 2, y, 255, 255, 255);
+			this.term.putString(" " + item.def.name.substr(0, 26), xBase + 1, y, 170, 170, 170);
 		}
 	},
 	showInventory: function(items){
