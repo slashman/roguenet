@@ -1,5 +1,7 @@
 const Being = require('./Being.class');
 const config = require('./config');
+const Item = require('./Item.class');
+const Items = require('./Items');
 
 module.exports = {
     init: function (game) {
@@ -60,6 +62,7 @@ module.exports = {
             this.game.player.updateFOV(); //TODO: How expensive is this client side? we should only do this if the player is close.
             if (player == this.game.player.being) {
                 this.game.input.inputEnabled = true;
+                this.game.player.landOn(data.x, data.y);
             }
         });
 
@@ -112,6 +115,37 @@ module.exports = {
             debug('chatRequest', data);
             this.game.display.message(data.playerName + " wants to talk with you. Accept? Y/N");
             this.game.input.setMode('PROMPT_CHAT');
+        });
+
+        socket.on('promptGetItem', data => {
+            debug('promptGetItem', data);
+            if (data.cost) {
+                this.game.display.message("Buy "+ data.name +" for " + data.cost + " gold? Y/N");
+            } else {
+                this.game.display.message("Pick up "+ data.name +"? Y/N");
+            }
+            this.game.input.setMode('PROMPT_GET_ITEM');
+        });
+
+        socket.on('itemGranted', data => {
+            this.game.display.message("You got " + data.name + ".");
+            this.game.audio.playSfx('pickup');
+        });
+
+        socket.on('updateMoney', data => {
+            this.game.player.being.money = data;
+            this.game.display.refresh();
+        });
+
+        socket.on('showPlayerInfo', data => {
+            data.items = data.items.map(i => new Item(Items[i]));;
+            if (data.context == 'inventory') {
+                this.game.input.activateInventory(data.items);
+            } else if (data.context == 'editBadge') {
+                this.game.display.editBadge(data);
+            } else {
+                this.game.display.showPlayerInfo(data);
+            }
         });
 
         socket.on('chatRequestCancelled', data => {
@@ -240,8 +274,20 @@ module.exports = {
         this.game.input.setMode("MOVEMENT");
     },
 
+    respondGetItem: function (pickUp) {
+        this.socket.emit('getItemResponse', pickUp);
+        if (!pickUp) {
+            this.game.display.message("No.");
+        }
+        this.game.input.setMode("MOVEMENT");
+    },
+
     startTyping: function () {
         this.socket.emit('startTyping');
+    },
+
+    showPlayerInfo: function (context) {
+        this.socket.emit('examinePlayer', context);
     },
 
     stopTyping: function () {
@@ -269,5 +315,9 @@ module.exports = {
         if (this.isAdmin) {
             this.socket.emit('smite', dir);
         }
+    },
+
+    saveBadgeInfo: function (displayName, pronouns, species, specialty, bio) {
+        this.socket.emit('saveBadgeInfo', {displayName, pronouns, species, specialty, bio});
     }
 }

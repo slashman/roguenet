@@ -25,11 +25,12 @@ function TextBox (term, height, width, position, display) {
 		this.spaces += " ";
 	}
 	this.lastUpdateMillis = 0;
+	this.r = 170; this.g = 170; this.b = 170;
 }
 
 TextBox.prototype.draw = function(){
 	 for (var i = 0; i < this.lines.length; i++) {
-		this.term.putString((this.lines[i] + this.spaces).substring(0, this.width), this.position.x, this.position.y + i, 170, 170, 170);
+		this.term.putString((this.lines[i] + this.spaces).substring(0, this.width), this.position.x, this.position.y + i, this.r, this.g, this.b);
      }
 };
 
@@ -83,7 +84,7 @@ TextBox.prototype.setText = function(text) {
 TextBox.prototype.clear = function() {
 	for (var i = 0; i < this.lines.length; i++) {
 		this.lines[i] = "";
-		this.term.putString(this.spaces, this.position.x, this.position.y + i, 255, 255, 255);
+		this.term.putString(this.spaces, this.position.x, this.position.y + i, this.r, this.g, this.b);
 	}
 	this.lines.length = this.height;
 	this.curx = 0;
@@ -92,6 +93,12 @@ TextBox.prototype.clear = function() {
 
 TextBox.prototype.getFilledHeight = function () {
 	return this.cury + 1;
+}
+
+TextBox.prototype.setColor = function (r, g, b) {
+	this.r = r;
+	this.g = g;
+	this.b = b;
 }
 
 module.exports = TextBox;

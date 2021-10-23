@@ -1,6 +1,6 @@
-function InputBox (input, textBox, onSubmit) {
+function InputBox (input, textBox, onSubmit, initialText = "") {
     this.input = input;
-    this.charBuffer = "";
+    this.charBuffer = initialText;
     this.onSubmit = onSubmit;
     this.textBox = textBox;
     this.required = true;
@@ -12,6 +12,12 @@ InputBox.prototype = {
         this.textBox.setText(showText + (this.active ? "_" : ""));
 		this.textBox.draw();
 		this.textBox.term.render();
+    },
+    setText: function (text) {
+        this.charBuffer = text;
+        let showText = this.masked ? this.maskBuffer() : this.charBuffer;
+        this.textBox.setText(showText + (this.active ? "_" : ""));
+		this.textBox.draw();
     },
     submit: function (){
         if (this.required && this.charBuffer.trim() == "") {

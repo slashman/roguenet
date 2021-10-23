@@ -5,6 +5,7 @@ function Being(level){
 	this.x = null;
 	this.y = null;
 	this.intent = 'CHASE';
+	this.inventory = [];
 }
 
 Being.prototype = {
@@ -32,6 +33,28 @@ Being.prototype = {
 		var dy = Math.sign(nearestEnemy.y - this.y);
 		
 		this.moveTo(dx, dy);
+	},
+	addItem: function(item) {
+		this.inventory.push(item);
+	},
+	hasItem: function (itemId) {
+		return this.inventory.find(i => i.def.id === itemId) !== undefined;
+	},
+	leaveArea: function (socket) {
+		if (this.currentArea.type == 'talk') {
+			socket.leave(this.currentChatChannel);
+			this.currentChatChannel = 'nearbyConversation';
+			socket.join('nearbyConversation');
+		}
+		this.currentArea = undefined;
+	},
+	joinArea: function (socket, area) {
+		this.currentArea = area;
+		if (area.type == 'talk') {
+			this.currentChatChannel = area.channelId;
+			socket.join(area.channelId);
+			socket.leave('nearbyConversation');
+		}
 	}
 }
 

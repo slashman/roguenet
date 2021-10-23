@@ -4,6 +4,8 @@ var World = require('./World');
 var Player = require('./Player');
 var Input = require('./Input');
 var Talk = require('./Talk');
+const AssetLoader = require('./AssetLoader');
+const Audio = require('./Audio');
 
 window.debug = function(a, b){
 	console.log(a, b);
@@ -17,7 +19,10 @@ var Game = {
 		this.input = Input;
 		this.talkManager = Talk;
 		this.client = Client;
+		this.audio = Audio;
 		Client.init(this);
+		Audio.init(this);
+		AssetLoader.loadAudio(this);
 		Display.init(this);
 		Player.init(this);
 		Talk.init(this);

@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>RogueNet Client</title>
+	<title>RogueNet</title>
 	<link href="lib/unicodetiles/unicodetiles.css" rel="stylesheet" type="text/css" />
 	<script src="lib/unicodetiles/unicodetiles.js"></script>
 	<script src="lib/unicodetiles/input.js"></script>
 	<script src="lib/unicodetiles/ut.WebGLRenderer.js"></script>
 	<script src="lib/unicodetiles/ut.CanvasRenderer.js"></script>
 	<script src="lib/unicodetiles/ut.DOMRenderer.js"></script>
-	<script src ="lib/socket.io.js"></script>
+	<script src="lib/socket.io.js"></script>
+	<script src="lib/howler/howler.js"></script>
 	<script src="rl-min.js?v=1"></script>
 	<style>
 		body {
@@ -17,6 +18,13 @@
 			font-family: sans-serif;
 			color: white;
 		}
+
+		#description {
+			width: 770px;
+			margin-top: 20px;
+
+		}
+
 		.centerer {
 			margin-left: auto;
 			margin-right: auto;
@@ -32,7 +40,6 @@
 <body onload="Game.start();" onunload="Game.unload();">
 	<div class="centerer">
 		<div id="game"></div>
-		<p><a href = "https://roguetemple.com/7drl/2021/expo" class = "whiteLink" target = "_blank">Click to see the Developers' Schedule</a></p>
 		<div id="areaInfo">
 			<p id = "areaTitle"></p>
 			<p id = "gameDetails"></p>
@@ -40,6 +47,14 @@
 			<div id = "videoContainer" style="display: none;">
 				<iframe id = "videoFrame" width="560" height="315" src="https://www.youtube.com/embed/8_VOIQDVtHs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 			</div>
+		</div>
+		<div id="description" class = "centerer">
+			<b>RogueNet presents: An Unofficial Roguelike Celebration 2021 Party!</b>
+			<p>West of the temple has been set up as a festive gathering space, make sure to get the event swag, and some drinks maybe, while you chat with your roguelike friends.</p>
+			<p>East of the temple you will find the Roguelike Museum, displaying a collection of roguelike games from the 80's. Remember to buy some merch on your way out!</p>
+			<p><b>Roguenet features a text-based, ephemeral conversation system</b>. There is no message log, you are meant to be focused on the event while it last (logout and login back if you intend to be away!)</p>
+			<p>Press [B] to set your badge details, and [S] to toggle sound on/off</p>
+			<p>Have fun!</p>
 		</div>
 	</div>
 </body>

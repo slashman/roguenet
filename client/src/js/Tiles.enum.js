@@ -5,7 +5,8 @@ module.exports = {
 			this[key] = {
 				tile: new ut.Tile(t.character, t.color[0], t.color[1], t.color[2]),
 				solid: t.solid,
-				opaque: t.opaque
+				opaque: t.opaque,
+				stepSFX: t.stepSFX
 			}
 		});
 	}
