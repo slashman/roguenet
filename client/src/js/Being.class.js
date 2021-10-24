@@ -4,6 +4,7 @@ function Being(level, beingData){
     this.y = beingData.y;
 	this.playerId = beingData.playerId;
 	this.playerName = beingData.playerName;
+	this.money = beingData.money;
     this.tile = new ut.Tile('@', beingData.color[0], beingData.color[1], beingData.color[2]);
 }
 

@@ -3,6 +3,7 @@ var ChatBox = require('./ui/ChatBox.class');
 var InputBox = require('./ui/InputBox.class');
 const List = require('./ui/List.class');
 var Box = require('./ui/Box.class');
+const BadgeForm = require('./ui/BadgeForm');
 
 module.exports = {
 	BLANK_TILE: new ut.Tile(' ', 255, 255, 255),
@@ -12,16 +13,18 @@ module.exports = {
 		this.term = new ut.Viewport(document.getElementById("game"), 80, 25);
 		this.eng = new ut.Engine(this.term, this.getDisplayedTile.bind(this));
 
+		BadgeForm.init(this.term, game, this);
+
 		this.darkTiles = {};
 		
 		this.textBox = new TextBox(this.term, 2, 80 - 25, {x: 25, y: 0}, this);
-		this.commandsBox = new TextBox(this.term, 2, 80 - 25, {x: 25, y: 23}, this);
+		this.commandsBox = new TextBox(this.term, 1, 80, {x: 0, y: 24}, this);
 
 		this.chatBoxes = [];
 		this.chatboxesMap = {};
 		this.chatBox = new InputBox(
 			this.game.input,
-			new TextBox(this.term, 4, 24, { x: 0, y: 1}, this),
+			new TextBox(this.term, 4, 33, { x: 0, y: 1}, this),
 			message => {
 				this.game.talkManager.sendMessage(message);
 			}
@@ -54,13 +57,17 @@ module.exports = {
 		);
 		this.passwordBox.masked = true;
 
-		this.inventoryBox = new Box(this.term, 15, 40, {x:19, y:4});
+		this.inventoryBox = new Box(this.term, 15, 40, {x:25, y:5});
 		this.centered = config && config.centered;
 		this.centered = true;
 		this.mode = 'TITLE';
 	},
 	setMode: function (mode) {
 		this.mode = mode;
+	},
+	editBadge: function (data) {
+		this.setMode('BADGE');
+		BadgeForm.activate(data);
 	},
 	loginFailed: function () {
 		this.usernameBox.setActive(true);
@@ -128,6 +135,9 @@ module.exports = {
 			this.term.putString("Password:", 5, 8, 170, 170, 170);
 			this.usernameBox.draw();
 			this.passwordBox.draw();
+		} else if (this.mode == 'BADGE') {
+			this.term.clear();
+			BadgeForm.render();
 		} else if (this.mode == 'GAME') {
 			if (this.centered) {
 				this.eng.update(this.game.player.being.x, this.game.player.being.y);
@@ -144,12 +154,26 @@ module.exports = {
 			this.chatBoxes.forEach(c => c.draw());
 			const level = this.game.world.level;
 			const area = level.getArea(level.player.being.x, level.player.being.y);
-			this.peopleList.draw();
+			if (this.examinedBeing) {
+				this.drawBeingDetails();
+			} else {
+				this.peopleList.draw();
+			}
 			this.commandsBox.draw();
+			const connected = level.beingsList.length + " online";
+			this.term.putString(connected, 79 - connected.length, 23, 170, 170, 170);
 			if (area) {
 				this.showAreaInfo(area);
+				Howler.volume(0);
 			} else {
 				this.hideAreaInfo();
+				if (this.game.audio.enabled)
+					Howler.volume(1);
+			}
+			const goldStr = "$" + level.player.being.money;
+			this.term.putString(goldStr, 79 - goldStr.length, 24, 255, 255, 0);
+			if (this.game.input.mode == 'INVENTORY' && this.currentItems) {
+				this.showInventory();
 			}
 		}
 		this.term.render();
@@ -166,43 +190,61 @@ module.exports = {
 			return;
 		}
 		this.currentArea = area;
-		document.getElementById("areaInfo").style.display = 'block';
-		this.message('You are in the "' + area.name  + '" booth. '+ area.gameDetails, 0, 0, 170, 170, 170);
-
-		/*
-		document.getElementById("areaTitle").innerHTML = 'You are in the [' + area.name  + '] booth';
-		document.getElementById("gameDetails").innerHTML = area.gameDetails;*/
-		document.getElementById("gamePlay").innerHTML = area.name + ' by ' + area.author  + ' <a class = "whiteLink" href = "' + area.playURL + '" target = "_blank">Play Now!</a>';
-		const video = document.getElementById("videoFrame");
-		const videoContainer = document.getElementById("videoContainer");
-		if (area.videoId) {
-			video.setAttribute( "src", "https://www.youtube.com/embed/"+ area.videoId);
-			console.log("set source");
-			videoContainer.style.display = 'block';
-		} else {
-			videoContainer.style.display = 'none';
+		this.message(area.enterMessage, 0, 0, 170, 170, 170);
+		if (area.type === 'video') {
+			document.getElementById("areaInfo").style.display = 'block';
+			document.getElementById("gamePlay").innerHTML = area.videoTitle/* + ' <a class = "whiteLink" href = "' + area.playURL + '" target = "_blank">Play Now!</a>'*/;
+			const video = document.getElementById("videoFrame");
+			const videoContainer = document.getElementById("videoContainer");
+			if (area.videoId) {
+				video.setAttribute( "src", "https://www.youtube.com/embed/"+ area.videoId);
+				console.log("set source");
+				videoContainer.style.display = 'block';
+			} else {
+				videoContainer.style.display = 'none';
+			}
 		}
-
 	},
-	showInventory: function(){
+	drawBeingDetails: function () {
+		const being = this.examinedBeing;
+		if (!being)
+			return;
+		var xBase = 51;
+		var yBase = 2;
+		this.term.putString(being.displayName + " (" + being.pronouns +")", xBase, yBase, 255, 255, 0);
+		this.term.putString(being.species + " " + being.specialty, xBase, yBase + 1, 170, 170, 170);
+		this.term.putString(being.bio, xBase, yBase + 2, 170, 170, 170);
+		const items = being.items;
+		for (var i = 0; i < items.length; i++){
+			var y = yBase + 4 + i;
+			var item = items[i];
+			this.term.put(item.def.tile, xBase, y);
+			this.term.putString(" " + item.def.name.substr(0, 26), xBase + 1, y, 170, 170, 170);
+		}
+	},
+	showInventory: function(items){
+		if (items) {
+			this.currentItems = items;
+		}
 		this.inventoryBox.draw();
-		var xBase = 20;
+		var xBase = 26;
 		var yBase = 5;
 		this.term.putString("Inventory", xBase, yBase, 255, 0, 0);
-		for (var i = 0; i < this.game.player.items.length; i++){
-			var item = this.game.player.items[i];
+		for (var i = 0; i < this.currentItems.length; i++){
+			var y = yBase + 2 + i;
+			var item = this.currentItems[i];
 			if (item == this.game.input.selectedItem){
-				this.term.put(this.CURSOR_TILE, xBase, yBase+1+i);
+				this.term.put(this.CURSOR_TILE, xBase, y);
 			} else {
-				this.term.put(this.BLANK_TILE, xBase, yBase+1+i);
+				this.term.put(this.BLANK_TILE, xBase, y);
 			}
-			this.term.put(item.def.tile, xBase+2, yBase+1+i);
-			this.term.put(item.def.tile, xBase+2, yBase+1+i);
-			this.term.putString(item.def.name, xBase + 4, yBase+1+i, 255, 255, 255);
+			this.term.put(item.def.tile, xBase+2, y);
+			this.term.putString(item.def.name, xBase + 4, y, 255, 255, 255);
 		}
 		this.term.render();
 	},
 	hideInventory: function(){
+		this.currentItems = undefined; 
 		this.term.clear();
 		this.refresh();		
 	},
@@ -229,11 +271,12 @@ module.exports = {
 			if (this.chatboxCursorY > 19) {
 				// Overflow
 				this.chatboxCursorY = 5;
+				this.chatBoxes.forEach(c => c.setFaded());
 			}
 		} else {
 			this.chatboxCursorY = 5;
 		}
-		const chatBox = new ChatBox(this.term, 5, 25, {x:0, y: this.chatboxCursorY}, this);
+		const chatBox = new ChatBox(this.term, 5, 34, {x:0, y: this.chatboxCursorY}, this);
 		this.chatboxesMap[player.playerId] = chatBox;
 		this.chatBoxes.push(chatBox);
 		chatBox.setPlayer(player);
@@ -293,6 +336,19 @@ module.exports = {
 	peopleCellRenderer (term, being, x, y) {
 		term.put(being.tile, x, y);
 		term.putString("- " + being.playerName, x + 2, y, 170, 170, 170);
+	},
+
+	showPlayerInfo (data) {
+		this.examinedBeing = data;
+		console.log(data);
+		this.game.input.updateCommands();
+		this.refresh();
+	},
+
+	hidePlayerInfo () {
+		this.examinedBeing = undefined;
+		this.refresh();
 	}
+
 
 }

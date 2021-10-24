@@ -21,10 +21,11 @@ function TextBox (term, height, width, position, display) {
 		this.lines[i] = [];
 	}
 	this.lastUpdateMillis = 0;
+	this.r = 170; this.g = 170; this.b = 170;
 }
 
 TextBox.prototype.draw = function(){
-	const space = new ut.Tile(" ");
+	const space = new ut.Tile(" ", this.r, this.g, this.b); // TODO: Reuse a preset Tile object
 	for (var i = 0; i < this.lines.length; i++) {
 		const line = this.lines[i];
 		for (var c = 0; c < this.width; c++) {
@@ -108,7 +109,7 @@ TextBox.prototype.setText = function(text, r, g, b, br, bg, bb) {
 };
 
 TextBox.prototype.clear = function() {
-	const space = new ut.Tile(" ");
+	const space = new ut.Tile(" ", this.r, this.g, this.b); //TODO: Reuse a preset Tile object
 	for (var i = 0; i < this.lines.length; i++) {
 		this.lines[i] = [];
 		for (var c = 0; c < this.width; c++) {
@@ -122,6 +123,12 @@ TextBox.prototype.clear = function() {
 
 TextBox.prototype.getFilledHeight = function () {
 	return this.cury + 1;
+}
+
+TextBox.prototype.setColor = function (r, g, b) {
+	this.r = r;
+	this.g = g;
+	this.b = b;
 }
 
 module.exports = TextBox;

@@ -8,7 +8,11 @@ module.exports = {
 		client.world = this;
 		return client.getWorldState().then(worldState => {
 			this.level = new Level(this.game);
-			this.level.loadData(worldState.tiles, worldState.levels['testLevel']);
+			this.level.loadData(
+				worldState.tiles, 
+				worldState.items,
+				worldState.levels['testLevel']
+			);
 			this.levels['testLevel'] = this.level;
 			const playerId = this.player.playerId;
 			const playerBeing = this.level.getPlayer(playerId);

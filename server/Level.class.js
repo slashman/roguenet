@@ -142,32 +142,64 @@ Level.prototype = {
 			this.items[x] = [];
 		this.items[x][y] = false;
 	},
-	removeBeing: function(username) {
+	removeBeing: function(username, disable) {
 		const beingIndex = this.beingsList.findIndex(being => being.username == username);
 		if (beingIndex != -1){
 			const being = this.beingsList[beingIndex];
 			delete this.beings[being.x][being.y];
-			this.beingsList.splice(beingIndex, 1);
+			if (disable) {
+				being.disabled = true;
+			} else {
+				this.beingsList.splice(beingIndex, 1);
+			}
 		}
 	},
-    moveTo: function(being, dx,dy){		
-		if (!this.canWalkTo(being.x+dx,being.y+dy)){
-			return false;
+	reactivateBeing: function(being) {
+		being.disabled = false;
+		if (!this.beings[being.x]) {
+			this.beings[being.x] = [];
 		}
+		this.beings[being.x][being.y] = being;
+	},
+	getItemGiver: function (x, y) {
+		if (!this.itemGivers[x])
+			return undefined;
+		return this.itemGivers[x][y];
+	},
+    moveTo: function(socket, being, dx,dy) {
 		const tx = being.x + dx;
 		const ty = being.y + dy;
+		const tBeing = this.getBeing(tx, ty);
+		if (tBeing) {
+			return {
+				type: 'bumpWithBeing',
+				being: tBeing
+			}
+		}
+		if (!this.canWalkTo(tx, ty)){
+			return false;
+		}
 		let result = true;
 		if (tx == 5 && ty == 1) {
-			if (!being.hasKey) {
+			if (!being.hasItem('geoKey')) {
 				return "needKey";
 			}
 		}
+		const itemGiver = this.getItemGiver(tx, ty);
+		if (itemGiver) {
+			return {
+				type: 'bumpWithItemGiver',
+				itemGiver,
+				alreadyHas: being.hasItem(itemGiver.def.id)
+			}
+		}
+		/*
 		if (tx == 149 && ty == 80) {
 			if (!being.hasKey) {
 				being.hasKey = true;
 				result = "pickedKey";
 			}
-		}
+		}*/
 		if (tx == 6 && ty == 7) {
 			if (!being.hadFoundGeo) {
 				being.hadFoundGeo = true;
@@ -182,7 +214,17 @@ Level.prototype = {
 		if (!this.beings[being.x])
 			this.beings[being.x] = [];
 		this.beings[being.x][being.y] = being;
+		this.landOnArea(socket, being);
 		return result;
+	},
+	landOnArea: function (socket, being) {
+		const area = this.getArea(being.x, being.y);
+		if (being.currentArea && (!area || area != being.currentArea)) {
+			being.leaveArea(socket);
+		}
+		if (area && area != being.currentArea) {
+			being.joinArea(socket, area);
+		}
 	},
 	getPlayerByUsername: function (username) {
 		return this.beingsList.find(being => being.username == username);
@@ -209,6 +251,9 @@ Level.prototype = {
 		this.geo = geoObjects[Math.floor(Math.random()*geoObjects.length)];
 		this.geoNumber++;
 		this.geoCacher = being.playerName;
+	},
+	getArea: function (x, y) {
+		return this.areas.find(a => x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h);
 	}
 }
 
