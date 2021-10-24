@@ -41,7 +41,7 @@ var Game = {
 					Display.mode = 'GAME';
 					Input.setMode('MOVEMENT');
 					this.player.updateFOV();
-					Display.textBox.setText("Welcome back " + this.player.being.playerName +".");
+					Display.textBox.setText("Welcome back " + this.player.being.playerName +". ");
 				});
 			} else {
 				Display.loginFailed();
@@ -57,7 +57,7 @@ var Game = {
 					Display.mode = 'GAME';
 					Input.setMode('MOVEMENT');
 					this.player.updateFOV();
-					Display.textBox.setText("Welcome to the temple, " + this.player.being.playerName +".");
+					Display.textBox.setText("Welcome to the temple, " + this.player.being.playerName +". ");
 				});
 			} else {
 				Display.createFailed();
