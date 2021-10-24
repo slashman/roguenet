@@ -161,9 +161,8 @@ module.exports = {
 				this.setMode('TITLE');
 			}
 		} else if (this.mode === 'BADGE'){
-			if (k === ut.KEY_BACKSPACE){
-				this.activeInputBox.removeCharacter();
-			} else if (k === ut.KEY_ESCAPE) {
+			if (k === ut.KEY_ESCAPE) {
+				if (this.activeInputBox) this.activeInputBox.setActive(false);
 				this.game.display.setMode('GAME');
 				this.setMode('MOVEMENT')
 			}

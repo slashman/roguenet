@@ -12,43 +12,43 @@ module.exports = {
 			this.game.input,
 			new TextBox(this.term, 1, 30, { x: xBase + 15, y: yBase + 3}, display),
 			val => {
-				this.displayNameBox.active = false;
+				this.displayNameBox.setActive(false);
 				this.savedDisplayName = val;
-				this.pronounsBox.activate();
+				this.pronounsBox.setActive(true);
 			}
 		);
 		this.pronounsBox = new InputBox(
 			this.game.input,
 			new TextBox(this.term, 1, 30, { x: xBase + 15, y: yBase + 4}, display),
 			val => {
-				this.pronounsBox.active = false;
+				this.pronounsBox.setActive(false);
 				this.savedPronouns = val;
-				this.speciesBox.activate();
+				this.speciesBox.setActive(true);
 			}
 		);
 		this.speciesBox = new InputBox(
 			this.game.input,
 			new TextBox(this.term, 1, 30, { x: xBase + 15, y: yBase + 5}, display),
 			val => {
-				this.speciesBox.active = false;
+				this.speciesBox.setActive(false);
 				this.savedSpecies = val;
-				this.specialtyBox.activate();
+				this.specialtyBox.setActive(true);
 			}
 		);
 		this.specialtyBox = new InputBox(
 			this.game.input,
 			new TextBox(this.term, 1, 30, { x: xBase + 15, y: yBase + 6}, display),
 			val => {
-				this.specialtyBox.active = false;
+				this.specialtyBox.setActive(false);
 				this.savedSpecialty = val;
-				this.bioBox.activate();
+				this.bioBox.setActive(true);
 			}
 		);
 		this.bioBox = new InputBox(
 			this.game.input,
 			new TextBox(this.term, 1, 30, { x: xBase + 15, y: yBase + 7}, display),
 			val => {
-				this.bioBox.active = false;
+				this.bioBox.setActive(false);
 				this.savedBio = val;
 				this.submit();
 			}
@@ -63,7 +63,8 @@ module.exports = {
 			this.savedBio
 		);
 		this.game.display.setMode('GAME');
-		this.game.input.setMode('MOVEMENT')
+		this.game.input.setMode('MOVEMENT');
+		// TODO: The last textbox is remaining on screen until it's refreshed, for some reason.
 	},
 	activate(data) {
 		this.displayNameBox.setText(data.displayName);
@@ -71,7 +72,7 @@ module.exports = {
 		this.speciesBox.setText(data.species);
 		this.specialtyBox.setText(data.specialty);
 		this.bioBox.setText(data.bio);
-		this.displayNameBox.activate();
+		this.displayNameBox.setActive(true);
 		this.game.display.refresh();
 	},
 	render() {
